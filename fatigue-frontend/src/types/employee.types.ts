@@ -1,0 +1,45 @@
+/**
+ * Employee Types
+ * Interfaces para empleados (users con rol employee)
+ */
+
+export interface Employee {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  employee_id: string; // Se puede construir como `EMP-${id}`
+  role: 'employee';
+  supervisor?: number; // ID del supervisor
+  supervisor_name?: string;
+  phone?: string;
+  department?: string;
+  position?: string;
+  hire_date: string;
+  is_active: boolean;
+  notes?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CreateEmployeeData {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  supervisor?: number;
+  phone?: string;
+  department?: string;
+  position?: string;
+}
+
+export interface UpdateEmployeeData {
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  supervisor?: number;
+  phone?: string;
+  department?: string;
+  position?: string;
+  is_active?: boolean;
+}
