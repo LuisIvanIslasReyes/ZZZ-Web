@@ -1,6 +1,6 @@
 /**
  * Main Layout
- * Layout principal con sidebar y header para usuarios autenticados
+ * Layout principal con sidebar y header para usuarios autenticados - Diseño ZZZ Admin
  */
 
 import { useState } from 'react';
@@ -10,31 +10,62 @@ import { useAuth } from '../contexts';
 interface NavItem {
   name: string;
   path: string;
-  icon: string;
+  icon: JSX.Element;
   roles?: string[];
 }
 
 const navigationItems: NavItem[] = [
   // Admin routes
-  { name: 'Dashboard', path: '/admin/dashboard', icon: '📊', roles: ['admin'] },
-  { name: 'Empleados', path: '/admin/employees', icon: '👥', roles: ['admin'] },
-  { name: 'Dispositivos', path: '/admin/devices', icon: '⌚', roles: ['admin'] },
-  { name: 'Alertas', path: '/admin/alerts', icon: '🚨', roles: ['admin'] },
-  { name: 'Reportes', path: '/admin/reports', icon: '📈', roles: ['admin'] },
-  { name: 'Configuración', path: '/admin/settings', icon: '⚙️', roles: ['admin'] },
+  { 
+    name: 'Dashboard', 
+    path: '/admin/dashboard', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>,
+    roles: ['admin'] 
+  },
+  { 
+    name: 'Empleados', 
+    path: '/admin/employees', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
+    roles: ['admin'] 
+  },
+  { 
+    name: 'Dispositivos', 
+    path: '/admin/devices', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>,
+    roles: ['admin'] 
+  },
+  { 
+    name: 'Alertas', 
+    path: '/admin/alerts', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>,
+    roles: ['admin'] 
+  },
+  { 
+    name: 'Reportes', 
+    path: '/admin/reports', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>,
+    roles: ['admin'] 
+  },
+  { 
+    name: 'Configuración', 
+    path: '/admin/settings', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+    roles: ['admin'] 
+  },
   
   // Supervisor routes
-  { name: 'Dashboard', path: '/supervisor/dashboard', icon: '📊', roles: ['supervisor'] },
-  { name: 'Mi Equipo', path: '/supervisor/team', icon: '👥', roles: ['supervisor'] },
-  { name: 'Alertas', path: '/supervisor/alerts', icon: '🚨', roles: ['supervisor'] },
-  { name: 'Reportes', path: '/supervisor/reports', icon: '📈', roles: ['supervisor'] },
+  { name: 'Dashboard', path: '/supervisor/dashboard', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>, roles: ['supervisor'] },
+  { name: 'Mi Equipo', path: '/supervisor/team', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>, roles: ['supervisor'] },
+  { name: 'Alertas', path: '/supervisor/alerts', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>, roles: ['supervisor'] },
+  { name: 'Reportes', path: '/supervisor/reports', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>, roles: ['supervisor'] },
   
   // Employee routes
-  { name: 'Dashboard', path: '/employee/dashboard', icon: '📊', roles: ['employee'] },
-  { name: 'Mis Métricas', path: '/employee/metrics', icon: '📈', roles: ['employee'] },
-  { name: 'Recomendaciones', path: '/employee/recommendations', icon: '💡', roles: ['employee'] },
-  { name: 'Mi Perfil', path: '/employee/profile', icon: '👤', roles: ['employee'] },
+  { name: 'Dashboard', path: '/employee/dashboard', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>, roles: ['employee'] },
+  { name: 'Mis Métricas', path: '/employee/metrics', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>, roles: ['employee'] },
+  { name: 'Recomendaciones', path: '/employee/recommendations', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>, roles: ['employee'] },
+  { name: 'Mi Perfil', path: '/employee/profile', icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>, roles: ['employee'] },
 ];
+
 
 export function MainLayout() {
   const { user, logout } = useAuth();
@@ -63,49 +94,74 @@ export function MainLayout() {
     }
   };
 
+  const getRoleLabel = (role?: string) => {
+    switch (role) {
+      case 'admin':
+        return 'Administrador';
+      case 'supervisor':
+        return 'Supervisor';
+      case 'employee':
+        return 'Empleado';
+      default:
+        return role;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-base-200">
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-base-100 shadow-xl z-40 transition-all duration-300 ${
-          isSidebarOpen ? 'w-64' : 'w-20'
+        className={`fixed top-0 left-0 h-full bg-[#0f1729] text-white shadow-2xl z-40 transition-all duration-300 ${
+          isSidebarOpen ? 'w-72' : 'w-20'
         }`}
       >
         {/* Logo/Title */}
-        <div className="p-4 border-b border-base-300">
-          <div className="flex items-center justify-between">
+        <div className="p-5 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/20 flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
             {isSidebarOpen && (
-              <h1 className="text-xl font-bold text-primary">
-                Fatiga Monitor
-              </h1>
+              <div className="flex-1">
+                <h1 className="text-xl font-bold">ZZZ Admin</h1>
+                <p className="text-xs text-blue-200">Zero to Zero-Fatigue</p>
+              </div>
             )}
             <button
-              className="btn btn-ghost btn-sm btn-circle"
+              className={`btn btn-sm text-white hover:bg-white/20 border-white/20 flex-shrink-0 ${isSidebarOpen ? 'btn-circle btn-ghost' : 'btn-square bg-white/10'}`}
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              title={isSidebarOpen ? 'Contraer sidebar' : 'Expandir sidebar'}
             >
-              {isSidebarOpen ? '◀' : '▶'}
+              <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-transform ${isSidebarOpen ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
           </div>
         </div>
 
         {/* User Info */}
         {user && (
-          <div className="p-4 border-b border-base-300">
+          <div className="p-5 border-b border-white/10">
             <div className="flex items-center gap-3">
-              <div className="avatar placeholder">
-                <div className="bg-primary text-primary-content rounded-full w-10">
-                  <span className="text-xl">
+              <div className="avatar placeholder flex-shrink-0">
+                <div className="bg-gradient-to-br from-primary to-secondary text-white rounded-xl w-11 h-11">
+                  <span className="text-lg font-bold">
                     {user.first_name?.[0]}{user.last_name?.[0]}
                   </span>
                 </div>
               </div>
               {isSidebarOpen && (
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold truncate">
+                  <p className="font-semibold truncate text-sm">
                     {user.first_name} {user.last_name}
                   </p>
-                  <div className={`badge badge-sm ${getRoleBadgeColor(user.role)}`}>
-                    {user.role}
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`badge badge-xs ${getRoleBadgeColor(user.role)}`}>
+                      {getRoleLabel(user.role)}
+                    </span>
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                   </div>
                 </div>
               )}
@@ -114,18 +170,22 @@ export function MainLayout() {
         )}
 
         {/* Navigation */}
-        <nav className="p-2">
-          <ul className="menu">
+        <nav className="p-3 flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+          <ul className="menu space-y-1">
             {filteredNavItems.map((item) => (
               <li key={item.path}>
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    isActive ? 'active' : ''
+                    `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                      isActive 
+                        ? 'bg-primary text-white shadow-lg' 
+                        : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                    }`
                   }
                 >
-                  <span className="text-xl">{item.icon}</span>
-                  {isSidebarOpen && <span>{item.name}</span>}
+                  <span className="flex-shrink-0">{item.icon}</span>
+                  {isSidebarOpen && <span className="font-medium">{item.name}</span>}
                 </NavLink>
               </li>
             ))}
@@ -133,79 +193,27 @@ export function MainLayout() {
         </nav>
 
         {/* Logout Button */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-base-300">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-[#0f1729]">
           <button
-            className={`btn btn-ghost ${isSidebarOpen ? 'btn-block' : 'btn-circle'}`}
+            className={`btn btn-ghost text-white hover:bg-red-500/20 border-white/10 ${isSidebarOpen ? 'btn-block justify-start' : 'btn-circle mx-auto'}`}
             onClick={handleLogout}
           >
-            <span className="text-xl">🚪</span>
-            {isSidebarOpen && <span>Cerrar Sesión</span>}
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            {isSidebarOpen && <span className="ml-3">Cerrar Sesión</span>}
           </button>
         </div>
       </div>
 
       {/* Main Content */}
       <div
-        className={`transition-all duration-300 ${
-          isSidebarOpen ? 'ml-64' : 'ml-20'
+        className={`transition-all duration-300 min-h-screen bg-base-200 ${
+          isSidebarOpen ? 'ml-72' : 'ml-20'
         }`}
       >
-        {/* Header */}
-        <header className="bg-base-100 shadow-sm sticky top-0 z-30">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">
-                  {filteredNavItems.find((item) => 
-                    window.location.pathname.includes(item.path)
-                  )?.name || 'Dashboard'}
-                </h2>
-                <p className="text-sm text-base-content/60">
-                  Sistema de Detección de Fatiga Laboral
-                </p>
-              </div>
-              
-              <div className="flex items-center gap-4">
-                {/* Notifications */}
-                <div className="dropdown dropdown-end">
-                  <button className="btn btn-ghost btn-circle">
-                    <div className="indicator">
-                      <span className="text-xl">🔔</span>
-                      <span className="badge badge-sm badge-primary indicator-item">3</span>
-                    </div>
-                  </button>
-                  <div className="dropdown-content mt-3 z-[1] card card-compact w-64 bg-base-100 shadow-xl">
-                    <div className="card-body">
-                      <h3 className="font-bold">Notificaciones</h3>
-                      <p className="text-sm text-base-content/60">
-                        3 nuevas alertas pendientes
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* User Menu */}
-                <div className="dropdown dropdown-end">
-                  <button className="btn btn-ghost btn-circle avatar">
-                    <div className="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center">
-                      <span className="text-sm font-bold">
-                        {user?.first_name?.[0]}{user?.last_name?.[0]}
-                      </span>
-                    </div>
-                  </button>
-                  <ul className="dropdown-content mt-3 z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a>Mi Perfil</a></li>
-                    <li><a>Configuración</a></li>
-                    <li><a onClick={handleLogout}>Cerrar Sesión</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-
         {/* Page Content */}
-        <main className="p-6">
+        <main className="p-6 md:p-8 lg:p-10 max-w-[1600px]">
           <Outlet />
         </main>
       </div>
