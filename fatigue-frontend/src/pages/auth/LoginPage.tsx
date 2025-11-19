@@ -1,8 +1,3 @@
-/**
- * Login Page
- * Página de inicio de sesión - Diseño moderno ZZZ Admin
- */
-
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts';
@@ -49,233 +44,168 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
-      {/* Left Panel - Sistema Info */}
-      <div className="hidden lg:flex bg-[#0f1729] text-white p-12 flex-col justify-between">
-        {/* Header with Icon */}
-        <div>
-          <div className="flex items-center gap-4 mb-12">
-            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#18314F] to-[#14223A]">
+      <div className="flex flex-col md:flex-row w-full max-w-5xl mx-auto p-4 gap-8">
+        {/* Panel izquierdo */}
+        <div className="flex-1 flex flex-col justify-center text-white pr-0 md:pr-12">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="rounded-full bg-white/10 p-3">
+              {/* Icono escudo */}
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L19 6V11C19 16.52 15.36 20.74 12 21C8.64 20.74 5 16.52 5 11V6L12 3Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </span>
             <div>
-              <h1 className="text-3xl font-bold">ZZZ Admin</h1>
-              <p className="text-blue-200 text-sm">Zero to Zero-Fatigue Zone</p>
+              <h1 className="text-3xl font-bold leading-tight">ZZZ Admin</h1>
+              <p className="text-base text-white/80">Zero to Zero-Fatigue Zone</p>
             </div>
           </div>
-
-          <h2 className="text-2xl font-bold mb-3">Panel de Control Administrativo</h2>
-          <p className="text-blue-100/80 leading-relaxed mb-12">
-            Sistema de monitoreo integral de fatiga para empleados industriales. 
-            Supervisa en tiempo real el estado de salud de tu equipo y previene riesgos laborales.
-          </p>
-
-          {/* Feature Cards */}
-          <div className="space-y-4">
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold">Monitoreo en Tiempo Real</h3>
-                  <p className="text-sm text-blue-100/70">Métricas fisiológicas continuas</p>
-                </div>
+          <h2 className="text-2xl font-semibold mt-4 mb-2">Panel de Control Administrativo</h2>
+          <p className="text-white/80 mb-6">Sistema de monitoreo integral de fatiga para empleados industriales. Supervisa en tiempo real el estado de salud de tu equipo y previene riesgos laborales.</p>
+          <div className="flex flex-col gap-4 mb-8">
+            <div className="flex items-center gap-3 bg-white/5 rounded-xl p-4">
+              <span className="bg-green-600/20 rounded-full p-2">
+                {/* Icono corazón */}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21C12 21 4 13.36 4 8.5C4 5.42 6.42 3 9.5 3C11.24 3 12.91 3.81 14 5.08C15.09 3.81 16.76 3 18.5 3C21.58 3 24 5.42 24 8.5C24 13.36 16 21 16 21H12Z" fill="#22C55E"/></svg>
+              </span>
+              <div>
+                <p className="font-semibold">Monitoreo en Tiempo Real</p>
+                <p className="text-sm text-white/70">Métricas fisiológicas continuas</p>
               </div>
             </div>
-
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-amber-500/20 rounded-lg flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold">Análisis Predictivo con IA</h3>
-                  <p className="text-sm text-blue-100/70">Prevención de fatiga laboral</p>
-                </div>
+            <div className="flex items-center gap-3 bg-white/5 rounded-xl p-4">
+              <span className="bg-yellow-500/20 rounded-full p-2">
+                {/* Icono IA */}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="#FACC15" strokeWidth="2"/><path d="M8 12H16" stroke="#FACC15" strokeWidth="2" strokeLinecap="round"/></svg>
+              </span>
+              <div>
+                <p className="font-semibold">Análisis Predictivo con IA</p>
+                <p className="text-sm text-white/70">Prevención de fatiga laboral</p>
               </div>
             </div>
-
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold">Sistema de Alertas Inteligente</h3>
-                  <p className="text-sm text-blue-100/70">Notificaciones en tiempo real</p>
-                </div>
+            <div className="flex items-center gap-3 bg-white/5 rounded-xl p-4">
+              <span className="bg-red-500/20 rounded-full p-2">
+                {/* Icono alerta */}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V12" stroke="#EF4444" strokeWidth="2" strokeLinecap="round"/><circle cx="12" cy="16" r="1" fill="#EF4444"/><path d="M21 18H3L12 4L21 18Z" stroke="#EF4444" strokeWidth="2" strokeLinejoin="round"/></svg>
+              </span>
+              <div>
+                <p className="font-semibold">Sistema de Alertas Inteligente</p>
+                <p className="text-sm text-white/70">Notificaciones en tiempo real</p>
               </div>
             </div>
-
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold">Reportes Detallados</h3>
-                  <p className="text-sm text-blue-100/70">Análisis y estadísticas avanzadas</p>
-                </div>
+            <div className="flex items-center gap-3 bg-white/5 rounded-xl p-4">
+              <span className="bg-white/10 rounded-full p-2">
+                {/* Icono reporte */}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 17V15C8 13.8954 8.89543 13 10 13H14C15.1046 13 16 13.8954 16 15V17" stroke="#fff" strokeWidth="2" strokeLinecap="round"/><rect x="4" y="4" width="16" height="16" rx="4" stroke="#fff" strokeWidth="2"/></svg>
+              </span>
+              <div>
+                <p className="font-semibold">Reportes Detallados</p>
+                <p className="text-sm text-white/70">Análisis y estadísticas avanzadas</p>
               </div>
+            </div>
+          </div>
+          <div className="flex gap-12 mt-4">
+            <div className="text-center">
+              <p className="text-2xl font-bold">60+</p>
+              <p className="text-sm text-white/70">Empleados</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold">24/7</p>
+              <p className="text-sm text-white/70">Monitoreo</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold">99.8%</p>
+              <p className="text-sm text-white/70">Uptime</p>
             </div>
           </div>
         </div>
-
-        {/* Stats Footer */}
-        <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
-          <div className="text-center">
-            <div className="text-4xl font-bold mb-1">60+</div>
-            <div className="text-sm text-blue-100/70">Empleados</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold mb-1">24/7</div>
-            <div className="text-sm text-blue-100/70">Monitoreo</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold mb-1">99.8%</div>
-            <div className="text-sm text-blue-100/70">Uptime</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Panel - Login Form */}
-      <div className="flex items-center justify-center p-6 bg-base-100">
-        <div className="w-full max-w-md">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-2">Iniciar Sesión</h2>
-            <p className="text-base-content/60">
-              Ingresa tus credenciales para acceder al panel administrativo
-            </p>
-          </div>
-
-          {/* Error Alert */}
-          {error && (
-            <div className="alert alert-error mb-6 shadow-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>{error}</span>
-            </div>
-          )}
-
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium">Usuario</span>
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
+        {/* Tarjeta de login */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+            <h2 className="text-2xl font-semibold mb-2 text-gray-800">Iniciar Sesión</h2>
+            <p className="text-gray-500 mb-6">Ingresa tus credenciales para acceder al panel administrativo</p>
+            {/* Error Alert */}
+            {error && (
+              <div className="alert alert-error mb-6 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{error}</span>
+              </div>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    {/* Icono usuario */}
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                  </span>
+                  <input
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-200 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="admin@zzz.com"
+                    autoComplete="username"
+                    required
+                    disabled={isLoading}
+                    autoFocus
+                  />
                 </div>
-                <input
-                  type="email"
-                  placeholder="admin@zzz.com"
-                  className="input input-bordered w-full pl-12 h-12 bg-base-200/50"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={isLoading}
-                  autoFocus
-                />
               </div>
-            </div>
-
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium">Contraseña</span>
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    {/* Icono candado */}
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  </span>
+                  <input
+                    type="password"
+                    name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-200 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    required
+                    disabled={isLoading}
+                  />
                 </div>
-                <input
-                  type="password"
-                  placeholder="········"
-                  className="input input-bordered w-full pl-12 h-12 bg-base-200/50"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
               </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <label className="label cursor-pointer gap-2 p-0">
-                <input 
-                  type="checkbox" 
-                  className="checkbox checkbox-sm" 
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <span className="label-text">Recordar sesión</span>
-              </label>
-              <a href="#" className="label-text-alt link link-hover text-primary">
-                ¿Olvidaste tu contraseña?
-              </a>
-            </div>
-
-            <button
-              type="submit"
-              className="btn btn-primary w-full h-12 text-base"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <span className="loading loading-spinner"></span>
-                  Iniciando Sesión
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  Iniciar Sesión
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Demo Credentials */}
-          <div className="mt-8 p-4 bg-success/10 rounded-lg border border-success/20">
-            <div className="flex items-start gap-3">
-              <div className="badge badge-success badge-sm mt-1">Demo</div>
-              <div className="flex-1">
-                <p className="text-sm font-medium mb-1">Credenciales de Prueba</p>
-                <p className="text-xs text-base-content/70 mb-2">
-                  <strong>Usuario:</strong> admin@zzz.com<br />
-                  <strong>Contraseña:</strong> cualquiera
-                </p>
-                <button 
-                  type="button"
-                  onClick={fillDemoCredentials}
-                  className="btn btn-success btn-xs"
-                >
-                  Autocompletar
-                </button>
+              <div className="flex items-center justify-between text-sm">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="form-checkbox rounded border-gray-300"
+                  />
+                  Recordar sesión
+                </label>
+                <button type="button" className="text-blue-600 hover:underline">¿Olvidaste tu contraseña?</button>
               </div>
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-2 bg-[#18314F] text-white font-semibold py-2 rounded-lg shadow hover:bg-[#14223A] transition-colors"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="loading loading-spinner"></span>
+                    Iniciando Sesión
+                  </>
+                ) : (
+                  <>
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mr-2"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    Iniciar Sesión
+                  </>
+                )}
+              </button>
+            </form>
+            <div className="mt-8 text-center text-xs text-gray-400">
+              © 2025 Zero to Zero-Fatigue Zone. Sistema de Monitoreo Industrial.
             </div>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center mt-8 text-sm text-base-content/50">
-            <p>© 2025 Zero to Zero-Fatigue Zone. Sistema de Monitoreo Industrial.</p>
           </div>
         </div>
       </div>
