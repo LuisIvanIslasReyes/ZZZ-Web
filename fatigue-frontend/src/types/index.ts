@@ -55,6 +55,22 @@ export type {
 } from './recommendation.types';
 export { RecommendationType, RecommendationStatus } from './recommendation.types';
 
+// Report types
+export type {
+  ReportPeriod,
+  EmployeeReportStats,
+  AlertStats as ReportAlertStats,
+  RecommendationStats as ReportRecommendationStats,
+  DailyMetric,
+  EmployeeReport,
+  TeamReportEmployee,
+  TeamReport,
+  ExecutiveSummary,
+  ReportType,
+  ReportFormat,
+  ReportRequest
+} from './report.types';
+
 // API types
 export type { 
   ApiResponse, 

@@ -11,4 +11,5 @@ export { default as metricsService } from './metrics.service';
 export { default as alertService } from './alert.service';
 export { default as recommendationService } from './recommendation.service';
 export { default as dashboardService } from './dashboard.service';
+export { reportService } from './report.service';
 export { default as api } from './api';

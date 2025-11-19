@@ -11,7 +11,8 @@ import {
   AdminDashboardPage, 
   EmployeesListPage, 
   DevicesListPage, 
-  AlertsListPage 
+  AlertsListPage,
+  AdminReportsPage
 } from '../pages/admin';
 import { SupervisorDashboardPage } from '../pages/supervisor';
 import { EmployeeDashboardPage } from '../pages/employee';
@@ -54,7 +55,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'reports',
-        element: <div>Reports</div>,
+        element: <AdminReportsPage />,
       },
       {
         path: 'settings',

@@ -167,13 +167,19 @@ class AlertService {
    * Obtener todas las alertas (sin paginación)
    */
   async getAllAlerts(): Promise<FatigueAlert[]> {
-    const response = await api.get<PaginatedResponse<FatigueAlert>>(`${this.BASE_PATH}/`, {
+    const response = await api.get<FatigueAlert[] | PaginatedResponse<FatigueAlert>>(`${this.BASE_PATH}/`, {
       params: {
         page_size: 1000,
         ordering: '-created_at'
       }
     });
-    return response.data.results || [];
+    // Manejar respuesta paginada o array directo
+    if (Array.isArray(response.data)) {
+      return response.data;
+    } else if ('results' in response.data) {
+      return response.data.results;
+    }
+    return [];
   }
 
   /**

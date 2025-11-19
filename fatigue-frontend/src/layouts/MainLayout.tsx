@@ -116,35 +116,49 @@ export function MainLayout() {
         }`}
       >
         {/* Logo/Title */}
-        <div className="p-5 border-b border-white/10">
-          <div className="flex items-center gap-3">
+        <div className={`p-5 border-b border-white/10 ${!isSidebarOpen ? 'px-3' : ''}`}>
+          <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'}`}>
             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/20 flex-shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
             </div>
             {isSidebarOpen && (
-              <div className="flex-1">
-                <h1 className="text-xl font-bold">ZZZ Admin</h1>
-                <p className="text-xs text-blue-200">Zero to Zero-Fatigue</p>
-              </div>
+              <>
+                <div className="flex-1">
+                  <h1 className="text-xl font-bold">ZZZ Admin</h1>
+                  <p className="text-xs text-blue-200">Zero to Zero-Fatigue</p>
+                </div>
+                <button
+                  className="btn btn-sm btn-circle btn-ghost text-white hover:bg-white/20 border-white/20 flex-shrink-0"
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  title="Contraer sidebar"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              </>
             )}
+          </div>
+          {/* Botón expandir cuando está colapsado */}
+          {!isSidebarOpen && (
             <button
-              className={`btn btn-sm text-white hover:bg-white/20 border-white/20 flex-shrink-0 ${isSidebarOpen ? 'btn-circle btn-ghost' : 'btn-square bg-white/10'}`}
+              className="btn btn-sm btn-circle btn-ghost text-white hover:bg-white/20 border-white/20 w-full mt-3"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              title={isSidebarOpen ? 'Contraer sidebar' : 'Expandir sidebar'}
+              title="Expandir sidebar"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-transform ${isSidebarOpen ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-          </div>
+          )}
         </div>
 
         {/* User Info */}
         {user && (
-          <div className="p-5 border-b border-white/10">
-            <div className="flex items-center gap-3">
+          <div className={`p-5 border-b border-white/10 ${!isSidebarOpen ? 'px-3' : ''}`}>
+            <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'}`}>
               <div className="avatar placeholder flex-shrink-0">
                 <div className="bg-gradient-to-br from-primary to-secondary text-white rounded-xl w-11 h-11">
                   <span className="text-lg font-bold">
@@ -166,23 +180,31 @@ export function MainLayout() {
                 </div>
               )}
             </div>
+            {!isSidebarOpen && (
+              <p className="text-[10px] text-center text-blue-200 mt-2 uppercase font-bold tracking-wide">
+                {user.role === 'admin' ? 'AP' : user.role === 'supervisor' ? 'SV' : 'EP'}
+              </p>
+            )}
           </div>
         )}
 
         {/* Navigation */}
         <nav className="p-3 flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
-          <ul className="menu space-y-1">
+          <ul className={`menu space-y-1 ${!isSidebarOpen ? 'p-0' : ''}`}>
             {filteredNavItems.map((item) => (
               <li key={item.path}>
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                    `flex items-center gap-3 rounded-lg transition-all ${
+                      isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'
+                    } ${
                       isActive 
                         ? 'bg-primary text-white shadow-lg' 
                         : 'text-blue-100 hover:bg-white/10 hover:text-white'
                     }`
                   }
+                  title={!isSidebarOpen ? item.name : undefined}
                 >
                   <span className="flex-shrink-0">{item.icon}</span>
                   {isSidebarOpen && <span className="font-medium">{item.name}</span>}
@@ -193,10 +215,13 @@ export function MainLayout() {
         </nav>
 
         {/* Logout Button */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-[#0f1729]">
+        <div className={`absolute bottom-0 left-0 right-0 border-t border-white/10 bg-[#0f1729] ${isSidebarOpen ? 'p-4' : 'p-3'}`}>
           <button
-            className={`btn btn-ghost text-white hover:bg-red-500/20 border-white/10 ${isSidebarOpen ? 'btn-block justify-start' : 'btn-circle mx-auto'}`}
+            className={`btn btn-ghost text-white hover:bg-red-500/20 border-white/10 ${
+              isSidebarOpen ? 'btn-block justify-start' : 'btn-circle mx-auto'
+            }`}
             onClick={handleLogout}
+            title={!isSidebarOpen ? 'Cerrar Sesión' : undefined}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

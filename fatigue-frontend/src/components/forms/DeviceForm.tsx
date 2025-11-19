@@ -16,7 +16,7 @@ const deviceSchema = z.object({
   serial_number: z.string().optional(),
   firmware_version: z.string().optional(),
   employee: z.number().optional(),
-  status: z.enum(['active', 'inactive', 'maintenance']).default('active'),
+  status: z.enum(['active', 'inactive', 'maintenance']).optional(),
   battery_level: z.number().min(0).max(100).optional(),
   notes: z.string().optional(),
 });
@@ -26,17 +26,17 @@ type DeviceFormData = z.infer<typeof deviceSchema>;
 interface DeviceFormProps {
   initialData?: Partial<DeviceFormData>;
   onSubmit: (data: DeviceFormData) => Promise<void>;
-  onCancel: () => void;
   isLoading?: boolean;
   isSubmitting?: boolean;
+  formId?: string;
 }
 
 export function DeviceForm({
   initialData,
   onSubmit,
-  onCancel,
   isLoading = false,
   isSubmitting = false,
+  formId = 'device-form',
 }: DeviceFormProps) {
   const isEdit = !!initialData;
   const {
@@ -46,7 +46,10 @@ export function DeviceForm({
     reset,
   } = useForm<DeviceFormData>({
     resolver: zodResolver(deviceSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      status: 'active',
+      ...initialData,
+    },
   });
 
   useEffect(() => {
@@ -56,68 +59,68 @@ export function DeviceForm({
   }, [initialData, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Device ID */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">ID Dispositivo *</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            ID Dispositivo *
           </label>
           <input
             type="text"
             {...register('device_id')}
-            className={`input input-bordered ${errors.device_id ? 'input-error' : ''}`}
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white ${
+              errors.device_id ? 'border-red-500 bg-red-50' : 'border-gray-300'
+            }`}
             placeholder="ESP32-001"
             disabled={isLoading || isEdit}
           />
           {errors.device_id && (
-            <label className="label">
-              <span className="label-text-alt text-error">{errors.device_id.message}</span>
-            </label>
+            <p className="mt-1 text-sm text-red-600">{errors.device_id.message}</p>
           )}
         </div>
 
         {/* Name */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Nombre *</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Nombre *
           </label>
           <input
             type="text"
             {...register('name')}
-            className={`input input-bordered ${errors.name ? 'input-error' : ''}`}
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white ${
+              errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300'
+            }`}
             placeholder="Dispositivo Principal"
             disabled={isLoading}
           />
           {errors.name && (
-            <label className="label">
-              <span className="label-text-alt text-error">{errors.name.message}</span>
-            </label>
+            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
           )}
         </div>
 
         {/* Model */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Modelo</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Modelo
           </label>
           <input
             type="text"
             {...register('model')}
-            className="input input-bordered"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
             placeholder="Mi Band 6"
             disabled={isLoading}
           />
         </div>
 
         {/* Manufacturer */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Fabricante</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Fabricante
           </label>
           <select
             {...register('manufacturer')}
-            className="select select-bordered"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
             disabled={isLoading}
           >
             <option value="">Seleccionar...</option>
@@ -131,41 +134,41 @@ export function DeviceForm({
         </div>
 
         {/* Serial Number */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Número de Serie</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Número de Serie
           </label>
           <input
             type="text"
             {...register('serial_number')}
-            className="input input-bordered"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
             placeholder="SN123456789"
             disabled={isLoading}
           />
         </div>
 
         {/* Firmware Version */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Versión de Firmware</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Versión de Firmware
           </label>
           <input
             type="text"
             {...register('firmware_version')}
-            className="input input-bordered"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
             placeholder="v1.2.3"
             disabled={isLoading}
           />
         </div>
 
         {/* Status */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Estado *</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Estado *
           </label>
           <select
             {...register('status')}
-            className="select select-bordered"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
             disabled={isLoading}
           >
             <option value="active">Activo</option>
@@ -175,14 +178,14 @@ export function DeviceForm({
         </div>
 
         {/* Battery Level */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Nivel de Batería (%)</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Nivel de Batería (%)
           </label>
           <input
             type="number"
             {...register('battery_level', { valueAsNumber: true })}
-            className="input input-bordered"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
             placeholder="85"
             min="0"
             max="100"
@@ -192,38 +195,16 @@ export function DeviceForm({
       </div>
 
       {/* Notes */}
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Notas</span>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Notas
         </label>
         <textarea
           {...register('notes')}
-          className="textarea textarea-bordered h-24"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white h-24 resize-none"
           placeholder="Información adicional..."
           disabled={isLoading}
         />
-      </div>
-
-      {/* Actions */}
-      <div className="flex justify-end gap-2 pt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="btn btn-ghost"
-          disabled={isLoading || isSubmitting}
-        >
-          Cancelar
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={isLoading || isSubmitting}>
-          {(isLoading || isSubmitting) ? (
-            <>
-              <span className="loading loading-spinner loading-sm"></span>
-              Guardando...
-            </>
-          ) : (
-            <>{isEdit ? 'Actualizar' : 'Crear'} Dispositivo</>
-          )}
-        </button>
       </div>
     </form>
   );

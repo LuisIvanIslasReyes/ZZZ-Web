@@ -28,8 +28,16 @@ class DeviceService {
    * Obtener todos los dispositivos (sin paginación)
    */
   async getAllDevices(): Promise<Device[]> {
-    const response = await api.get<Device[]>(`${this.BASE_PATH}/all/`);
-    return response.data;
+    const response = await api.get<Device[] | PaginatedResponse<Device>>(`${this.BASE_PATH}/`, {
+      params: { page_size: 1000 } // Obtener muchos resultados
+    });
+    // Manejar respuesta paginada o array directo
+    if (Array.isArray(response.data)) {
+      return response.data;
+    } else if ('results' in response.data) {
+      return response.data.results;
+    }
+    return [];
   }
 
   /**

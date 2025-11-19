@@ -267,91 +267,136 @@ export function AlertsListPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Alertas de Fatiga</h1>
-          <p className="text-base-content/60">Gestión y monitoreo de alertas del sistema</p>
+          <h1 className="text-3xl font-bold text-[#18314F]">Alertas de Fatiga</h1>
+          <p className="text-gray-600 mt-1">Gestión y monitoreo de alertas del sistema</p>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="stat bg-base-200 rounded-lg">
-          <div className="stat-title">Total Alertas</div>
-          <div className="stat-value text-primary">{alerts.length}</div>
-        </div>
-        <div className="stat bg-base-200 rounded-lg">
-          <div className="stat-title">Pendientes</div>
-          <div className="stat-value text-warning">
-            {alerts.filter((a) => a.status === 'pending').length}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        <div className="bg-white p-6 rounded-2xl shadow-md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">Total Alertas</p>
+              <p className="text-3xl font-bold text-[#18314F] mt-2">{alerts.length}</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </div>
           </div>
         </div>
-        <div className="stat bg-base-200 rounded-lg">
-          <div className="stat-title">Críticas</div>
-          <div className="stat-value text-error">
-            {alerts.filter((a) => a.severity === 'critical').length}
+
+        <div className="bg-white p-6 rounded-2xl shadow-md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">Pendientes</p>
+              <p className="text-3xl font-bold text-yellow-600 mt-2">
+                {alerts.filter((a) => a.status === 'pending').length}
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
           </div>
         </div>
-        <div className="stat bg-base-200 rounded-lg">
-          <div className="stat-title">Reconocidas</div>
-          <div className="stat-value text-info">
-            {alerts.filter((a) => a.status === 'acknowledged').length}
+
+        <div className="bg-white p-6 rounded-2xl shadow-md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">Críticas</p>
+              <p className="text-3xl font-bold text-red-600 mt-2">
+                {alerts.filter((a) => a.severity === 'critical').length}
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
           </div>
         </div>
-        <div className="stat bg-base-200 rounded-lg">
-          <div className="stat-title">Resueltas</div>
-          <div className="stat-value text-success">
-            {alerts.filter((a) => a.status === 'resolved').length}
+
+        <div className="bg-white p-6 rounded-2xl shadow-md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">Reconocidas</p>
+              <p className="text-3xl font-bold text-blue-600 mt-2">
+                {alerts.filter((a) => a.status === 'acknowledged').length}
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-md">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">Resueltas</p>
+              <p className="text-3xl font-bold text-green-600 mt-2">
+                {alerts.filter((a) => a.status === 'resolved').length}
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body">
-          <div className="flex flex-col md:flex-row gap-4">
-            <SearchBar
-              value={searchTerm}
-              onChange={setSearchTerm}
-              placeholder="Buscar por empleado o tipo..."
-              className="flex-1"
-            />
-            <select className="select select-bordered">
-              <option value="">Todas las severidades</option>
-              <option value="critical">Crítica</option>
-              <option value="high">Alta</option>
-              <option value="medium">Media</option>
-              <option value="low">Baja</option>
-            </select>
-            <select className="select select-bordered">
-              <option value="">Todos los estados</option>
-              <option value="pending">Pendientes</option>
-              <option value="acknowledged">Reconocidas</option>
-              <option value="resolved">Resueltas</option>
-            </select>
-            <select className="select select-bordered">
-              <option value="">Últimas 24 horas</option>
-              <option value="7">Últimos 7 días</option>
-              <option value="30">Últimos 30 días</option>
-            </select>
-          </div>
+      <div className="bg-white p-6 rounded-2xl shadow-md">
+        <div className="flex flex-col md:flex-row gap-4">
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Buscar por empleado o tipo..."
+            className="flex-1"
+          />
+          <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white">
+            <option value="">Todas las severidades</option>
+            <option value="critical">Crítica</option>
+            <option value="high">Alta</option>
+            <option value="medium">Media</option>
+            <option value="low">Baja</option>
+          </select>
+          <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white">
+            <option value="">Todos los estados</option>
+            <option value="pending">Pendientes</option>
+            <option value="acknowledged">Reconocidas</option>
+            <option value="resolved">Resueltas</option>
+          </select>
+          <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white">
+            <option value="">Últimas 24 horas</option>
+            <option value="7">Últimos 7 días</option>
+            <option value="30">Últimos 30 días</option>
+          </select>
         </div>
       </div>
 
       {/* Table */}
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body">
-          <Table
-            data={filteredAlerts}
-            columns={columns}
-            actions={actions}
-            keyExtractor={(alert) => alert.id}
-            isLoading={isLoading}
-            emptyMessage="No se encontraron alertas"
-          />
-        </div>
+      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+        <Table
+          data={filteredAlerts}
+          columns={columns}
+          actions={actions}
+          keyExtractor={(alert) => alert.id}
+          isLoading={isLoading}
+          emptyMessage="No se encontraron alertas"
+        />
       </div>
 
       {/* Details Modal */}
