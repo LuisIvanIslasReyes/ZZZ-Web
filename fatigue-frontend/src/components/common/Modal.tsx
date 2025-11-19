@@ -30,44 +30,65 @@ export function Modal({
 
     if (isOpen) {
       modal.showModal();
+      document.body.style.overflow = 'hidden';
     } else {
       modal.close();
+      document.body.style.overflow = '';
     }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   const sizeClasses = {
-    sm: 'max-w-sm',
+    sm: 'max-w-md',
     md: 'max-w-2xl',
     lg: 'max-w-4xl',
     xl: 'max-w-6xl',
   };
 
+  if (!isOpen) return null;
+
   return (
-    <dialog
-      ref={modalRef}
-      className="modal"
-      onClose={onClose}
-      onClick={(e) => {
-        // Cerrar al hacer clic fuera del modal
-        if (e.target === modalRef.current) {
-          onClose();
-        }
-      }}
-    >
-      <div className={`modal-box ${sizeClasses[size]} w-11/12`}>
-        <form method="dialog">
-          <button
-            type="button"
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            onClick={onClose}
-          >
-            ✕
-          </button>
-        </form>
-        <h3 className="font-bold text-lg mb-4">{title}</h3>
-        <div className="py-4">{children}</div>
-        {footer && <div className="modal-action">{footer}</div>}
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
+      {/* Modal Content Container */}
+      <div 
+        className="flex min-h-full items-center justify-center p-4"
+        onClick={(e) => {
+          if (e.currentTarget === e.target) {
+            onClose();
+          }
+        }}
+      >
+        <div className={`relative bg-white rounded-2xl shadow-2xl ${sizeClasses[size]} w-full transform transition-all`}>
+          {/* Header */}
+          <div className="flex items-center justify-between px-8 py-5 border-b border-gray-200">
+            <h3 className="text-2xl font-bold text-[#18314F]">{title}</h3>
+            <button
+              type="button"
+              className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg"
+              onClick={onClose}
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Body */}
+          <div className="px-8 py-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+            {children}
+          </div>
+
+          {/* Footer */}
+          {footer && (
+            <div className="flex items-center justify-end gap-3 px-8 py-5 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+              {footer}
+            </div>
+          )}
+        </div>
       </div>
-    </dialog>
+    </div>
   );
 }

@@ -6,12 +6,11 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts';
-import { AuthDebug } from '../components/common';
 
 interface NavItem {
   name: string;
   path: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   roles?: string[];
 }
 
@@ -217,9 +216,6 @@ export function MainLayout() {
         <main className="p-6 md:p-8 lg:p-10 max-w-[1600px]">
           <Outlet />
         </main>
-        
-        {/* Debug Component - Solo en desarrollo */}
-        <AuthDebug />
       </div>
     </div>
   );

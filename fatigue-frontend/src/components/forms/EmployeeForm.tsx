@@ -17,7 +17,7 @@ const employeeSchema = z.object({
   department: z.string().optional(),
   position: z.string().optional(),
   supervisor: z.number().optional(),
-  is_active: z.boolean().default(true),
+  is_active: z.boolean().optional(),
 });
 
 type EmployeeFormData = z.infer<typeof employeeSchema>;
@@ -25,17 +25,17 @@ type EmployeeFormData = z.infer<typeof employeeSchema>;
 interface EmployeeFormProps {
   initialData?: Partial<EmployeeFormData>;
   onSubmit: (data: EmployeeFormData) => Promise<void>;
-  onCancel: () => void;
   isLoading?: boolean;
   isEdit?: boolean;
+  formId?: string;
 }
 
 export function EmployeeForm({
   initialData,
   onSubmit,
-  onCancel,
   isLoading = false,
   isEdit = false,
+  formId = 'employee-form',
 }: EmployeeFormProps) {
   const {
     register,
@@ -44,7 +44,10 @@ export function EmployeeForm({
     reset,
   } = useForm<EmployeeFormData>({
     resolver: zodResolver(employeeSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      is_active: true,
+      ...initialData,
+    },
   });
 
   useEffect(() => {
@@ -64,108 +67,106 @@ export function EmployeeForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form id={formId} onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Email */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Email *</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Email <span className="text-red-500">*</span>
           </label>
           <input
             type="email"
             {...register('email')}
-            className={`input input-bordered ${errors.email ? 'input-error' : ''}`}
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
+              errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+            }`}
             placeholder="empleado@ejemplo.com"
             disabled={isLoading}
           />
           {errors.email && (
-            <label className="label">
-              <span className="label-text-alt text-error">{errors.email.message}</span>
-            </label>
+            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
           )}
         </div>
 
         {/* Password */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">
-              Contraseña {isEdit ? '(dejar vacío para no cambiar)' : '*'}
-            </span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Contraseña {isEdit ? <span className="text-gray-500 font-normal">(dejar vacío para no cambiar)</span> : <span className="text-red-500">*</span>}
           </label>
           <input
             type="password"
             {...register('password')}
-            className={`input input-bordered ${errors.password ? 'input-error' : ''}`}
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
+              errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+            }`}
             placeholder={isEdit ? '••••••••' : 'Mínimo 6 caracteres'}
             disabled={isLoading}
           />
           {errors.password && (
-            <label className="label">
-              <span className="label-text-alt text-error">{errors.password.message}</span>
-            </label>
+            <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
           )}
         </div>
 
         {/* First Name */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Nombre *</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Nombre <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             {...register('first_name')}
-            className={`input input-bordered ${errors.first_name ? 'input-error' : ''}`}
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
+              errors.first_name ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+            }`}
             placeholder="Juan"
             disabled={isLoading}
           />
           {errors.first_name && (
-            <label className="label">
-              <span className="label-text-alt text-error">{errors.first_name.message}</span>
-            </label>
+            <p className="mt-1 text-sm text-red-600">{errors.first_name.message}</p>
           )}
         </div>
 
         {/* Last Name */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Apellido *</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Apellido <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             {...register('last_name')}
-            className={`input input-bordered ${errors.last_name ? 'input-error' : ''}`}
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
+              errors.last_name ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+            }`}
             placeholder="Pérez"
             disabled={isLoading}
           />
           {errors.last_name && (
-            <label className="label">
-              <span className="label-text-alt text-error">{errors.last_name.message}</span>
-            </label>
+            <p className="mt-1 text-sm text-red-600">{errors.last_name.message}</p>
           )}
         </div>
 
         {/* Phone */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Teléfono</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Teléfono
           </label>
           <input
             type="tel"
             {...register('phone')}
-            className="input input-bordered"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white transition-all"
             placeholder="+52 123 456 7890"
             disabled={isLoading}
           />
         </div>
 
         {/* Department */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Departamento</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Departamento
           </label>
           <select
             {...register('department')}
-            className="select select-bordered"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white transition-all appearance-none cursor-pointer"
             disabled={isLoading}
           >
             <option value="">Seleccionar...</option>
@@ -179,14 +180,14 @@ export function EmployeeForm({
         </div>
 
         {/* Position */}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Puesto</span>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Puesto
           </label>
           <input
             type="text"
             {...register('position')}
-            className="input input-bordered"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white transition-all"
             placeholder="Operador de máquina"
             disabled={isLoading}
           />
@@ -194,41 +195,23 @@ export function EmployeeForm({
 
         {/* Is Active */}
         {isEdit && (
-          <div className="form-control">
-            <label className="label cursor-pointer justify-start gap-4">
+          <div className="flex items-center pt-2">
+            <label className="flex items-center gap-3 cursor-pointer group">
               <input
                 type="checkbox"
                 {...register('is_active')}
-                className="checkbox checkbox-primary"
+                className="w-5 h-5 text-[#18314F] border-gray-300 rounded focus:ring-2 focus:ring-[#18314F]"
                 disabled={isLoading}
               />
-              <span className="label-text">Empleado activo</span>
+              <span className="text-sm font-medium text-gray-700 group-hover:text-[#18314F] transition-colors">
+                Empleado activo
+              </span>
             </label>
           </div>
         )}
       </div>
 
-      {/* Actions */}
-      <div className="flex justify-end gap-2 pt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="btn btn-ghost"
-          disabled={isLoading}
-        >
-          Cancelar
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <span className="loading loading-spinner loading-sm"></span>
-              Guardando...
-            </>
-          ) : (
-            <>{isEdit ? 'Actualizar' : 'Crear'} Empleado</>
-          )}
-        </button>
-      </div>
+      {/* Actions - No los incluimos aquí porque se manejan en el footer del modal */}
     </form>
   );
 }
