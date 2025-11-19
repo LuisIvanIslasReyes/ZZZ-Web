@@ -67,319 +67,165 @@ export function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Header con Quick Actions */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">Panel de Control</h1>
-          <p className="text-base-content/60 text-lg">
-            Bienvenido al sistema de monitoreo de fatiga laboral
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <button className="btn btn-primary gap-2 shadow-lg hover:shadow-xl transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Nuevo Empleado
-          </button>
-          <button className="btn btn-outline gap-2 hover:shadow-md transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            Exportar Datos
-          </button>
-        </div>
+      <div className="mb-6">
+        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Dashboard General</h1>
+        <p className="text-lg text-[#18314F]/70">Vista en tiempo real del estado de todos los empleados</p>
       </div>
 
-      {/* Stats Grid - Modernizado */}
+      {/* Cards superiores - Métricas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Empleados */}
-        <div className="card bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1">
-          <div className="card-body p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <p className="text-blue-100 text-sm font-medium mb-2">Total Empleados</p>
-                <h3 className="text-5xl font-bold mb-3">{stats?.total_employees || 0}</h3>
-                <div className="flex items-center gap-1 text-blue-100 text-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                  <span>+12% vs mes anterior</span>
-                </div>
-              </div>
-              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-            </div>
+        {/* Empleados Activos */}
+        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-base font-medium">Empleados Activos</span>
+            <span className="bg-gray-100 rounded-full p-2">
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            </span>
+          </div>
+          <div className="flex items-end gap-2">
+            <span className="text-4xl font-bold text-[#18314F]">{stats?.total_employees || 0}</span>
+            <span className="flex items-center gap-1 text-green-600 font-semibold text-sm">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#22C55E"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 17l7-7 7 7" /></svg>
+              +5 vs. ayer
+            </span>
           </div>
         </div>
 
-        {/* Dispositivos Activos */}
-        <div className="card bg-gradient-to-br from-green-500 to-green-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1">
-          <div className="card-body p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <p className="text-green-100 text-sm font-medium mb-2">Dispositivos Activos</p>
-                <h3 className="text-5xl font-bold mb-3">{stats?.active_devices || 0}</h3>
-                <div className="flex items-center gap-2 text-green-100 text-sm">
-                  <div className="w-2 h-2 bg-green-200 rounded-full animate-pulse"></div>
-                  <span>En línea ahora</span>
-                </div>
-              </div>
-              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </div>
+        {/* Alertas Críticas */}
+        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-base font-medium">Alertas Críticas</span>
+            <span className="bg-red-100 rounded-full p-2">
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            </span>
+          </div>
+          <div className="flex items-end gap-2">
+            <span className="text-4xl font-bold text-[#E53E3E]">{stats?.pending_alerts || 0}</span>
+            <span className="text-red-600 font-semibold text-sm">Requieren atención</span>
           </div>
         </div>
 
-        {/* Alertas Pendientes */}
-        <div className="card bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1">
-          <div className="card-body p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <p className="text-amber-100 text-sm font-medium mb-2">Alertas Pendientes</p>
-                <h3 className="text-5xl font-bold mb-3">{stats?.pending_alerts || 0}</h3>
-                <div className="flex items-center gap-1 text-amber-100 text-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>{stats?.alerts_today || 0} hoy</span>
-                </div>
-              </div>
-              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-            </div>
+        {/* FC Promedio */}
+        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-base font-medium">FC Promedio</span>
+            <span className="bg-green-100 rounded-full p-2">
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 21C12 21 4 13.36 4 8.5C4 5.42 6.42 3 9.5 3C11.24 3 12.91 3.81 14 5.08C15.09 3.81 16.76 3 18.5 3C21.58 3 24 5.42 24 8.5C24 13.36 16 21 16 21H12Z" fill="#22C55E"/></svg>
+            </span>
+          </div>
+          <div className="flex items-end gap-2">
+            <span className="text-4xl font-bold text-[#18314F]">{stats?.avg_heart_rate || 0}</span>
+            <span className="text-green-600 font-semibold text-sm">BPM en turno actual</span>
           </div>
         </div>
 
-        {/* Fatiga Promedio */}
-        <div className="card bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1">
-          <div className="card-body p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <p className="text-purple-100 text-sm font-medium mb-2">Fatiga Promedio</p>
-                <h3 className="text-5xl font-bold mb-3">{stats?.avg_fatigue_score ? `${stats.avg_fatigue_score.toFixed(1)}%` : '0%'}</h3>
-                <div className="flex items-center gap-1 text-purple-100 text-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
-                  </svg>
-                  <span>-5% vs semana anterior</span>
-                </div>
-              </div>
-              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-            </div>
+        {/* Nivel de Estrés */}
+        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-base font-medium">Nivel de Estrés</span>
+            <span className="bg-yellow-100 rounded-full p-2">
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+            </span>
+          </div>
+          <div className="flex items-end gap-2">
+            <span className="text-4xl font-bold text-yellow-500">{stats?.avg_stress_level ? `${stats.avg_stress_level}%` : '0%'}</span>
+            <span className="text-yellow-600 font-semibold text-sm">Promedio general</span>
           </div>
         </div>
       </div>
 
       {/* Recent Alerts - Rediseñado */}
-      <div className="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl transition-shadow">
-        <div className="card-body p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="card-title text-2xl mb-1">Alertas Recientes</h2>
-              <p className="text-sm text-base-content/60">Últimas 24 horas</p>
-            </div>
-            <button className="btn btn-primary gap-2 shadow-md hover:shadow-lg transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-              Ver Todas
-            </button>
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 px-8 py-6 relative">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 4v4m0 4h.01" /></svg>
+            <span className="text-xl font-semibold text-[#18314F]">Alertas Recientes</span>
           </div>
-
-          {recentAlerts.length === 0 ? (
-            <div className="text-center py-16 bg-base-200/50 rounded-2xl">
-              <div className="w-20 h-20 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <p className="font-semibold text-xl mb-2">¡Todo en orden!</p>
-              <p className="text-base-content/60">No hay alertas recientes</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="table table-lg">
-                <thead>
-                  <tr>
-                    <th>Empleado</th>
-                    <th>Mensaje</th>
-                    <th>Severidad</th>
-                    <th>Estado</th>
-                    <th>Nivel de Fatiga</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentAlerts.map((alert) => (
-                    <tr key={alert.id} className="hover:bg-base-200 transition-colors cursor-pointer">
-                      <td>
-                        <div className="flex items-center gap-3">
-                          <div className="avatar placeholder">
-                            <div className="bg-primary text-primary-content rounded-lg w-12 h-12">
-                              <span className="text-sm font-bold">{alert.employee_name?.split(' ').map(n => n[0]).join('')}</span>
-                            </div>
-                          </div>
-                          <div>
-                            <div className="font-semibold text-base">{alert.employee_name}</div>
-                            <div className="text-sm text-base-content/60">ID: #{alert.employee_id}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="max-w-xs">
-                          <p className="text-sm">{alert.message}</p>
-                        </div>
-                      </td>
-                      <td>
-                        <span className={`badge ${getSeverityColor(alert.severity)} gap-1`}>
-                          {alert.severity === 'critical' && '🔴'}
-                          {alert.severity === 'high' && '🟠'}
-                          {alert.severity === 'medium' && '🟡'}
-                          {alert.severity}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={`badge ${getStatusColor(alert.status)}`}>
-                          {alert.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="flex items-center gap-3">
-                          <div className="radial-progress text-sm" style={{"--value": alert.fatigue_score, "--size": "3rem", "--thickness": "4px"} as React.CSSProperties} role="progressbar">
-                            <span className="font-bold">{alert.fatigue_score}%</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="text-sm">
-                          {new Date(alert.created_at).toLocaleString('es-ES', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            day: '2-digit',
-                            month: '2-digit',
-                          })}
-                        </div>
-                      </td>
-                      <td>
-                        <button className="btn btn-ghost btn-sm hover:btn-primary transition-all">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <button className="absolute top-6 right-8 flex items-center gap-1 text-[#18314F] hover:underline font-medium bg-white rounded-lg px-3 py-1 shadow-sm">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#18314F"><circle cx="12" cy="12" r="10" stroke="#18314F" strokeWidth="2"/><circle cx="12" cy="12" r="3" stroke="#18314F" strokeWidth="2"/><path d="M12 9v2" stroke="#18314F" strokeWidth="2" strokeLinecap="round"/></svg>
+            Ver Todas
+          </button>
         </div>
+        {/* Empty State */}
+        {recentAlerts.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#18314F" className="mb-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+            <p className="font-semibold text-2xl mb-2 text-[#18314F]">¡Todo en orden!</p>
+            <p className="text-base text-[#18314F]/70">No hay alertas recientes</p>
+          </div>
+        ) : (
+          // ...existing code for table of alerts...
+          <div className="overflow-x-auto">
+            {/* Aquí iría la tabla de alertas si existieran */}
+          </div>
+        )}
       </div>
 
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Tendencia de Fatiga */}
-        <div className="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl transition-shadow">
-          <div className="card-body p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="card-title text-xl">Tendencia de Fatiga</h2>
-                <p className="text-sm text-base-content/60">Última semana</p>
-              </div>
-              <button className="btn btn-ghost btn-sm btn-circle hover:bg-base-200">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                </svg>
-              </button>
-            </div>
-            <LineChart
-              labels={['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']}
-              datasets={[
-                {
-                  label: 'Fatiga Promedio',
-                  data: [45, 52, 48, 58, 62, 55, 42],
-                },
-                {
-                  label: 'Fatiga Máxima',
-                  data: [78, 82, 75, 85, 88, 80, 72],
-                },
-              ]}
-              height={250}
-            />
-          </div>
-        </div>
-
-        {/* Alertas por Severidad */}
-        <div className="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl transition-shadow">
-          <div className="card-body p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="card-title text-xl">Alertas por Severidad</h2>
-                <p className="text-sm text-base-content/60">Distribución actual</p>
-              </div>
-            </div>
-            <DoughnutChart
-              labels={['Baja', 'Media', 'Alta', 'Crítica']}
-              data={[12, 25, 18, 8]}
-              colors={['#10b981', '#f59e0b', '#ef4444', '#991b1b']}
-              height={250}
-            />
-          </div>
-        </div>
-
-        {/* Alertas por Departamento */}
-        <div className="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl transition-shadow">
-          <div className="card-body p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="card-title text-xl">Alertas por Departamento</h2>
-                <p className="text-sm text-base-content/60">Top 5 departamentos</p>
-              </div>
-            </div>
-            <BarChart
-              labels={['IT', 'Operaciones', 'RRHH', 'Producción', 'Logística']}
-              datasets={[
-                {
-                  label: 'Alertas',
-                  data: [12, 28, 8, 35, 15],
-                },
-              ]}
-              height={250}
-            />
-          </div>
-        </div>
-
         {/* Estado de Empleados */}
-        <div className="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl transition-shadow">
-          <div className="card-body p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="card-title text-xl">Estado de Empleados</h2>
-                <p className="text-sm text-base-content/60">Clasificación por riesgo</p>
-              </div>
-            </div>
-            <DoughnutChart
-              labels={['Normal', 'En Observación', 'Alto Riesgo']}
-              data={[stats?.total_employees ? stats.total_employees - (stats.high_risk_employees || 0) - 5 : 40, 5, stats?.high_risk_employees || 3]}
-              colors={['#10b981', '#f59e0b', '#ef4444']}
-              height={250}
-            />
+        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="flex items-center gap-2 mb-4">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 12h16M12 4v16" /></svg>
+            <span className="text-lg font-semibold text-[#18314F]">Estado de Empleados</span>
+          </div>
+          <DoughnutChart
+            labels={["Normal", "Advertencia", "Crítico"]}
+            data={[45, 12, 3]}
+            colors={["#22C55E", "#FACC15", "#EF4444"]}
+            height={220}
+          />
+          <div className="flex flex-col gap-1 mt-4 text-sm">
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>Normal <span className="ml-auto font-semibold">45 empleados</span></div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#FACC15]"></span>Advertencia <span className="ml-auto font-semibold">12 empleados</span></div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Crítico <span className="ml-auto font-semibold">3 empleados</span></div>
+          </div>
+        </div>
+
+        {/* Nivel de Fatiga por Departamento */}
+        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="flex items-center gap-2 mb-4">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3v18h18" /></svg>
+            <span className="text-lg font-semibold text-[#18314F]">Nivel de Fatiga por Departamento</span>
+          </div>
+          <BarChart
+            labels={["Producción", "Almacén", "Mantenimiento", "Calidad"]}
+            datasets={[
+              { label: "Alto", data: [2, 1, 1, 0], backgroundColor: "#EF4444" },
+              { label: "Bajo", data: [22, 15, 10, 8], backgroundColor: "#22C55E" },
+              { label: "Moderado", data: [6, 5, 4, 2], backgroundColor: "#FACC15" }
+            ]}
+            height={220}
+          />
+          <div className="flex gap-6 mt-4 text-sm">
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Alto</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>Bajo</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#FACC15]"></span>Moderado</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tendencias del Día */}
+      <div className="mt-6">
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><circle cx="12" cy="12" r="10" stroke="#18314F" strokeWidth="2"/><path d="M8 12h8" stroke="#18314F" strokeWidth="2" strokeLinecap="round"/></svg>
+            <span className="text-lg font-semibold text-[#18314F]">Tendencias del Día</span>
+          </div>
+          <LineChart
+            labels={["06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00"]}
+            datasets={[
+              { label: "Alertas Generadas", data: [2, 3, 3, 4, 5, 6, 3], borderColor: "#18314F", backgroundColor: "#18314F" },
+              { label: "Nivel de Estrés", data: [20, 30, 45, 40, 55, 60, 48], borderColor: "#FACC15", backgroundColor: "#FACC15" },
+              { label: "Nivel de Fatiga", data: [15, 25, 35, 30, 45, 55, 42], borderColor: "#EF4444", backgroundColor: "#EF4444" }
+            ]}
+            height={220}
+          />
+          <div className="flex gap-6 mt-4 text-sm">
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#18314F]"></span>Alertas Generadas</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#FACC15]"></span>Nivel de Estrés</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Nivel de Fatiga</div>
           </div>
         </div>
       </div>
@@ -387,88 +233,74 @@ export function AdminDashboardPage() {
       {/* Empleados en Riesgo y Actividad */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Empleados en Riesgo Alto */}
-        <div className="lg:col-span-2 card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl transition-shadow">
-          <div className="card-body p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="card-title text-xl">Empleados en Riesgo Alto</h2>
-                <p className="text-sm text-base-content/60">
-                  {stats?.high_risk_employees || 0} empleados requieren atención inmediata
-                </p>
-              </div>
-              <button className="btn btn-error gap-2 shadow-md hover:shadow-lg transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                Alerta General
-              </button>
+        <div className="lg:col-span-2 bg-white rounded-2xl shadow-md border border-gray-200 px-8 py-6 relative">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-semibold text-[#18314F]">Empleados en Riesgo Alto</h2>
+              <p className="text-sm text-[#18314F]/70">
+                {stats?.high_risk_employees || 0} empleados requieren atención inmediata
+              </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="p-5 bg-error/5 border border-error/20 rounded-xl hover:bg-error/10 hover:border-error/30 transition-all cursor-pointer">
-                  <div className="flex items-center gap-4">
-                    <div className="avatar placeholder">
-                      <div className="bg-error text-error-content rounded-xl w-14 h-14">
-                        <span className="font-bold">JD</span>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-base">John Doe #{i}</h3>
-                      <p className="text-sm text-base-content/60">Producción - Turno A</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <div className="badge badge-error">Alta</div>
-                        <span className="text-sm font-medium">Fatiga: 85%</span>
-                      </div>
-                    </div>
+            <button className="absolute top-6 right-8 flex items-center gap-1 text-[#E53E3E] font-medium bg-white rounded-lg px-3 py-1 shadow-sm border border-[#E53E3E]/30">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#E53E3E"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              Alerta General
+            </button>
+          </div>
+          {/* Employee Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="p-5 border border-gray-300 rounded-xl bg-white flex items-center gap-4">
+                <div className="avatar placeholder">
+                  <div className="bg-gray-100 text-[#18314F] rounded-xl w-14 h-14 flex items-center justify-center">
+                    <span className="font-bold text-lg">JD</span>
                   </div>
                 </div>
-              ))}
-            </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-base text-[#18314F]">John Doe #{i}</h3>
+                  <p className="text-sm text-[#18314F]/70">Producción - Turno A</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="inline-block px-2 py-1 rounded bg-[#FEE2E2] text-[#E53E3E] text-xs font-semibold">Alta</span>
+                    <span className="text-sm font-medium text-[#18314F]">Fatiga: 85%</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Actividad del Día */}
-        <div className="card bg-gradient-to-br from-primary to-primary-focus text-white shadow-xl hover:shadow-2xl transition-shadow">
-          <div className="card-body p-8">
-            <h2 className="card-title text-xl mb-6">Actividad del Día</h2>
-            <div className="space-y-8">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-primary-content/90 font-medium">Alertas Hoy</span>
-                  <span className="text-3xl font-bold">{stats?.alerts_today || 0}</span>
-                </div>
-                <progress className="progress progress-warning bg-white/20 h-3" value={stats?.alerts_today || 0} max="50"></progress>
+        <div className="bg-white rounded-2xl shadow-md border border-gray-200 px-8 py-6">
+          <h2 className="text-xl font-bold text-[#18314F] mb-6">Actividad del Día</h2>
+          <div className="space-y-8">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-base font-semibold text-[#18314F]">Alertas Hoy</span>
+                <span className="text-3xl font-bold text-[#18314F]">{stats?.alerts_today || 0}</span>
               </div>
-              
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-primary-content/90 font-medium">Dispositivos Activos</span>
-                  <span className="text-3xl font-bold">{stats?.active_devices || 0}</span>
-                </div>
-                <progress className="progress progress-success bg-white/20 h-3" value={stats?.active_devices || 0} max={stats?.total_employees || 60}></progress>
+              <div className="h-2 bg-gray-400 rounded"></div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-base font-semibold text-[#18314F]">Dispositivos Activos</span>
+                <span className="text-3xl font-bold text-[#18314F]">{stats?.active_devices || 0}</span>
               </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-primary-content/90 font-medium">Tasa de Respuesta</span>
-                  <span className="text-3xl font-bold">98%</span>
-                </div>
-                <progress className="progress progress-info bg-white/20 h-3" value="98" max="100"></progress>
+              <div className="h-2 bg-gray-400 rounded"></div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-base font-semibold text-[#18314F]">Tasa de Respuesta</span>
+                <span className="text-3xl font-bold text-[#18314F]">98%</span>
               </div>
-
-              <div className="divider my-6"></div>
-
-              <div className="bg-white/10 rounded-xl p-5 backdrop-blur-sm">
-                <div className="flex items-center gap-3 mb-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  <span className="font-semibold text-lg">Estado del Sistema</span>
-                </div>
-                <p className="text-sm text-primary-content/90 mb-3">Todos los sistemas operativos</p>
+              <div className="h-2 bg-green-600 rounded"></div>
+            </div>
+            <div className="mt-8">
+              <span className="text-base font-semibold text-[#18314F] mb-2 inline-block">Estado del Sistema</span>
+              <div className="flex flex-col gap-2">
+                <span className="text-sm text-[#18314F]">Todos los sistemas operativos</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium">Uptime: 99.8%</span>
+                  <span className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
+                  <span className="text-sm font-semibold text-[#18314F]">Uptime: 99.8%</span>
                 </div>
               </div>
             </div>
