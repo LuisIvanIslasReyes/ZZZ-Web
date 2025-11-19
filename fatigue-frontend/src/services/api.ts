@@ -23,6 +23,13 @@ api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('access_token');
     
+    console.log('🔐 API Request Interceptor:', {
+      url: config.url,
+      method: config.method,
+      hasToken: !!token,
+      token: token ? `${token.substring(0, 20)}...` : 'NO TOKEN'
+    });
+    
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -30,6 +37,7 @@ api.interceptors.request.use(
     return config;
   },
   (error: AxiosError) => {
+    console.error('❌ Request Interceptor Error:', error);
     return Promise.reject(error);
   }
 );

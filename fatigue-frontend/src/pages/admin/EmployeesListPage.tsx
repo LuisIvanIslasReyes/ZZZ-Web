@@ -30,13 +30,15 @@ export function EmployeesListPage() {
     if (searchTerm.trim() === '') {
       setFilteredEmployees(employees);
     } else {
-      const filtered = employees.filter(
-        (emp) =>
-          emp.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          emp.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          emp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          emp.employee_id.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const filtered = Array.isArray(employees) 
+        ? employees.filter(
+            (emp) =>
+              emp.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              emp.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              emp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              emp.employee_id.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        : [];
       setFilteredEmployees(filtered);
     }
   }, [searchTerm, employees]);
@@ -44,14 +46,42 @@ export function EmployeesListPage() {
   const loadEmployees = async () => {
     try {
       setIsLoading(true);
+      console.log('🚀 Starting to load employees...');
+      
       const data = await employeeService.getAllEmployees();
-      setEmployees(data);
-      setFilteredEmployees(data);
-    } catch (error) {
-      console.error('Error loading employees:', error);
-      toast.error('Error al cargar empleados');
+      
+      console.log('📥 Data received from service:', data);
+      console.log('📊 Data type:', typeof data);
+      console.log('🔢 Is array?', Array.isArray(data));
+      console.log('📏 Array length:', Array.isArray(data) ? data.length : 'N/A');
+      
+      // Asegurar que data sea un array
+      const employeesArray = Array.isArray(data) ? data : [];
+      
+      console.log('✅ Setting employees array with', employeesArray.length, 'items');
+      console.log('👥 Employees:', employeesArray);
+      
+      setEmployees(employeesArray);
+      setFilteredEmployees(employeesArray);
+    } catch (error: any) {
+      console.error('❌ Error loading employees:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      
+      toast.error(
+        error.response?.status === 401 
+          ? 'No autorizado. Por favor, inicia sesión nuevamente.' 
+          : 'Error al cargar empleados'
+      );
+      
+      setEmployees([]);
+      setFilteredEmployees([]);
     } finally {
       setIsLoading(false);
+      console.log('✨ Load employees finished');
     }
   };
 
@@ -260,13 +290,13 @@ export function EmployeesListPage() {
         <div className="stat bg-base-200 rounded-lg">
           <div className="stat-title">Activos</div>
           <div className="stat-value text-success">
-            {employees.filter((e) => e.is_active).length}
+            {employees.filter((e) => e.is_active).length || 0}
           </div>
         </div>
         <div className="stat bg-base-200 rounded-lg">
           <div className="stat-title">Inactivos</div>
           <div className="stat-value text-error">
-            {employees.filter((e) => !e.is_active).length}
+            {employees.filter((e) => !e.is_active).length || 0}
           </div>
         </div>
         <div className="stat bg-base-200 rounded-lg">
