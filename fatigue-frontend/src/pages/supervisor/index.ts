@@ -4,3 +4,6 @@
  */
 
 export { SupervisorDashboardPage } from './SupervisorDashboardPage';
+export { SupervisorTeamOverviewPage } from './SupervisorTeamOverviewPage';
+export { SupervisorTeamAlertsPage } from './SupervisorTeamAlertsPage';
+export { SupervisorTeamReportsPage } from './SupervisorTeamReportsPage';

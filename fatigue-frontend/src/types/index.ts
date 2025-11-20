@@ -12,6 +12,16 @@ export type {
 } from './user.types';
 export { UserRole } from './user.types';
 
+// Company types
+export type {
+  Company,
+  CompanyDetail,
+  CompanyStats,
+  CompanyGlobalStats,
+  CompanyCreateInput,
+  CompanyUpdateInput
+} from './company.types';
+
 // Employee types
 export type {
   Employee,

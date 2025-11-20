@@ -5,6 +5,7 @@
 
 export { default as authService } from './auth.service';
 export { default as userService } from './user.service';
+export { default as companyService } from './company.service';
 export { employeeService } from './employee.service';
 export { default as deviceService } from './device.service';
 export { default as metricsService } from './metrics.service';

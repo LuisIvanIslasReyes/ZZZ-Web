@@ -3,7 +3,7 @@
  * Componente para capturar errores de React y mostrar UI amigable
  */
 
-import { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;

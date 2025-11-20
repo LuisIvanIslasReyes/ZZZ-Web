@@ -3,22 +3,17 @@
  * Formulario para crear y editar dispositivos
  */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { employeeService } from '../../services';
+import type { Employee } from '../../types';
 
 const deviceSchema = z.object({
-  device_id: z.string().min(3, 'El ID debe tener al menos 3 caracteres'),
-  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
-  model: z.string().optional(),
-  manufacturer: z.string().optional(),
-  serial_number: z.string().optional(),
-  firmware_version: z.string().optional(),
-  employee: z.number().optional(),
-  status: z.enum(['active', 'inactive', 'maintenance']).optional(),
-  battery_level: z.number().min(0).max(100).optional(),
-  notes: z.string().optional(),
+  device_identifier: z.string().min(3, 'El ID debe tener al menos 3 caracteres'),
+  employee: z.number().min(1, 'Debe seleccionar un empleado'),
+  is_active: z.boolean().optional(),
 });
 
 type DeviceFormData = z.infer<typeof deviceSchema>;
@@ -27,7 +22,6 @@ interface DeviceFormProps {
   initialData?: Partial<DeviceFormData>;
   onSubmit: (data: DeviceFormData) => Promise<void>;
   isLoading?: boolean;
-  isSubmitting?: boolean;
   formId?: string;
 }
 
@@ -35,10 +29,12 @@ export function DeviceForm({
   initialData,
   onSubmit,
   isLoading = false,
-  isSubmitting = false,
   formId = 'device-form',
 }: DeviceFormProps) {
   const isEdit = !!initialData;
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [loadingEmployees, setLoadingEmployees] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -47,7 +43,7 @@ export function DeviceForm({
   } = useForm<DeviceFormData>({
     resolver: zodResolver(deviceSchema),
     defaultValues: {
-      status: 'active',
+      is_active: true,
       ...initialData,
     },
   });
@@ -58,153 +54,106 @@ export function DeviceForm({
     }
   }, [initialData, reset]);
 
+  useEffect(() => {
+    loadEmployees();
+  }, []);
+
+  const loadEmployees = async () => {
+    try {
+      setLoadingEmployees(true);
+      const data = await employeeService.getAllEmployees();
+      setEmployees(data);
+    } catch (error) {
+      console.error('Error loading employees:', error);
+    } finally {
+      setLoadingEmployees(false);
+    }
+  };
+
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Device ID */}
+      <div className="grid grid-cols-1 gap-6">
+        {/* Device Identifier */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            ID Dispositivo *
+            Identificador de Dispositivo *
           </label>
           <input
             type="text"
-            {...register('device_id')}
+            {...register('device_identifier')}
             className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white ${
-              errors.device_id ? 'border-red-500 bg-red-50' : 'border-gray-300'
+              errors.device_identifier ? 'border-red-500 bg-red-50' : 'border-gray-300'
             }`}
             placeholder="ESP32-001"
             disabled={isLoading || isEdit}
           />
-          {errors.device_id && (
-            <p className="mt-1 text-sm text-red-600">{errors.device_id.message}</p>
+          {errors.device_identifier && (
+            <p className="mt-1 text-sm text-red-600">{errors.device_identifier.message}</p>
           )}
+          <p className="mt-1 text-sm text-gray-500">
+            Identificador único del dispositivo (ej: ESP32-001)
+          </p>
         </div>
 
-        {/* Name */}
+        {/* Employee */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Nombre *
+            Empleado *
           </label>
-          <input
-            type="text"
-            {...register('name')}
+          <select
+            {...register('employee', { valueAsNumber: true })}
             className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white ${
-              errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300'
+              errors.employee ? 'border-red-500 bg-red-50' : 'border-gray-300'
             }`}
-            placeholder="Dispositivo Principal"
-            disabled={isLoading}
-          />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+            disabled={isLoading || loadingEmployees || isEdit}
+          >
+            <option value="">Seleccionar empleado</option>
+            {employees.map((emp) => (
+              <option key={emp.id} value={emp.id}>
+                {emp.first_name} {emp.last_name} ({emp.email})
+              </option>
+            ))}
+          </select>
+          {errors.employee && (
+            <p className="mt-1 text-sm text-red-600">{errors.employee.message}</p>
           )}
-        </div>
-
-        {/* Model */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Modelo
-          </label>
-          <input
-            type="text"
-            {...register('model')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
-            placeholder="Mi Band 6"
-            disabled={isLoading}
-          />
-        </div>
-
-        {/* Manufacturer */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Fabricante
-          </label>
-          <select
-            {...register('manufacturer')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
-            disabled={isLoading}
-          >
-            <option value="">Seleccionar...</option>
-            <option value="Xiaomi">Xiaomi</option>
-            <option value="Fitbit">Fitbit</option>
-            <option value="Garmin">Garmin</option>
-            <option value="Apple">Apple</option>
-            <option value="Samsung">Samsung</option>
-            <option value="Otro">Otro</option>
-          </select>
-        </div>
-
-        {/* Serial Number */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Número de Serie
-          </label>
-          <input
-            type="text"
-            {...register('serial_number')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
-            placeholder="SN123456789"
-            disabled={isLoading}
-          />
-        </div>
-
-        {/* Firmware Version */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Versión de Firmware
-          </label>
-          <input
-            type="text"
-            {...register('firmware_version')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
-            placeholder="v1.2.3"
-            disabled={isLoading}
-          />
-        </div>
-
-        {/* Status */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Estado *
-          </label>
-          <select
-            {...register('status')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
-            disabled={isLoading}
-          >
-            <option value="active">Activo</option>
-            <option value="inactive">Inactivo</option>
-            <option value="maintenance">En Mantenimiento</option>
-          </select>
-        </div>
-
-        {/* Battery Level */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Nivel de Batería (%)
-          </label>
-          <input
-            type="number"
-            {...register('battery_level', { valueAsNumber: true })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
-            placeholder="85"
-            min="0"
-            max="100"
-            disabled={isLoading}
-          />
+          <p className="mt-1 text-sm text-gray-500">
+            Cada empleado puede tener solo un dispositivo asignado
+          </p>
         </div>
       </div>
 
-      {/* Notes */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Notas
-        </label>
-        <textarea
-          {...register('notes')}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white h-24 resize-none"
-          placeholder="Información adicional..."
-          disabled={isLoading}
-        />
+      <div className="grid grid-cols-1 gap-6">
+        {/* Is Active */}
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            {...register('is_active')}
+            id="is_active"
+            className="w-4 h-4 text-[#18314F] border-gray-300 rounded focus:ring-[#18314F]"
+            disabled={isLoading}
+          />
+          <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700">
+            Dispositivo activo y en uso
+          </label>
+        </div>
+
+        {/* Info Card */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex">
+            <svg className="w-5 h-5 text-blue-400 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            <div className="text-sm text-blue-700">
+              <p className="font-medium mb-1">Información importante:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Cada empleado solo puede tener un dispositivo asignado</li>
+                <li>El supervisor se asignará automáticamente según el empleado</li>
+                <li>El identificador del dispositivo no se puede cambiar después de crearlo</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   );

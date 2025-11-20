@@ -8,15 +8,26 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { LoginPage } from '../pages/auth/LoginPage';
 import { MainLayout } from '../layouts/MainLayout';
 import { 
-  AdminDashboardPage, 
+  AdminDashboardPage,
+  CompaniesPage,
   EmployeesListPage, 
   DevicesListPage, 
   AlertsListPage,
   AdminReportsPage,
   SettingsPage
 } from '../pages/admin';
-import { SupervisorDashboardPage } from '../pages/supervisor';
-import { EmployeeDashboardPage } from '../pages/employee';
+import { 
+  SupervisorDashboardPage,
+  SupervisorTeamOverviewPage,
+  SupervisorTeamAlertsPage,
+  SupervisorTeamReportsPage
+} from '../pages/supervisor';
+import { 
+  EmployeeDashboardPage,
+  EmployeeMetricsPage,
+  EmployeeRecommendationsPage,
+  EmployeeProfilePage
+} from '../pages/employee';
 
 // Pages - Placeholder components (crearemos después)
 const NotFoundPage = () => <div>404 - Page Not Found</div>;
@@ -41,6 +52,10 @@ export const router = createBrowserRouter([
       {
         path: 'dashboard',
         element: <AdminDashboardPage />,
+      },
+      {
+        path: 'companies',
+        element: <CompaniesPage />,
       },
       {
         path: 'employees',
@@ -78,15 +93,15 @@ export const router = createBrowserRouter([
       },
       {
         path: 'team',
-        element: <div>Team Overview</div>,
+        element: <SupervisorTeamOverviewPage />,
       },
       {
         path: 'alerts',
-        element: <div>Team Alerts</div>,
+        element: <SupervisorTeamAlertsPage />,
       },
       {
         path: 'reports',
-        element: <div>Team Reports</div>,
+        element: <SupervisorTeamReportsPage />,
       },
     ],
   },
@@ -104,15 +119,15 @@ export const router = createBrowserRouter([
       },
       {
         path: 'metrics',
-        element: <div>My Metrics</div>,
+        element: <EmployeeMetricsPage />,
       },
       {
         path: 'recommendations',
-        element: <div>My Recommendations</div>,
+        element: <EmployeeRecommendationsPage />,
       },
       {
         path: 'profile',
-        element: <div>My Profile</div>,
+        element: <EmployeeProfilePage />,
       },
     ],
   },

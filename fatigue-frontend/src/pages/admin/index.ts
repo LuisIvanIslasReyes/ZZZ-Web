@@ -3,9 +3,11 @@
  * Exportación centralizada de páginas de administrador
  */
 
-export { AdminDashboardPage } from './AdminDashboardPage';
+export { default as AdminDashboardPage } from './AdminDashboardPage';
+export { default as CompaniesPage } from './CompaniesPage';
 export { EmployeesListPage } from './EmployeesListPage';
 export { DevicesListPage } from './DevicesListPage';
 export { AlertsListPage } from './AlertsListPage';
 export { AdminReportsPage } from './AdminReportsPage';
 export { SettingsPage } from './SettingsPage';
+

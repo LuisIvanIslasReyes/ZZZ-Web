@@ -17,31 +17,44 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
+  full_name: string;
   role: UserRole;
+  role_display: string;
+  company: number | null;
+  company_name: string | null;
+  supervisor: number | null;
   department?: string;
-  phone_number?: string;
+  position?: string;
+  phone?: string;
   is_active: boolean;
-  date_joined: string;
+  created_at: string;
+  updated_at: string;
   last_login?: string;
 }
 
 export interface CreateUserData {
-  username: string;
   email: string;
   password: string;
+  password_confirm?: string;
   first_name: string;
   last_name: string;
   role: UserRole;
+  company?: number | null;
+  supervisor?: number | null;
   department?: string;
-  phone_number?: string;
+  position?: string;
+  phone?: string;
 }
 
 export interface UpdateUserData {
   email?: string;
   first_name?: string;
   last_name?: string;
+  company?: number | null;
+  supervisor?: number | null;
   department?: string;
-  phone_number?: string;
+  position?: string;
+  phone?: string;
   is_active?: boolean;
 }
 

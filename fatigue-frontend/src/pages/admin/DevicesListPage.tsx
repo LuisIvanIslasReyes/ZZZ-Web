@@ -32,9 +32,9 @@ export function DevicesListPage() {
     } else {
       const filtered = devices.filter(
         (device) =>
-          device.device_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (device.model?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-          (device.assigned_to_name?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
+          device.device_identifier.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (device.employee_name?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+          (device.employee_email?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
       );
       setFilteredDevices(filtered);
     }
@@ -112,89 +112,45 @@ export function DevicesListPage() {
     setIsModalOpen(true);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'badge-success';
-      case 'inactive':
-        return 'badge-error';
-      case 'maintenance':
-        return 'badge-warning';
-      default:
-        return 'badge-ghost';
-    }
+  const getActiveStatusBadge = (isActive: boolean) => {
+    return isActive ? 'badge-success' : 'badge-error';
   };
 
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'Activo';
-      case 'inactive':
-        return 'Inactivo';
-      case 'maintenance':
-        return 'Mantenimiento';
-      default:
-        return status;
-    }
+  const getActiveStatusLabel = (isActive: boolean) => {
+    return isActive ? 'Activo' : 'Inactivo';
   };
 
   const columns: Column<Device>[] = [
     {
-      key: 'device_id',
+      key: 'device_identifier',
       label: 'ID Dispositivo',
       className: 'font-mono',
     },
     {
-      key: 'model',
-      label: 'Modelo',
+      key: 'employee_name',
+      label: 'Empleado',
+      render: (device) => device.employee_name || 'Sin asignar',
     },
     {
-      key: 'manufacturer',
-      label: 'Fabricante',
+      key: 'employee_email',
+      label: 'Email',
+      render: (device) => device.employee_email || '-',
     },
     {
-      key: 'assigned_to_name',
-      label: 'Asignado a',
-      render: (device) => device.assigned_to_name || 'Sin asignar',
-    },
-    {
-      key: 'status',
+      key: 'is_active',
       label: 'Estado',
       render: (device) => (
-        <span className={`badge ${getStatusColor(device.status)}`}>
-          {getStatusLabel(device.status)}
+        <span className={`badge ${getActiveStatusBadge(device.is_active)}`}>
+          {getActiveStatusLabel(device.is_active)}
         </span>
       ),
     },
     {
-      key: 'battery_level',
-      label: 'Batería',
-      render: (device) => {
-        const battery = device.battery_level;
-        if (battery === null || battery === undefined) return 'N/A';
-        
-        let color = 'success';
-        if (battery < 20) color = 'error';
-        else if (battery < 50) color = 'warning';
-
-        return (
-          <div className="flex items-center gap-2">
-            <progress
-              className={`progress progress-${color} w-20`}
-              value={battery}
-              max="100"
-            ></progress>
-            <span className="text-xs">{battery}%</span>
-          </div>
-        );
-      },
-    },
-    {
-      key: 'last_sync',
-      label: 'Última sincronización',
+      key: 'last_connection',
+      label: 'Última conexión',
       render: (device) =>
-        device.last_sync
-          ? new Date(device.last_sync).toLocaleString()
+        device.last_connection
+          ? new Date(device.last_connection).toLocaleString()
           : 'Nunca',
     },
   ];
@@ -302,7 +258,7 @@ export function DevicesListPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-2xl shadow-md">
           <div className="flex items-center justify-between">
             <div>
@@ -322,7 +278,7 @@ export function DevicesListPage() {
             <div>
               <p className="text-gray-600 text-sm font-medium">Activos</p>
               <p className="text-3xl font-bold text-green-600 mt-2">
-                {devices.filter((d) => d.status === 'active').length}
+                {devices.filter((d) => d.is_active).length}
               </p>
             </div>
             <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
@@ -336,30 +292,14 @@ export function DevicesListPage() {
         <div className="bg-white p-6 rounded-2xl shadow-md">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm font-medium">En Mantenimiento</p>
-              <p className="text-3xl font-bold text-yellow-600 mt-2">
-                {devices.filter((d) => d.status === 'maintenance').length}
+              <p className="text-gray-600 text-sm font-medium">Inactivos</p>
+              <p className="text-3xl font-bold text-red-600 mt-2">
+                {devices.filter((d) => !d.is_active).length}
               </p>
             </div>
-            <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Asignados</p>
-              <p className="text-3xl font-bold text-[#18314F] mt-2">
-                {devices.filter((d) => d.assigned_to).length}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
           </div>
@@ -372,20 +312,13 @@ export function DevicesListPage() {
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
-            placeholder="Buscar por ID, modelo o asignado..."
+            placeholder="Buscar por identificador, empleado o email..."
             className="flex-1"
           />
           <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white">
             <option value="">Todos los estados</option>
             <option value="active">Activos</option>
             <option value="inactive">Inactivos</option>
-            <option value="maintenance">En Mantenimiento</option>
-          </select>
-          <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white">
-            <option value="">Todos los fabricantes</option>
-            <option value="Xiaomi">Xiaomi</option>
-            <option value="Fitbit">Fitbit</option>
-            <option value="Garmin">Garmin</option>
           </select>
         </div>
       </div>
@@ -409,7 +342,7 @@ export function DevicesListPage() {
           setIsModalOpen(false);
           setSelectedDevice(null);
         }}
-        title={selectedDevice ? `Dispositivo ${selectedDevice.device_id}` : 'Dispositivo'}
+        title={selectedDevice ? `Dispositivo ${selectedDevice.device_identifier}` : 'Dispositivo'}
         size="lg"
       >
         {selectedDevice && (
@@ -417,92 +350,59 @@ export function DevicesListPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="label">
-                  <span className="label-text font-semibold">ID Dispositivo</span>
+                  <span className="label-text font-semibold">Identificador</span>
                 </label>
-                <p className="font-mono">{selectedDevice.device_id}</p>
+                <p className="font-mono">{selectedDevice.device_identifier}</p>
               </div>
               <div>
                 <label className="label">
                   <span className="label-text font-semibold">Estado</span>
                 </label>
-                <span className={`badge ${getStatusColor(selectedDevice.status)}`}>
-                  {getStatusLabel(selectedDevice.status)}
+                <span className={`badge ${getActiveStatusBadge(selectedDevice.is_active)}`}>
+                  {getActiveStatusLabel(selectedDevice.is_active)}
                 </span>
               </div>
               <div>
                 <label className="label">
-                  <span className="label-text font-semibold">Modelo</span>
+                  <span className="label-text font-semibold">Empleado</span>
                 </label>
-                <p>{selectedDevice.model}</p>
+                <p>{selectedDevice.employee_name || 'Sin asignar'}</p>
               </div>
               <div>
                 <label className="label">
-                  <span className="label-text font-semibold">Fabricante</span>
+                  <span className="label-text font-semibold">Email</span>
                 </label>
-                <p>{selectedDevice.manufacturer}</p>
+                <p className="text-sm">{selectedDevice.employee_email || '-'}</p>
               </div>
               <div>
                 <label className="label">
-                  <span className="label-text font-semibold">Número de Serie</span>
+                  <span className="label-text font-semibold">Supervisor</span>
                 </label>
-                <p className="font-mono text-sm">{selectedDevice.serial_number}</p>
+                <p>{selectedDevice.supervisor_name || '-'}</p>
               </div>
               <div>
                 <label className="label">
-                  <span className="label-text font-semibold">Versión Firmware</span>
+                  <span className="label-text font-semibold">Última Conexión</span>
                 </label>
-                <p>{selectedDevice.firmware_version}</p>
-              </div>
-              <div>
-                <label className="label">
-                  <span className="label-text font-semibold">Asignado a</span>
-                </label>
-                <p>{selectedDevice.assigned_to_name || 'Sin asignar'}</p>
-              </div>
-              <div>
-                <label className="label">
-                  <span className="label-text font-semibold">Nivel de Batería</span>
-                </label>
-                <div className="flex items-center gap-2">
-                  <progress
-                    className={`progress progress-${
-                      selectedDevice.battery_level && selectedDevice.battery_level < 20
-                        ? 'error'
-                        : selectedDevice.battery_level && selectedDevice.battery_level < 50
-                        ? 'warning'
-                        : 'success'
-                    } w-32`}
-                    value={selectedDevice.battery_level || 0}
-                    max="100"
-                  ></progress>
-                  <span>{selectedDevice.battery_level}%</span>
-                </div>
-              </div>
-              <div>
-                <label className="label">
-                  <span className="label-text font-semibold">Fecha de Compra</span>
-                </label>
-                <p>{selectedDevice.purchase_date ? new Date(selectedDevice.purchase_date).toLocaleDateString() : 'N/A'}</p>
-              </div>
-              <div>
-                <label className="label">
-                  <span className="label-text font-semibold">Última Sincronización</span>
-                </label>
-                <p>
-                  {selectedDevice.last_sync
-                    ? new Date(selectedDevice.last_sync).toLocaleString()
+                <p className="text-sm">
+                  {selectedDevice.last_connection
+                    ? new Date(selectedDevice.last_connection).toLocaleString()
                     : 'Nunca'}
                 </p>
               </div>
-            </div>
-            {selectedDevice.notes && (
               <div>
                 <label className="label">
-                  <span className="label-text font-semibold">Notas</span>
+                  <span className="label-text font-semibold">Creado</span>
                 </label>
-                <p className="text-sm text-base-content/70">{selectedDevice.notes}</p>
+                <p className="text-sm">{new Date(selectedDevice.created_at).toLocaleString()}</p>
               </div>
-            )}
+              <div>
+                <label className="label">
+                  <span className="label-text font-semibold">Actualizado</span>
+                </label>
+                <p className="text-sm">{new Date(selectedDevice.updated_at).toLocaleString()}</p>
+              </div>
+            </div>
           </div>
         )}
       </Modal>
@@ -539,7 +439,7 @@ export function DevicesListPage() {
         {selectedDevice && (
           <p className="text-gray-700">
             ¿Estás seguro de que deseas eliminar el dispositivo{' '}
-            <strong className="text-[#18314F]">{selectedDevice.device_id}</strong>? Esta acción no se puede deshacer.
+            <strong className="text-[#18314F]">{selectedDevice.device_identifier}</strong>? Esta acción no se puede deshacer.
           </p>
         )}
       </Modal>
