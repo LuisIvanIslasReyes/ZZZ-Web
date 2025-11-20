@@ -20,7 +20,8 @@ import {
   SupervisorDashboardPage,
   SupervisorTeamOverviewPage,
   SupervisorTeamAlertsPage,
-  SupervisorTeamReportsPage
+  SupervisorTeamReportsPage,
+  SupervisorDevicesPage
 } from '../pages/supervisor';
 import { 
   EmployeeDashboardPage,
@@ -94,6 +95,10 @@ export const router = createBrowserRouter([
       {
         path: 'team',
         element: <SupervisorTeamOverviewPage />,
+      },
+      {
+        path: 'devices',
+        element: <SupervisorDevicesPage />,
       },
       {
         path: 'alerts',
