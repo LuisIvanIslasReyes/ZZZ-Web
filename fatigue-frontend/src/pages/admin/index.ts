@@ -8,3 +8,4 @@ export { EmployeesListPage } from './EmployeesListPage';
 export { DevicesListPage } from './DevicesListPage';
 export { AlertsListPage } from './AlertsListPage';
 export { AdminReportsPage } from './AdminReportsPage';
+export { SettingsPage } from './SettingsPage';
