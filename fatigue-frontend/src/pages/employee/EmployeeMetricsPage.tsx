@@ -4,8 +4,6 @@
  * Diseño ZZZ Admin Style
  */
 
-import { LineChart, BarChart } from '../../components/charts';
-
 export function EmployeeMetricsPage() {
   return (
     <div className="space-y-8">
@@ -46,34 +44,16 @@ export function EmployeeMetricsPage() {
       {/* Detailed Charts */}
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h2 className="text-xl font-semibold text-[#18314F] mb-6">Evolución de Fatiga</h2>
-        <LineChart
-          labels={['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']}
-          datasets={[
-            {
-              label: 'Nivel de Fatiga (%)',
-              data: [42, 55, 48, 62, 58, 45, 40],
-              borderColor: '#EF4444',
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
-              fill: true,
-            },
-          ]}
-          height={250}
-        />
+        <div className="flex items-center justify-center h-[250px] text-gray-400">
+          <p>Los datos de evolución de fatiga estarán disponibles próximamente</p>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h2 className="text-xl font-semibold text-[#18314F] mb-6">Frecuencia Cardíaca por Día</h2>
-        <BarChart
-          labels={['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']}
-          datasets={[
-            {
-              label: 'FC Promedio (BPM)',
-              data: [68, 72, 70, 75, 78, 65, 62],
-              backgroundColor: '#22C55E',
-            },
-          ]}
-          height={250}
-        />
+        <div className="flex items-center justify-center h-[250px] text-gray-400">
+          <p>Los datos de frecuencia cardíaca estarán disponibles próximamente</p>
+        </div>
       </div>
     </div>
   );

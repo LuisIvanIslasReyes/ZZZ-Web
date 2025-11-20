@@ -7,7 +7,7 @@
 import { useState, useEffect } from 'react';
 import { dashboardService } from '../../services';
 import { LoadingSpinner } from '../../components/common';
-import { LineChart, BarChart, DoughnutChart } from '../../components/charts';
+import { DoughnutChart } from '../../components/charts';
 import { useAuth } from '../../contexts';
 import type { DashboardStats } from '../../types';
 
@@ -150,29 +150,12 @@ export function SupervisorDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Tendencia de Fatiga del Equipo</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Últimos 7 días</p>
-          <LineChart
-            labels={['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']}
-            datasets={[
-              {
-                label: 'Promedio del Equipo',
-                data: [45, 52, 48, 58, 62, 55, 42],
-                borderColor: '#18314F',
-                backgroundColor: 'rgba(24, 49, 79, 0.1)',
-                fill: true,
-              },
-              {
-                label: 'Nivel Crítico',
-                data: [80, 80, 80, 80, 80, 80, 80],
-                borderColor: '#EF4444',
-                backgroundColor: 'transparent',
-                fill: false,
-              },
-            ]}
-            height={220}
-          />
+          <div className="flex items-center justify-center h-[220px] text-gray-400">
+            <p>Los datos de tendencia de fatiga estarán disponibles próximamente</p>
+          </div>
           <div className="flex gap-6 mt-4 text-sm">
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#18314F]"></span>Promedio del Equipo</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Nivel Crítico</div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Nivel Crítico (80%)</div>
           </div>
         </div>
 
@@ -183,19 +166,23 @@ export function SupervisorDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Estado del Equipo</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Distribución por nivel de riesgo</p>
-          <DoughnutChart
-            labels={['Normal', 'Observación', 'Alto Riesgo']}
-            data={[
-              stats.total_employees - (stats.high_risk_employees || 0) - Math.floor(stats.total_employees * 0.2),
-              Math.floor(stats.total_employees * 0.2),
-              stats.high_risk_employees || 0
-            ]}
-            colors={['#22C55E', '#FACC15', '#EF4444']}
-            height={220}
-          />
+          {stats.high_risk_employees !== undefined && stats.high_risk_employees > 0 ? (
+            <DoughnutChart
+              labels={['Normal', 'Alto Riesgo']}
+              data={[
+                stats.total_employees - (stats.high_risk_employees || 0),
+                stats.high_risk_employees || 0
+              ]}
+              colors={['#22C55E', '#EF4444']}
+              height={220}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-[220px] text-gray-400">
+              <p>No hay datos de riesgo disponibles</p>
+            </div>
+          )}
           <div className="flex flex-col gap-1 mt-4 text-sm">
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>Normal <span className="ml-auto font-semibold">{stats.total_employees - (stats.high_risk_employees || 0) - Math.floor(stats.total_employees * 0.2)} empleados</span></div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#FACC15]"></span>Observación <span className="ml-auto font-semibold">{Math.floor(stats.total_employees * 0.2)} empleados</span></div>
+            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>Normal <span className="ml-auto font-semibold">{stats.total_employees - (stats.high_risk_employees || 0)} empleados</span></div>
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Alto Riesgo <span className="ml-auto font-semibold">{stats.high_risk_employees || 0} empleados</span></div>
           </div>
         </div>
@@ -210,22 +197,9 @@ export function SupervisorDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Productividad vs Fatiga</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Correlación semanal</p>
-          <BarChart
-            labels={['Lun', 'Mar', 'Mié', 'Jue', 'Vie']}
-            datasets={[
-              {
-                label: 'Productividad (%)',
-                data: [85, 78, 82, 72, 68],
-                backgroundColor: '#22C55E',
-              },
-              {
-                label: 'Fatiga Promedio (%)',
-                data: [45, 52, 48, 58, 62],
-                backgroundColor: '#EF4444',
-              },
-            ]}
-            height={220}
-          />
+          <div className="flex items-center justify-center h-[220px] text-gray-400">
+            <p>Los datos de productividad vs fatiga estarán disponibles próximamente</p>
+          </div>
           <div className="flex gap-6 mt-4 text-sm">
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>Productividad (%)</div>
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Fatiga Promedio (%)</div>
@@ -239,22 +213,9 @@ export function SupervisorDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Horas de Trabajo del Equipo</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Comparación con recomendaciones</p>
-          <BarChart
-            labels={['Empleado 1', 'Empleado 2', 'Empleado 3', 'Empleado 4', 'Empleado 5']}
-            datasets={[
-              {
-                label: 'Horas Trabajadas',
-                data: [45, 52, 48, 42, 50],
-                backgroundColor: '#18314F',
-              },
-              {
-                label: 'Horas Recomendadas',
-                data: [40, 40, 40, 40, 40],
-                backgroundColor: '#8B5CF6',
-              },
-            ]}
-            height={220}
-          />
+          <div className="flex items-center justify-center h-[220px] text-gray-400">
+            <p>Los datos de horas de trabajo estarán disponibles próximamente</p>
+          </div>
           <div className="flex gap-6 mt-4 text-sm">
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#18314F]"></span>Horas Trabajadas</div>
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#8B5CF6]"></span>Horas Recomendadas</div>

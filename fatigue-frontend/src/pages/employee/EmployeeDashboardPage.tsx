@@ -7,7 +7,6 @@
 import { useState, useEffect } from 'react';
 import { dashboardService } from '../../services';
 import { LoadingSpinner } from '../../components/common';
-import { LineChart, DoughnutChart, BarChart } from '../../components/charts';
 import type { DashboardStats } from '../../types';
 
 export function EmployeeDashboardPage() {
@@ -164,26 +163,9 @@ export function EmployeeDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Mi Historial de Fatiga</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Últimos 7 días</p>
-          <LineChart
-            labels={['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']}
-            datasets={[
-              {
-                label: 'Mi Nivel de Fatiga',
-                data: [42, 55, 48, 62, 58, 45, myFatigueLevel],
-                borderColor: '#18314F',
-                backgroundColor: 'rgba(24, 49, 79, 0.1)',
-                fill: true,
-              },
-              {
-                label: 'Promedio del Equipo',
-                data: [45, 52, 48, 58, 62, 55, 50],
-                borderColor: '#8B5CF6',
-                backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                fill: true,
-              },
-            ]}
-            height={220}
-          />
+          <div className="flex items-center justify-center h-[220px] text-gray-400">
+            <p>Los datos del historial de fatiga estarán disponibles próximamente</p>
+          </div>
           <div className="flex gap-6 mt-4 text-sm">
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#18314F]"></span>Mi Nivel de Fatiga</div>
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#8B5CF6]"></span>Promedio del Equipo</div>
@@ -199,17 +181,8 @@ export function EmployeeDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Estado de Salud Integral</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Indicadores principales</p>
-          <DoughnutChart
-            labels={['Fatiga Física', 'Fatiga Mental', 'Estrés', 'Descanso']}
-            data={[myFatigueLevel, 45, 38, 85]}
-            colors={['#EF4444', '#F59E0B', '#8B5CF6', '#22C55E']}
-            height={220}
-          />
-          <div className="flex flex-col gap-1 mt-4 text-sm">
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Fatiga Física <span className="ml-auto font-semibold">{myFatigueLevel}%</span></div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#F59E0B]"></span>Fatiga Mental <span className="ml-auto font-semibold">45%</span></div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#8B5CF6]"></span>Estrés <span className="ml-auto font-semibold">38%</span></div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>Descanso <span className="ml-auto font-semibold">85%</span></div>
+          <div className="flex items-center justify-center h-[220px] text-gray-400">
+            <p>Los datos de salud integral estarán disponibles próximamente</p>
           </div>
         </div>
       </div>
@@ -225,22 +198,9 @@ export function EmployeeDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Mi Actividad Semanal</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Horas de trabajo vs descanso</p>
-          <BarChart
-            labels={['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']}
-            datasets={[
-              {
-                label: 'Horas Trabajadas',
-                data: [9, 10, 8, 9.5, 11, 0, 0],
-                backgroundColor: '#18314F',
-              },
-              {
-                label: 'Horas de Descanso',
-                data: [7, 6.5, 8, 7, 6, 9, 9],
-                backgroundColor: '#22C55E',
-              },
-            ]}
-            height={220}
-          />
+          <div className="flex items-center justify-center h-[220px] text-gray-400">
+            <p>Los datos de actividad semanal estarán disponibles próximamente</p>
+          </div>
           <div className="flex gap-6 mt-4 text-sm">
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#18314F]"></span>Horas Trabajadas</div>
             <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>Horas de Descanso</div>
@@ -256,19 +216,9 @@ export function EmployeeDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Progreso de Bienestar</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Comparación semanal</p>
-          <LineChart
-            labels={['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4']}
-            datasets={[
-              {
-                label: 'Puntuación de Bienestar',
-                data: [65, 72, 68, 75],
-                borderColor: '#22C55E',
-                backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                fill: true,
-              },
-            ]}
-            height={220}
-          />
+          <div className="flex items-center justify-center h-[220px] text-gray-400">
+            <p>Los datos de progreso de bienestar estarán disponibles próximamente</p>
+          </div>
         </div>
       </div>
 

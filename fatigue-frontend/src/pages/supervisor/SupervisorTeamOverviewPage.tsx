@@ -15,7 +15,6 @@ export function SupervisorTeamOverviewPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'normal' | 'warning' | 'critical'>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
@@ -90,46 +89,17 @@ export function SupervisorTeamOverviewPage() {
     setEditingEmployee(null);
   };
 
-  const getRiskLevel = (fatigueScore: number) => {
-    if (fatigueScore >= 70) return 'critical';
-    if (fatigueScore >= 50) return 'warning';
-    return 'normal';
-  };
-
-  const getRiskColor = (risk: string) => {
-    switch (risk) {
-      case 'critical': return 'text-red-600 bg-red-100';
-      case 'warning': return 'text-yellow-600 bg-yellow-100';
-      default: return 'text-green-600 bg-green-100';
-    }
-  };
-
-  const getRiskLabel = (risk: string) => {
-    switch (risk) {
-      case 'critical': return 'Crítico';
-      case 'warning': return 'Advertencia';
-      default: return 'Normal';
-    }
-  };
-
   const filteredEmployees = employees.filter(emp => {
     const matchesSearch = emp.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          emp.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          emp.employee_id.toLowerCase().includes(searchTerm.toLowerCase());
     
-    if (filterStatus === 'all') return matchesSearch;
-    
-    // Simular nivel de riesgo basado en algún criterio
-    const riskLevel = getRiskLevel(Math.random() * 100); // En producción esto vendría del backend
-    return matchesSearch && riskLevel === filterStatus;
+    return matchesSearch;
   });
 
   if (isLoading) {
     return <LoadingSpinner size="lg" text="Cargando equipo..." />;
   }
-
-  const criticalCount = Math.floor(employees.length * 0.1);
-  const warningCount = Math.floor(employees.length * 0.2);
 
   return (
     <div className="space-y-8">
@@ -151,7 +121,7 @@ export function SupervisorTeamOverviewPage() {
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white rounded-2xl shadow-md p-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-base font-medium">Total Empleados</span>
@@ -164,105 +134,34 @@ export function SupervisorTeamOverviewPage() {
 
         <div className="bg-white rounded-2xl shadow-md p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Estado Normal</span>
+            <span className="text-gray-600 text-base font-medium">Empleados Activos</span>
             <span className="bg-green-100 rounded-full p-2">
               <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#22C55E"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </span>
           </div>
-          <span className="text-4xl font-bold text-green-600">{employees.length - criticalCount - warningCount}</span>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">En Observación</span>
-            <span className="bg-yellow-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#FACC15"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-            </span>
-          </div>
-          <span className="text-4xl font-bold text-yellow-600">{warningCount}</span>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Estado Crítico</span>
-            <span className="bg-red-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#EF4444"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </span>
-          </div>
-          <span className="text-4xl font-bold text-red-600">{criticalCount}</span>
+          <span className="text-4xl font-bold text-green-600">{employees.filter(e => e.is_active).length}</span>
         </div>
       </div>
 
-      {/* Filters and Search */}
+      {/* Search */}
       <div className="bg-white rounded-2xl shadow-md p-6">
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="flex-1 w-full md:w-auto">
-            <div className="relative">
-              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Buscar por nombre o ID..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
-              />
-            </div>
-          </div>
-          
-          <div className="flex gap-2">
-            <button
-              onClick={() => setFilterStatus('all')}
-              className={`px-4 py-2 rounded-xl font-medium transition-colors ${
-                filterStatus === 'all' 
-                  ? 'bg-[#18314F] text-white' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Todos
-            </button>
-            <button
-              onClick={() => setFilterStatus('normal')}
-              className={`px-4 py-2 rounded-xl font-medium transition-colors ${
-                filterStatus === 'normal' 
-                  ? 'bg-green-600 text-white' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Normal
-            </button>
-            <button
-              onClick={() => setFilterStatus('warning')}
-              className={`px-4 py-2 rounded-xl font-medium transition-colors ${
-                filterStatus === 'warning' 
-                  ? 'bg-yellow-600 text-white' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Advertencia
-            </button>
-            <button
-              onClick={() => setFilterStatus('critical')}
-              className={`px-4 py-2 rounded-xl font-medium transition-colors ${
-                filterStatus === 'critical' 
-                  ? 'bg-red-600 text-white' 
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              Crítico
-            </button>
-          </div>
+        <div className="relative">
+          <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Buscar por nombre o ID..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+          />
         </div>
       </div>
 
       {/* Employees Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredEmployees.map((employee) => {
-          const fatigueLevel = Math.floor(Math.random() * 100);
-          const riskLevel = getRiskLevel(fatigueLevel);
-          const heartRate = Math.floor(60 + Math.random() * 40);
-          
           return (
             <div key={employee.id} className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-start justify-between mb-4">
@@ -281,40 +180,29 @@ export function SupervisorTeamOverviewPage() {
                     <p className="text-sm text-gray-500">ID: {employee.employee_id}</p>
                   </div>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getRiskColor(riskLevel)}`}>
-                  {getRiskLabel(riskLevel)}
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  employee.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                }`}>
+                  {employee.is_active ? 'Activo' : 'Inactivo'}
                 </span>
               </div>
 
               <div className="space-y-3">
+                {employee.department && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Departamento</span>
+                    <span className="font-semibold text-[#18314F]">{employee.department}</span>
+                  </div>
+                )}
+                {employee.position && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Posición</span>
+                    <span className="font-semibold text-[#18314F]">{employee.position}</span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Nivel de Fatiga</span>
-                  <span className="font-semibold text-[#18314F]">{fatigueLevel}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full ${
-                      riskLevel === 'critical' ? 'bg-red-600' : 
-                      riskLevel === 'warning' ? 'bg-yellow-500' : 
-                      'bg-green-600'
-                    }`}
-                    style={{ width: `${fatigueLevel}%` }}
-                  ></div>
-                </div>
-
-                <div className="flex items-center justify-between pt-2">
-                  <div className="flex items-center gap-2">
-                    <svg width="16" height="16" fill="#EF4444" viewBox="0 0 24 24">
-                      <path d="M12 21C12 21 4 13.36 4 8.5C4 5.42 6.42 3 9.5 3C11.24 3 12.91 3.81 14 5.08C15.09 3.81 16.76 3 18.5 3C21.58 3 24 5.42 24 8.5C24 13.36 16 21 16 21H12Z"/>
-                    </svg>
-                    <span className="text-sm text-gray-600">FC: {heartRate} BPM</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${employee.is_active ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-                    <span className="text-sm text-gray-600">
-                      {employee.is_active ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </div>
+                  <span className="text-sm text-gray-600">Email</span>
+                  <span className="text-sm text-[#18314F]">{employee.email}</span>
                 </div>
               </div>
 
