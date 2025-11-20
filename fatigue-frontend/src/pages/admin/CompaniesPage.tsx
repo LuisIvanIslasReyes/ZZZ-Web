@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { companyService } from '../../services';
 import { CompanyFormModal } from '../../components/forms/CompanyFormModal';
 import type { Company, CompanyGlobalStats, CompanyCreateInput, CompanyUpdateInput } from '../../types';
@@ -35,11 +36,13 @@ export default function CompaniesPage() {
     try {
       setIsSubmitting(true);
       await companyService.createCompany(data);
+      toast.success('Empresa creada exitosamente');
       setIsModalOpen(false);
       setEditingCompany(null);
       await loadCompanies();
     } catch (error) {
       console.error('Error creating company:', error);
+      toast.error('Error al crear la empresa. Por favor, intenta de nuevo.');
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -51,11 +54,13 @@ export default function CompaniesPage() {
     try {
       setIsSubmitting(true);
       await companyService.updateCompany(editingCompany.id, data);
+      toast.success('Empresa actualizada exitosamente');
       setIsModalOpen(false);
       setEditingCompany(null);
       await loadCompanies();
     } catch (error) {
       console.error('Error updating company:', error);
+      toast.error('Error al actualizar la empresa. Por favor, intenta de nuevo.');
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -82,10 +87,13 @@ export default function CompaniesPage() {
 
   const handleToggleActive = async (id: number) => {
     try {
+      const company = companies.find(c => c.id === id);
       await companyService.toggleCompanyActive(id);
+      toast.success(`Empresa ${company?.is_active ? 'desactivada' : 'activada'} exitosamente`);
       await loadCompanies();
     } catch (error) {
       console.error('Error toggling company:', error);
+      toast.error('Error al cambiar el estado de la empresa');
     }
   };
 

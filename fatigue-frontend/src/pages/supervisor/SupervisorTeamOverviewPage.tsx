@@ -5,8 +5,10 @@
  */
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { employeeService } from '../../services';
 import { LoadingSpinner } from '../../components/common';
+import { EmployeeFormModal } from '../../components/forms';
 import type { Employee } from '../../types';
 
 export function SupervisorTeamOverviewPage() {
@@ -14,6 +16,9 @@ export function SupervisorTeamOverviewPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'normal' | 'warning' | 'critical'>('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
 
   useEffect(() => {
     loadEmployees();
@@ -26,9 +31,63 @@ export function SupervisorTeamOverviewPage() {
       setEmployees(data);
     } catch (error) {
       console.error('Error loading employees:', error);
+      toast.error('Error al cargar los empleados');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleCreateEmployee = async (data: any) => {
+    try {
+      setIsSubmitting(true);
+      await employeeService.createEmployee(data);
+      toast.success('Empleado creado exitosamente');
+      setIsModalOpen(false);
+      setEditingEmployee(null);
+      await loadEmployees();
+    } catch (error: any) {
+      console.error('Error creating employee:', error);
+      toast.error(error?.response?.data?.message || 'Error al crear el empleado');
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdateEmployee = async (data: any) => {
+    if (!editingEmployee) return;
+    try {
+      setIsSubmitting(true);
+      await employeeService.updateEmployee(editingEmployee.id, data);
+      toast.success('Empleado actualizado exitosamente');
+      setIsModalOpen(false);
+      setEditingEmployee(null);
+      await loadEmployees();
+    } catch (error: any) {
+      console.error('Error updating employee:', error);
+      toast.error(error?.response?.data?.message || 'Error al actualizar el empleado');
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmit = async (data: any) => {
+    if (editingEmployee) {
+      await handleUpdateEmployee(data);
+    } else {
+      await handleCreateEmployee(data);
+    }
+  };
+
+  const handleEdit = (employee: Employee) => {
+    setEditingEmployee(employee);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingEmployee(null);
   };
 
   const getRiskLevel = (fatigueScore: number) => {
@@ -69,16 +128,26 @@ export function SupervisorTeamOverviewPage() {
     return <LoadingSpinner size="lg" text="Cargando equipo..." />;
   }
 
-  const activeEmployees = employees.filter(e => e.is_active).length;
   const criticalCount = Math.floor(employees.length * 0.1);
   const warningCount = Math.floor(employees.length * 0.2);
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Team Overview</h1>
-        <p className="text-lg text-[#18314F]/70">Vista detallada de todos los miembros de tu equipo</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-[#18314F] mb-1">Team Overview</h1>
+          <p className="text-lg text-[#18314F]/70">Vista detallada de todos los miembros de tu equipo</p>
+        </div>
+        <button 
+          className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center gap-2"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Agregar Empleado
+        </button>
       </div>
 
       {/* Stats Summary */}
@@ -189,7 +258,7 @@ export function SupervisorTeamOverviewPage() {
 
       {/* Employees Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredEmployees.map((employee, index) => {
+        {filteredEmployees.map((employee) => {
           const fatigueLevel = Math.floor(Math.random() * 100);
           const riskLevel = getRiskLevel(fatigueLevel);
           const heartRate = Math.floor(60 + Math.random() * 40);
@@ -250,11 +319,14 @@ export function SupervisorTeamOverviewPage() {
               </div>
 
               <div className="mt-4 pt-4 border-t border-gray-200 flex gap-2">
+                <button 
+                  onClick={() => handleEdit(employee)}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-[#18314F] font-medium py-2 px-4 rounded-xl transition-colors text-sm"
+                >
+                  Editar
+                </button>
                 <button className="flex-1 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-4 rounded-xl transition-colors text-sm">
                   Ver Detalles
-                </button>
-                <button className="bg-gray-100 hover:bg-gray-200 text-[#18314F] font-medium py-2 px-4 rounded-xl transition-colors text-sm">
-                  Alertar
                 </button>
               </div>
             </div>
@@ -271,6 +343,15 @@ export function SupervisorTeamOverviewPage() {
           <p className="text-gray-500">Intenta con otros filtros o términos de búsqueda</p>
         </div>
       )}
+
+      {/* Employee Form Modal */}
+      <EmployeeFormModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmit}
+        initialData={editingEmployee}
+        isLoading={isSubmitting}
+      />
     </div>
   );
 }

@@ -23,6 +23,13 @@ class EmployeeService {
   }
 
   /**
+   * Obtener empleados (alias de getAllEmployees)
+   */
+  async getEmployees(): Promise<Employee[]> {
+    return this.getAllEmployees();
+  }
+
+  /**
    * Obtener un empleado por ID
    */
   async getEmployeeById(id: number): Promise<Employee> {

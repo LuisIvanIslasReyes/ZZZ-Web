@@ -7,7 +7,8 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { deviceService } from '../../services';
-import { LoadingSpinner } from '../../components/common';
+import { LoadingSpinner, Modal } from '../../components/common';
+import { DeviceFormModal } from '../../components/forms';
 import type { Device } from '../../types';
 
 export function SupervisorDevicesPage() {
@@ -17,6 +18,9 @@ export function SupervisorDevicesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingDevice, setEditingDevice] = useState<Device | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
 
   useEffect(() => {
@@ -62,6 +66,59 @@ export function SupervisorDevicesPage() {
     }
   };
 
+  const handleCreateDevice = async (data: any) => {
+    try {
+      setIsSubmitting(true);
+      await deviceService.createDevice(data);
+      toast.success('Dispositivo creado exitosamente');
+      setIsFormModalOpen(false);
+      setEditingDevice(null);
+      await loadDevices();
+    } catch (error: any) {
+      console.error('Error creating device:', error);
+      toast.error(error?.response?.data?.message || 'Error al crear el dispositivo');
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdateDevice = async (data: any) => {
+    if (!editingDevice) return;
+    try {
+      setIsSubmitting(true);
+      await deviceService.updateDevice(editingDevice.id, data);
+      toast.success('Dispositivo actualizado exitosamente');
+      setIsFormModalOpen(false);
+      setEditingDevice(null);
+      await loadDevices();
+    } catch (error: any) {
+      console.error('Error updating device:', error);
+      toast.error(error?.response?.data?.message || 'Error al actualizar el dispositivo');
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmitDevice = async (data: any) => {
+    if (editingDevice) {
+      await handleUpdateDevice(data);
+    } else {
+      await handleCreateDevice(data);
+    }
+  };
+
+  const handleEdit = (device: Device) => {
+    setEditingDevice(device);
+    setIsFormModalOpen(true);
+  };
+
+  const handleCloseFormModal = () => {
+    setIsFormModalOpen(false);
+    setEditingDevice(null);
+  };
+
   const handleViewDetails = (device: Device) => {
     setSelectedDevice(device);
     setIsModalOpen(true);
@@ -82,9 +139,20 @@ export function SupervisorDevicesPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Dispositivos del Equipo</h1>
-        <p className="text-lg text-[#18314F]/70">Monitoreo de dispositivos asignados a tu equipo</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-[#18314F] mb-1">Dispositivos del Equipo</h1>
+          <p className="text-lg text-[#18314F]/70">Monitoreo de dispositivos asignados a tu equipo</p>
+        </div>
+        <button 
+          className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center gap-2"
+          onClick={() => setIsFormModalOpen(true)}
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Agregar Dispositivo
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -232,12 +300,20 @@ export function SupervisorDevicesPage() {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <button
-                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
-                        onClick={() => handleViewDetails(device)}
-                      >
-                        Ver Detalles
-                      </button>
+                      <div className="flex gap-2 justify-center">
+                        <button
+                          className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                          onClick={() => handleEdit(device)}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                          onClick={() => handleViewDetails(device)}
+                        >
+                          Ver Detalles
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -248,114 +324,105 @@ export function SupervisorDevicesPage() {
       </div>
 
       {/* Device Details Modal */}
-      {isModalOpen && selectedDevice && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-2xl font-bold text-[#18314F]">
-                Detalles del Dispositivo
-              </h3>
-              <button
-                onClick={handleCloseModal}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+      <Modal
+        isOpen={isModalOpen && selectedDevice !== null}
+        onClose={handleCloseModal}
+        title="Detalles del Dispositivo"
+        footer={
+          <button
+            onClick={handleCloseModal}
+            className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-semibold transition-colors"
+          >
+            Cerrar
+          </button>
+        }
+      >
+        {selectedDevice && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                Identificador
+              </label>
+              <p className="mt-1 font-mono text-[#18314F] font-medium">
+                {selectedDevice.device_identifier}
+              </p>
             </div>
-
-            {/* Modal Body */}
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Identificador
-                  </label>
-                  <p className="mt-1 font-mono text-[#18314F] font-medium">
-                    {selectedDevice.device_identifier}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Estado
-                  </label>
-                  <p className="mt-1">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-                      selectedDevice.is_active 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-red-100 text-red-700'
-                    }`}>
-                      {selectedDevice.is_active ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Empleado
-                  </label>
-                  <p className="mt-1 text-[#18314F] font-medium">
-                    {selectedDevice.employee_name || 'Sin asignar'}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Email
-                  </label>
-                  <p className="mt-1 text-gray-700">
-                    {selectedDevice.employee_email || '-'}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Supervisor
-                  </label>
-                  <p className="mt-1 text-gray-700">
-                    {selectedDevice.supervisor_name || '-'}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Última Conexión
-                  </label>
-                  <p className="mt-1 text-gray-700">
-                    {selectedDevice.last_connection
-                      ? new Date(selectedDevice.last_connection).toLocaleString()
-                      : 'Nunca'}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Creado
-                  </label>
-                  <p className="mt-1 text-gray-700">
-                    {new Date(selectedDevice.created_at).toLocaleString()}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Última Actualización
-                  </label>
-                  <p className="mt-1 text-gray-700">
-                    {new Date(selectedDevice.updated_at).toLocaleString()}
-                  </p>
-                </div>
-              </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                Estado
+              </label>
+              <p className="mt-1">
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
+                  selectedDevice.is_active 
+                    ? 'bg-green-100 text-green-700' 
+                    : 'bg-red-100 text-red-700'
+                }`}>
+                  {selectedDevice.is_active ? 'Activo' : 'Inactivo'}
+                </span>
+              </p>
             </div>
-
-            {/* Modal Footer */}
-            <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
-              <button
-                onClick={handleCloseModal}
-                className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-semibold transition-colors"
-              >
-                Cerrar
-              </button>
+            <div>
+              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                Empleado
+              </label>
+              <p className="mt-1 text-[#18314F] font-medium">
+                {selectedDevice.employee_name || 'Sin asignar'}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                Email
+              </label>
+              <p className="mt-1 text-gray-700">
+                {selectedDevice.employee_email || '-'}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                Supervisor
+              </label>
+              <p className="mt-1 text-gray-700">
+                {selectedDevice.supervisor_name || '-'}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                Última Conexión
+              </label>
+              <p className="mt-1 text-gray-700">
+                {selectedDevice.last_connection
+                  ? new Date(selectedDevice.last_connection).toLocaleString()
+                  : 'Nunca'}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                Creado
+              </label>
+              <p className="mt-1 text-gray-700">
+                {new Date(selectedDevice.created_at).toLocaleString()}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                Última Actualización
+              </label>
+              <p className="mt-1 text-gray-700">
+                {new Date(selectedDevice.updated_at).toLocaleString()}
+              </p>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
+
+      {/* Device Form Modal */}
+      <DeviceFormModal
+        isOpen={isFormModalOpen}
+        onClose={handleCloseFormModal}
+        onSubmit={handleSubmitDevice}
+        initialData={editingDevice}
+        isLoading={isSubmitting}
+      />
     </div>
   );
 }
