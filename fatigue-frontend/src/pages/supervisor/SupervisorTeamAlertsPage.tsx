@@ -280,11 +280,18 @@ export function SupervisorTeamAlertsPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     {getSeverityIcon(alert.severity)}
-                    <h3 className="text-lg font-semibold text-[#18314F]">{alert.alert_type}</h3>
+                    <h3 className="text-lg font-semibold text-[#18314F]">
+                      {alert.alert_type === 'notification' ? '📢 Notificación' : alert.alert_type}
+                    </h3>
                     {getStatusBadge(alert.status)}
+                    {alert.alert_type === 'notification' && (
+                      <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold">
+                        Mensaje del Equipo
+                      </span>
+                    )}
                   </div>
                   
-                  <p className="text-gray-600 mb-3">{alert.message}</p>
+                  <p className="text-gray-600 mb-3 whitespace-pre-line">{alert.message}</p>
                   
                   <div className="flex items-center gap-6 text-sm text-gray-500">
                     <div className="flex items-center gap-2">

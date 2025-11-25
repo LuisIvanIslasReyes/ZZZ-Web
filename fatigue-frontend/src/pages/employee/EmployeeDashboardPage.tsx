@@ -7,9 +7,12 @@
 import { useState, useEffect } from 'react';
 import { dashboardService } from '../../services';
 import { LoadingSpinner } from '../../components/common';
+import { TeamFatigueTrendChart, HealthStatusChart, HourlyActivityChart } from '../../components/charts';
+import { useAuth } from '../../contexts';
 import type { DashboardStats } from '../../types';
 
 export function EmployeeDashboardPage() {
+  const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -163,13 +166,7 @@ export function EmployeeDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Mi Historial de Fatiga</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Últimos 7 días</p>
-          <div className="flex items-center justify-center h-[220px] text-gray-400">
-            <p>Los datos del historial de fatiga estarán disponibles próximamente</p>
-          </div>
-          <div className="flex gap-6 mt-4 text-sm">
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#18314F]"></span>Mi Nivel de Fatiga</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#8B5CF6]"></span>Promedio del Equipo</div>
-          </div>
+          <TeamFatigueTrendChart days={7} interval="day" employeeId={user?.id} height={220} title="" />
         </div>
 
         {/* Estado de Salud Integral */}
@@ -181,9 +178,7 @@ export function EmployeeDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Estado de Salud Integral</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Indicadores principales</p>
-          <div className="flex items-center justify-center h-[220px] text-gray-400">
-            <p>Los datos de salud integral estarán disponibles próximamente</p>
-          </div>
+          <HealthStatusChart employeeId={user?.id} height={220} title="" />
         </div>
       </div>
 
@@ -198,13 +193,7 @@ export function EmployeeDashboardPage() {
             <span className="text-lg font-semibold text-[#18314F]">Mi Actividad Semanal</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Horas de trabajo vs descanso</p>
-          <div className="flex items-center justify-center h-[220px] text-gray-400">
-            <p>Los datos de actividad semanal estarán disponibles próximamente</p>
-          </div>
-          <div className="flex gap-6 mt-4 text-sm">
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#18314F]"></span>Horas Trabajadas</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>Horas de Descanso</div>
-          </div>
+          <HourlyActivityChart days={7} employeeId={user?.id} height={220} title="" />
         </div>
 
         {/* Progreso Semanal */}

@@ -1,0 +1,312 @@
+/**
+ * Employee Alerts Page
+ * Vista de alertas y notificaciones del empleado
+ * Diseño ZZZ Admin Style
+ */
+
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { alertService } from '../../services';
+import { LoadingSpinner } from '../../components/common';
+import type { FatigueAlert } from '../../types';
+
+export function EmployeeAlertsPage() {
+  const [alerts, setAlerts] = useState<FatigueAlert[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+
+  useEffect(() => {
+    loadAlerts();
+  }, []);
+
+  const loadAlerts = async () => {
+    try {
+      setIsLoading(true);
+      // Obtener alertas de los últimos 30 días
+      const data = await alertService.getRecentAlerts(720);
+      setAlerts(data);
+    } catch (error) {
+      console.error('Error loading alerts:', error);
+      toast.error('Error al cargar las alertas');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAcknowledge = async (alertId: number) => {
+    try {
+      await alertService.acknowledgeAlert(alertId);
+      toast.success('Alerta reconocida');
+      await loadAlerts();
+    } catch (error) {
+      console.error('Error acknowledging alert:', error);
+      toast.error('Error al reconocer la alerta');
+    }
+  };
+
+  const getSeverityIcon = (severity: string) => {
+    switch (severity) {
+      case 'critical':
+      case 'high':
+        return (
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#DC2626">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        );
+      case 'medium':
+        return (
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      default:
+        return (
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+    }
+  };
+
+  const getStatusBadge = (status: string, isResolved?: boolean) => {
+    if (isResolved || status === 'resolved') {
+      return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">✓ Resuelta</span>;
+    }
+    switch (status) {
+      case 'pending':
+        return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">⚠ Pendiente</span>;
+      case 'acknowledged':
+        return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">👁 Reconocida</span>;
+      default:
+        return <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-semibold">{status}</span>;
+    }
+  };
+
+  const filteredAlerts = alerts.filter(alert => {
+    if (filterStatus === 'all') return true;
+    if (filterStatus === 'resolved') return alert.status === 'resolved';
+    if (filterStatus === 'unresolved') return alert.status !== 'resolved';
+    return alert.status === filterStatus;
+  });
+
+  const pendingCount = alerts.filter(a => a.status === 'pending').length;
+  const acknowledgedCount = alerts.filter(a => a.status === 'acknowledged').length;
+  const resolvedCount = alerts.filter(a => a.status === 'resolved').length;
+  const criticalCount = alerts.filter(a => a.status !== 'resolved' && (a.severity === 'critical' || a.severity === 'high')).length;
+
+  if (isLoading) {
+    return <LoadingSpinner size="lg" text="Cargando alertas..." />;
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Mis Alertas y Notificaciones</h1>
+        <p className="text-lg text-[#18314F]/70">Revisa las alertas de salud y notificaciones de tu supervisor</p>
+      </div>
+
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-base font-medium">Críticas</span>
+            <span className="bg-red-100 rounded-full p-2">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#DC2626">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </span>
+          </div>
+          <span className={`text-4xl font-bold ${criticalCount > 0 ? 'text-red-600' : 'text-[#18314F]'}`}>
+            {criticalCount}
+          </span>
+          <p className="text-sm text-gray-500 mt-1">Requieren atención</p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-base font-medium">Pendientes</span>
+            <span className="bg-yellow-100 rounded-full p-2">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+          </div>
+          <span className="text-4xl font-bold text-yellow-600">{pendingCount}</span>
+          <p className="text-sm text-gray-500 mt-1">Sin revisar</p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-base font-medium">Reconocidas</span>
+            <span className="bg-blue-100 rounded-full p-2">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </span>
+          </div>
+          <span className="text-4xl font-bold text-blue-600">{acknowledgedCount}</span>
+          <p className="text-sm text-gray-500 mt-1">En seguimiento</p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-gray-600 text-base font-medium">Resueltas</span>
+            <span className="bg-green-100 rounded-full p-2">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+          </div>
+          <span className="text-4xl font-bold text-green-600">{resolvedCount}</span>
+          <p className="text-sm text-gray-500 mt-1">Completadas</p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        <h3 className="font-semibold text-[#18314F] mb-4">Filtrar alertas</h3>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setFilterStatus('all')}
+            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
+              filterStatus === 'all' ? 'bg-[#18314F] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Todas
+          </button>
+          <button
+            onClick={() => setFilterStatus('pending')}
+            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
+              filterStatus === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Pendientes
+          </button>
+          <button
+            onClick={() => setFilterStatus('acknowledged')}
+            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
+              filterStatus === 'acknowledged' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Reconocidas
+          </button>
+          <button
+            onClick={() => setFilterStatus('resolved')}
+            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
+              filterStatus === 'resolved' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Resueltas
+          </button>
+          <button
+            onClick={() => setFilterStatus('unresolved')}
+            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
+              filterStatus === 'unresolved' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Sin Resolver
+          </button>
+        </div>
+      </div>
+
+      {/* Alerts List */}
+      <div className="space-y-4">
+        {filteredAlerts.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-md p-12 text-center">
+            <svg className="mx-auto mb-4" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="#18314F">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 className="text-2xl font-semibold text-[#18314F] mb-2">¡Todo bien!</h3>
+            <p className="text-gray-500">No tienes alertas con los filtros seleccionados</p>
+          </div>
+        ) : (
+          filteredAlerts.map((alert) => {
+            const isNotification = alert.alert_type === 'notification';
+            
+            return (
+              <div 
+                key={alert.id} 
+                className={`bg-white rounded-2xl shadow-md p-6 border-l-4 transition-all hover:shadow-lg ${
+                  isNotification ? 'border-purple-500 bg-gradient-to-r from-purple-50 to-white' :
+                  alert.severity === 'critical' || alert.severity === 'high' ? 'border-red-500' :
+                  alert.severity === 'medium' ? 'border-yellow-500' : 'border-blue-500'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-3 flex-wrap">
+                      {getSeverityIcon(alert.severity)}
+                      <h3 className="text-xl font-semibold text-[#18314F]">
+                        {isNotification ? '📢 Notificación de tu Supervisor' : 
+                         alert.alert_type === 'high_fatigue' ? '⚠️ Nivel Alto de Fatiga' :
+                         alert.alert_type === 'low_spo2' ? '🫁 Oxigenación Baja' :
+                         alert.alert_type === 'high_hr' ? '❤️ Ritmo Cardíaco Elevado' :
+                         alert.alert_type}
+                      </h3>
+                      {getStatusBadge(alert.status)}
+                      {isNotification && (
+                        <span className="px-3 py-1 bg-purple-200 text-purple-900 rounded-full text-xs font-semibold">
+                          Mensaje del Equipo
+                        </span>
+                      )}
+                    </div>
+                    
+                    <p className="text-gray-700 mb-4 text-base leading-relaxed whitespace-pre-line">
+                      {alert.message}
+                    </p>
+                    
+                    <div className="flex items-center gap-6 text-sm text-gray-500">
+                      <div className="flex items-center gap-2">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{new Date(alert.created_at).toLocaleString('es-ES', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}</span>
+                      </div>
+                      {!isNotification && alert.fatigue_score > 0 && (
+                        <div className="flex items-center gap-2">
+                          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                          <span>Índice de fatiga: {alert.fatigue_score.toFixed(1)}%</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    {alert.status !== 'resolved' && alert.status === 'pending' && (
+                      <button
+                        onClick={() => handleAcknowledge(alert.id)}
+                        className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-4 rounded-xl transition-colors text-sm whitespace-nowrap"
+                      >
+                        ✓ Reconocer
+                      </button>
+                    )}
+                    {alert.status === 'resolved' && (
+                      <div className="text-center">
+                        <div className="bg-green-100 rounded-full p-3 inline-block mb-2">
+                          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <p className="text-xs text-green-700 font-semibold">Resuelta</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+}

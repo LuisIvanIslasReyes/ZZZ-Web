@@ -7,3 +7,4 @@ export { EmployeeDashboardPage } from './EmployeeDashboardPage';
 export { EmployeeMetricsPage } from './EmployeeMetricsPage';
 export { EmployeeRecommendationsPage } from './EmployeeRecommendationsPage';
 export { EmployeeProfilePage } from './EmployeeProfilePage';
+export { EmployeeAlertsPage } from './EmployeeAlertsPage';

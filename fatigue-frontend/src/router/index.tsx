@@ -27,7 +27,8 @@ import {
   EmployeeDashboardPage,
   EmployeeMetricsPage,
   EmployeeRecommendationsPage,
-  EmployeeProfilePage
+  EmployeeProfilePage,
+  EmployeeAlertsPage
 } from '../pages/employee';
 
 // Pages - Placeholder components (crearemos después)
@@ -125,6 +126,10 @@ export const router = createBrowserRouter([
       {
         path: 'metrics',
         element: <EmployeeMetricsPage />,
+      },
+      {
+        path: 'alerts',
+        element: <EmployeeAlertsPage />,
       },
       {
         path: 'recommendations',

@@ -5,16 +5,22 @@
  */
 
 import { useState, useEffect } from 'react';
-import { dashboardService } from '../../services';
-import { LoadingSpinner } from '../../components/common';
-import { DoughnutChart } from '../../components/charts';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { dashboardService, reportService, notificationService } from '../../services';
+import { LoadingSpinner, SendNotificationModal } from '../../components/common';
+import { DoughnutChart, TeamFatigueTrendChart, ProductivityFatigueChart, WorkHoursChart } from '../../components/charts';
 import { useAuth } from '../../contexts';
 import type { DashboardStats } from '../../types';
 
 export function SupervisorDashboardPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [isSendingNotification, setIsSendingNotification] = useState(false);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -30,6 +36,62 @@ export function SupervisorDashboardPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGenerateReport = async () => {
+    try {
+      setIsGeneratingReport(true);
+      toast.loading('Generando reporte semanal...');
+      
+      // Generar reporte de los últimos 7 días
+      const blob = await reportService.exportTeamReport({ days: 7 });
+      
+      // Crear URL temporal y descargar
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `reporte-equipo-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast.dismiss();
+      toast.success('Reporte descargado exitosamente');
+    } catch (error) {
+      console.error('Error generating report:', error);
+      toast.dismiss();
+      toast.error('Error al generar el reporte');
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
+  const handleSendNotification = async (data: {
+    title: string;
+    message: string;
+    severity: 'info' | 'warning' | 'critical';
+  }) => {
+    try {
+      setIsSendingNotification(true);
+      const response = await notificationService.sendTeamNotification(data);
+      
+      const successMessage = response.notifications_sent === 1 
+        ? 'Notificación enviada a 1 empleado' 
+        : `Notificación enviada a ${response.notifications_sent} empleados`;
+      
+      toast.success(successMessage);
+      setIsNotificationModalOpen(false);
+    } catch (error: any) {
+      console.error('Error sending notification:', error);
+      toast.error(error.message || 'Error al enviar la notificación');
+    } finally {
+      setIsSendingNotification(false);
+    }
+  };
+
+  const handleViewTeamDetails = () => {
+    navigate('/supervisor/team');
   };
 
   if (isLoading) {
@@ -144,19 +206,13 @@ export function SupervisorDashboardPage() {
       {/* Charts Grid - Fila 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Fatiga del Equipo - Últimos 7 días */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-2xl shadow-md p-6">
           <div className="flex items-center gap-2 mb-4">
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
             <span className="text-lg font-semibold text-[#18314F]">Tendencia de Fatiga del Equipo</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Últimos 7 días</p>
-          <div className="flex items-center justify-center h-[220px] text-gray-400">
-            <p>Los datos de tendencia de fatiga estarán disponibles próximamente</p>
-          </div>
-          <div className="flex gap-6 mt-4 text-sm">
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#18314F]"></span>Promedio del Equipo</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Nivel Crítico (80%)</div>
-          </div>
+          <TeamFatigueTrendChart days={7} interval="day" height={220} title="" />
         </div>
 
         {/* Estado del Equipo */}
@@ -191,35 +247,23 @@ export function SupervisorDashboardPage() {
       {/* Charts Grid - Fila 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Productividad vs Fatiga */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-2xl shadow-md p-6">
           <div className="flex items-center gap-2 mb-4">
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3v18h18" /></svg>
-            <span className="text-lg font-semibold text-[#18314F]">Productividad vs Fatiga</span>
+            <span className="text-lg font-semibold text-[#18314F]">Actividad vs Fatiga</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Correlación semanal</p>
-          <div className="flex items-center justify-center h-[220px] text-gray-400">
-            <p>Los datos de productividad vs fatiga estarán disponibles próximamente</p>
-          </div>
-          <div className="flex gap-6 mt-4 text-sm">
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#22C55E]"></span>Productividad (%)</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>Fatiga Promedio (%)</div>
-          </div>
+          <ProductivityFatigueChart days={7} height={220} title="" />
         </div>
 
         {/* Horas de Trabajo del Equipo */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-2xl shadow-md p-6">
           <div className="flex items-center gap-2 mb-4">
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span className="text-lg font-semibold text-[#18314F]">Horas de Trabajo del Equipo</span>
+            <span className="text-lg font-semibold text-[#18314F]">Horas de Actividad del Equipo</span>
           </div>
           <p className="text-sm text-[#18314F]/70 mb-4">Comparación con recomendaciones</p>
-          <div className="flex items-center justify-center h-[220px] text-gray-400">
-            <p>Los datos de horas de trabajo estarán disponibles próximamente</p>
-          </div>
-          <div className="flex gap-6 mt-4 text-sm">
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#18314F]"></span>Horas Trabajadas</div>
-            <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-[#8B5CF6]"></span>Horas Recomendadas</div>
-          </div>
+          <WorkHoursChart days={7} height={220} title="" />
         </div>
       </div>
 
@@ -227,20 +271,50 @@ export function SupervisorDashboardPage() {
       <div className="bg-white rounded-2xl shadow-md border border-gray-200 px-8 py-6">
         <h2 className="text-xl font-semibold text-[#18314F] mb-6">Acciones Rápidas</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="flex items-center justify-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-3 px-6 rounded-xl transition-colors">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-            Generar Reporte Semanal
+          <button 
+            onClick={handleGenerateReport}
+            disabled={isGeneratingReport}
+            className="flex items-center justify-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isGeneratingReport ? (
+              <>
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Generando...
+              </>
+            ) : (
+              <>
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Generar Reporte Semanal
+              </>
+            )}
           </button>
-          <button className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-6 rounded-xl border-2 border-[#18314F] transition-colors">
+          <button 
+            onClick={() => setIsNotificationModalOpen(true)}
+            className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-6 rounded-xl border-2 border-[#18314F] transition-colors"
+          >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
             Enviar Notificación al Equipo
           </button>
-          <button className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-6 rounded-xl border-2 border-[#18314F] transition-colors">
+          <button 
+            onClick={handleViewTeamDetails}
+            className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-6 rounded-xl border-2 border-[#18314F] transition-colors"
+          >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
             Ver Detalles del Equipo
           </button>
         </div>
       </div>
+
+      {/* Send Notification Modal */}
+      <SendNotificationModal
+        isOpen={isNotificationModalOpen}
+        onClose={() => setIsNotificationModalOpen(false)}
+        onSend={handleSendNotification}
+        isLoading={isSendingNotification}
+      />
     </div>
   );
 }
