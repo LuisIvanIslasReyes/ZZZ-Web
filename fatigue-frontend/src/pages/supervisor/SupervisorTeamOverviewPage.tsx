@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { employeeService } from '../../services';
 import { LoadingSpinner } from '../../components/common';
 import { EmployeeFormModal } from '../../components/forms';
+import { EmployeeDetailsModal } from '../../components/employees';
 import type { Employee } from '../../types';
 
 export function SupervisorTeamOverviewPage() {
@@ -18,6 +19,8 @@ export function SupervisorTeamOverviewPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null);
 
   useEffect(() => {
     loadEmployees();
@@ -87,6 +90,16 @@ export function SupervisorTeamOverviewPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingEmployee(null);
+  };
+
+  const handleViewDetails = (employeeId: number) => {
+    setSelectedEmployeeId(employeeId);
+    setDetailsModalOpen(true);
+  };
+
+  const handleCloseDetails = () => {
+    setDetailsModalOpen(false);
+    setSelectedEmployeeId(null);
   };
 
   const filteredEmployees = employees.filter(emp => {
@@ -213,7 +226,10 @@ export function SupervisorTeamOverviewPage() {
                 >
                   Editar
                 </button>
-                <button className="flex-1 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-4 rounded-xl transition-colors text-sm">
+                <button 
+                  onClick={() => handleViewDetails(employee.id)}
+                  className="flex-1 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-4 rounded-xl transition-colors text-sm"
+                >
                   Ver Detalles
                 </button>
               </div>
@@ -240,6 +256,15 @@ export function SupervisorTeamOverviewPage() {
         initialData={editingEmployee}
         isLoading={isSubmitting}
       />
+
+      {/* Employee Details Modal */}
+      {selectedEmployeeId && (
+        <EmployeeDetailsModal
+          employeeId={selectedEmployeeId}
+          isOpen={detailsModalOpen}
+          onClose={handleCloseDetails}
+        />
+      )}
     </div>
   );
 }

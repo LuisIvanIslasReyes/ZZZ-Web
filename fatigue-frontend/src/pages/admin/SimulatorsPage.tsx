@@ -603,10 +603,44 @@ function CreateSimulatorModal({
   ];
 
   const activityModes: typeof ACTIVITY_MODES = [
-    { value: 'resting', label: 'Reposo', icon: '😴' },
-    { value: 'light', label: 'Actividad Ligera', icon: '🚶' },
-    { value: 'moderate', label: 'Actividad Moderada', icon: '🏃' },
-    { value: 'heavy', label: 'Actividad Intensa', icon: '💪' },
+    {
+      value: 'resting',
+      label: 'Reposo',
+      icon: (
+        <svg className="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v12z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6" />
+        </svg>
+      ),
+    },
+    {
+      value: 'light',
+      label: 'Actividad Ligera',
+      icon: (
+        <svg className="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
+      value: 'moderate',
+      label: 'Actividad Moderada',
+      icon: (
+        <svg className="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ),
+    },
+    {
+      value: 'heavy',
+      label: 'Actividad Intensa',
+      icon: (
+        <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.24 7.76a6 6 0 11-8.48 8.48" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2v2m0 16v2m8-10h2M2 12H4" />
+        </svg>
+      ),
+    },
   ];
 
   return (
@@ -665,20 +699,27 @@ function CreateSimulatorModal({
             <label className="label">
               <span className="label-text font-semibold text-gray-700">Empleado *</span>
             </label>
-            <select
-              className="select select-bordered w-full bg-white border-gray-300 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
-              value={formData.employee}
-              onChange={(e) => handleEmployeeChange(Number(e.target.value))}
-              required
-              disabled={loading || loadingDevice}
-            >
-              <option value={0}>Seleccionar empleado...</option>
-              {availableEmployees.map((emp) => (
-                <option key={emp.id} value={emp.id}>
-                  {emp.full_name} ({emp.email})
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                className="select select-bordered w-full bg-white border-gray-300 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 pr-10 appearance-none"
+                value={formData.employee}
+                onChange={(e) => handleEmployeeChange(Number(e.target.value))}
+                required
+                disabled={loading || loadingDevice}
+              >
+                <option value={0}>Seleccionar empleado...</option>
+                {availableEmployees.map((emp) => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.full_name} ({emp.email})
+                  </option>
+                ))}
+              </select>
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </div>
             <label className="label">
               <span className="label-text-alt text-gray-500">
                 {availableEmployees.length} empleado(s) disponible(s)
@@ -739,7 +780,7 @@ function CreateSimulatorModal({
                       type="button"
                       onClick={handleCreateDevice}
                       disabled={loading}
-                      className="btn bg-[#18314F] hover:bg-[#18314F]/90 text-white w-full shadow-lg hover:shadow-xl disabled:opacity-50"
+                      className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading ? (
                         <>
@@ -748,9 +789,11 @@ function CreateSimulatorModal({
                         </>
                       ) : (
                         <>
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                          </svg>
+                          <span className="flex items-center justify-center">
+                            <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                          </span>
                           Crear Dispositivo
                         </>
                       )}
@@ -766,23 +809,30 @@ function CreateSimulatorModal({
             <label className="label">
               <span className="label-text font-semibold text-gray-700">Perfil de Fatiga *</span>
             </label>
-            <select
-              className="select select-bordered w-full bg-white border-gray-300 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
-              value={formData.fatigue_profile}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  fatigue_profile: e.target.value as any,
-                })
-              }
-              disabled={loading}
-            >
-              {fatigueProfiles.map((profile) => (
-                <option key={profile.value} value={profile.value}>
-                  {profile.label}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                className="select select-bordered w-full bg-white border-gray-300 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 pr-10 appearance-none"
+                value={formData.fatigue_profile}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    fatigue_profile: e.target.value as any,
+                  })
+                }
+                disabled={loading}
+              >
+                {fatigueProfiles.map((profile) => (
+                  <option key={profile.value} value={profile.value}>
+                    {profile.label}
+                  </option>
+                ))}
+              </select>
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </div>
           </div>
 
           {/* Modo de Actividad */}
@@ -794,7 +844,7 @@ function CreateSimulatorModal({
               {activityModes.map((mode) => (
                 <label
                   key={mode.value}
-                  className={`cursor-pointer p-4 border-2 rounded-lg transition-all ${
+                  className={`cursor-pointer p-4 border-2 rounded-lg transition-all flex items-center gap-3 ${
                     formData.activity_mode === mode.value
                       ? 'border-[#18314F] bg-[#18314F]/5'
                       : 'border-gray-200 hover:border-gray-300'
@@ -814,10 +864,8 @@ function CreateSimulatorModal({
                     }
                     disabled={loading}
                   />
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">{mode.icon}</span>
-                    <span className="font-medium text-gray-700">{mode.label}</span>
-                  </div>
+                  <span>{mode.icon}</span>
+                  <span className="font-medium text-gray-700">{mode.label}</span>
                 </label>
               ))}
             </div>

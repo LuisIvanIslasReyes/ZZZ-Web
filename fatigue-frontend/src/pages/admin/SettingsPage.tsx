@@ -36,6 +36,7 @@ interface PasswordData {
 }
 
 export function SettingsPage() {
+    // Estado para modales
   const { user } = useAuth();
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordData, setPasswordData] = useState<PasswordData>({
@@ -296,19 +297,59 @@ export function SettingsPage() {
                 Exportar mis datos
               </button>
 
-              <button className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-3">
+              {/*
+              <button
+                className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-3"
+                onClick={() => setHelpOpen(true)}
+              >
                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Centro de ayuda
               </button>
+              */}
 
-              <button className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-3">
+              {/*
+              <button
+                className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-3"
+                onClick={() => setAboutOpen(true)}
+              >
                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Acerca de la aplicación
               </button>
+              */}
+                  {/*
+                  <Modal isOpen={helpOpen} onClose={() => setHelpOpen(false)} title="Centro de ayuda" size="md">
+                    <div className="space-y-4">
+                      <p className="text-gray-700">
+                        ¿Tienes dudas sobre el sistema ZZZ?
+                      </p>
+                      <ul className="list-disc pl-6 text-gray-600 text-sm space-y-1">
+                        <li>Consulta la documentación oficial en <a href="https://zzz-docs.example.com" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">docs internas</a>.</li>
+                        <li>Contacta a soporte: <span className="font-medium">soporte@zzz.com</span></li>
+                        <li>Revisa el manual de usuario en la sección de ayuda del dashboard.</li>
+                        <li>Para problemas técnicos, reporta vía ticket en el portal de administración.</li>
+                      </ul>
+                    </div>
+                  </Modal>
+
+                  <Modal isOpen={aboutOpen} onClose={() => setAboutOpen(false)} title="Acerca de la aplicación" size="md">
+                    <div className="space-y-4">
+                      <p className="text-gray-700 font-medium">Zero to Zero-Fatigue Zone (ZZZ)</p>
+                      <p className="text-gray-600 text-sm">
+                        Plataforma IoT empresarial para monitoreo y predicción de fatiga laboral en tiempo real.<br />
+                        <span className="font-semibold">Versión:</span> 1.0.0<br />
+                        <span className="font-semibold">Última actualización:</span> Nov 2025
+                      </p>
+                      <p className="text-gray-600 text-sm">
+                        Desarrollado por el equipo ZZZ. Todos los derechos reservados.<br />
+                        Para más información visita <a href="https://zzz.com" className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">zzz.com</a>
+                      </p>
+                    </div>
+                  </Modal>
+                  */}
             </div>
           </div>
 

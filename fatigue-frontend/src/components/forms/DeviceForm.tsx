@@ -130,7 +130,7 @@ export function DeviceForm({
             type="checkbox"
             {...register('is_active')}
             id="is_active"
-            className="w-4 h-4 text-[#18314F] border-gray-300 rounded focus:ring-[#18314F]"
+            className="w-5 h-5 accent-[#18314F] border-[#18314F] focus:ring-2 focus:ring-[#18314F] rounded transition-colors"
             disabled={isLoading}
           />
           <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700">

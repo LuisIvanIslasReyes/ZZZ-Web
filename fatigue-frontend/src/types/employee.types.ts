@@ -8,6 +8,7 @@ export interface Employee {
   email: string;
   first_name: string;
   last_name: string;
+  full_name: string; // Nombre completo
   employee_id: string; // Se puede construir como `EMP-${id}`
   role: 'employee';
   supervisor?: number; // ID del supervisor
