@@ -7,8 +7,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts';
-import { authService, meService } from '../../services';
+import { authService, meService, employeeExportService } from '../../services';
 import { Modal } from '../../components/common';
+import { EditProfileModal } from '../../components/forms/EditProfileModal';
 import toast from 'react-hot-toast';
 import type { User } from '../../types/user.types';
 
@@ -17,6 +18,14 @@ export function EmployeeProfilePage() {
   const { logout } = useAuth();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+    // Guardar cambios del perfil (dummy, solo frontend)
+    const handleSaveProfile = async (updatedUser: Partial<User>) => {
+      // Aquí deberías llamar a un servicio real para actualizar el perfil
+      setUser((prev) => ({ ...prev, ...updatedUser } as User));
+      toast.success('Perfil actualizado');
+      setIsEditProfileModalOpen(false);
+    };
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,14 +33,14 @@ export function EmployeeProfilePage() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    console.log('🔄 Cargando perfil del usuario...');
+    // console.log('🔄 Cargando perfil del usuario...');
     meService.getMe()
       .then((userData) => {
-        console.log('✅ Usuario cargado:', userData);
+        // console.log('✅ Usuario cargado:', userData);
         setUser(userData);
       })
       .catch((error) => {
-        console.error('❌ Error al cargar perfil:', error);
+        // console.error('❌ Error al cargar perfil:', error);
         toast.error('Error al cargar perfil');
       });
   }, []);
@@ -70,13 +79,19 @@ export function EmployeeProfilePage() {
   const handleDownloadData = async () => {
     try {
       setIsLoading(true);
-      toast.success('Preparando descarga de tus datos...');
-      // Aquí iría la lógica para descargar los datos
-      // Por ahora solo cerramos el modal
-      setTimeout(() => {
-        setIsDownloadModalOpen(false);
-        toast.success('Descarga iniciada');
-      }, 1000);
+      toast('Preparando descarga de tus datos...');
+      const blob = await employeeExportService.exportMyData();
+      // Crear un enlace temporal para descargar el archivo
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mis_datos.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      setIsDownloadModalOpen(false);
+      toast.success('Descarga iniciada');
     } catch (error) {
       toast.error('Error al descargar datos');
     } finally {
@@ -119,9 +134,19 @@ export function EmployeeProfilePage() {
               {user ? `ID: ${user.username}${user.department ? ` | Departamento: ${user.department}` : ''}` : ''}
             </p>
             <div className="flex gap-4">
-              <button className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-6 rounded-xl transition-colors">
+              <button
+                className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-6 rounded-xl transition-colors"
+                onClick={() => setIsEditProfileModalOpen(true)}
+              >
                 Editar Perfil
               </button>
+                    {/* Edit Profile Modal */}
+                    <EditProfileModal
+                      isOpen={isEditProfileModalOpen}
+                      onClose={() => setIsEditProfileModalOpen(false)}
+                      user={user}
+                      onSave={handleSaveProfile}
+                    />
               <button className="bg-white hover:bg-gray-50 text-[#18314F] font-medium py-2 px-6 rounded-xl border-2 border-[#18314F] transition-colors">
                 Cambiar Foto
               </button>
@@ -167,11 +192,11 @@ export function EmployeeProfilePage() {
               <label className="text-sm text-gray-600 font-medium">Puesto</label>
               <p className="text-lg text-[#18314F]">{user?.position || '-'}</p>
             </div>
-            {/* <div>
-              <label className="text-sm text-gray-600 font-medium">Rol</label>
-              <p className="text-lg text-[#18314F]">{user?.role_display || '-'}</p>
-            </div>
             <div>
+              <label className="text-sm text-gray-600 font-medium">Rol</label>
+              <p className="text-lg text-[#18314F]">{user?.role || '-'}</p>
+            </div>
+            {/* <div>
               <label className="text-sm text-gray-600 font-medium">Empresa</label>
               <p className="text-lg text-[#18314F]">{user?.company_name || '-'}</p>
             </div> */}
@@ -246,23 +271,23 @@ export function EmployeeProfilePage() {
         <h3 className="text-xl font-semibold text-[#18314F] mb-6">Acciones de Cuenta</h3>
         <div className="flex gap-4">
           <button 
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+            className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm"
             onClick={() => setIsChangePasswordModalOpen(true)}
           >
             Cambiar Contraseña
           </button>
           <button 
-            className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+            className="bg-[#C98A05] hover:bg-[#A87404] text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm"
             onClick={() => setIsDownloadModalOpen(true)}
           >
             Descargar Mis Datos
           </button>
-          <button 
+          {/* <button 
             className="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
             onClick={handleLogout}
           >
             Cerrar Sesión
-          </button>
+          </button> */}
         </div>
       </div>
 

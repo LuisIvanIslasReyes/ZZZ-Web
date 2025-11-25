@@ -63,11 +63,11 @@ export function Modal({
       >
         <div className={`relative bg-white rounded-2xl shadow-2xl ${sizeClasses[size]} w-full transform transition-all`}>
           {/* Header */}
-          <div className="flex items-center justify-between px-8 py-5 border-b border-gray-200">
-            <h3 className="text-2xl font-bold text-[#18314F]">{title}</h3>
+          <div className="flex items-center justify-between px-8 py-5 border-b border-gray-200 bg-[#18314F] rounded-t-2xl">
+            <h3 className="text-2xl font-bold text-white">{title}</h3>
             <button
               type="button"
-              className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg"
+              className="text-white hover:text-gray-200 transition-colors p-2 hover:bg-[#18314F]/80 rounded-lg"
               onClick={onClose}
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
