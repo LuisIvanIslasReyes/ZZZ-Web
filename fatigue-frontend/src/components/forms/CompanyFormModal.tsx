@@ -15,8 +15,8 @@ const companySchema = z.object({
   contact_phone: z.string().optional(),
   address: z.string().optional(),
   max_employees: z.number().min(1, 'Debe permitir al menos 1 empleado').max(10000, 'Máximo 10,000 empleados'),
-  subscription_start_date: z.string().optional(),
-  subscription_end_date: z.string().optional(),
+  subscription_start: z.string().optional(),
+  subscription_end: z.string().optional(),
 });
 
 type CompanyFormData = z.infer<typeof companySchema>;
@@ -58,8 +58,8 @@ export function CompanyFormModal({
         contact_phone: initialData.contact_phone || '',
         address: initialData.address || '',
         max_employees: initialData.max_employees,
-        subscription_start_date: initialData.subscription_start || '',
-        subscription_end_date: initialData.subscription_end || '',
+        subscription_start: initialData.subscription_start || '',
+        subscription_end: initialData.subscription_end || '',
       });
     } else {
       reset({
@@ -68,13 +68,14 @@ export function CompanyFormModal({
         contact_phone: '',
         address: '',
         max_employees: 100,
-        subscription_start_date: '',
-        subscription_end_date: '',
+        subscription_start: '',
+        subscription_end: '',
       });
     }
   }, [initialData, reset]);
 
   const onFormSubmit = async (data: CompanyFormData) => {
+    console.log('Datos enviados al crear/editar empresa:', data);
     await onSubmit(data);
     reset();
   };
@@ -227,7 +228,7 @@ export function CompanyFormModal({
                   </label>
                   <input
                     type="date"
-                    {...register('subscription_start_date')}
+                    {...register('subscription_start')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white transition-all"
                     disabled={isLoading}
                   />
@@ -240,7 +241,7 @@ export function CompanyFormModal({
                   </label>
                   <input
                     type="date"
-                    {...register('subscription_end_date')}
+                    {...register('subscription_end')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white transition-all"
                     disabled={isLoading}
                   />
