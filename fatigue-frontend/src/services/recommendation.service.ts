@@ -102,11 +102,19 @@ class RecommendationService {
         status,
         date_from: dateFrom,
         date_to: dateTo,
-        page_size: 1000,
-        ordering: '-created_at'
-      }
+      },
     });
     return response.data.results;
+  }
+
+  /**
+   * Obtener MIS recomendaciones (empleado actual)
+   */
+  async getMyRecommendations(pending?: boolean): Promise<RoutineRecommendation[]> {
+    const response = await api.get<PaginatedResponse<RoutineRecommendation>>(`${this.BASE_PATH}/my_recommendations/`, {
+      params: pending !== undefined ? { pending: pending.toString() } : {}
+    });
+    return response.data.results || [];
   }
 
   /**

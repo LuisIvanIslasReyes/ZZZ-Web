@@ -81,6 +81,19 @@ export type {
   ReportRequest
 } from './report.types';
 
+// Simulator types
+export type {
+  SimulatorSession,
+  SimulatorSessionDetail,
+  CreateSimulatorData,
+  UpdateSimulatorConfigData,
+  SimulatorLiveStats,
+  EmployeeForSimulator,
+  SimulatorStats,
+  SimulatorConfig
+} from './simulator.types';
+export { FATIGUE_PROFILES, ACTIVITY_MODES } from './simulator.types';
+
 // API types
 export type { 
   ApiResponse, 

@@ -75,10 +75,17 @@ class DeviceService {
    * Obtener dispositivos por empleado
    */
   async getDevicesByEmployee(employeeId: number): Promise<Device[]> {
-    const response = await api.get<PaginatedResponse<Device>>(`${this.BASE_PATH}/`, {
+    const response = await api.get<Device[] | PaginatedResponse<Device>>(`${this.BASE_PATH}/`, {
       params: { employee: employeeId, page_size: 100 }
     });
-    return response.data.results;
+    
+    // Manejar respuesta paginada o array directo
+    if (Array.isArray(response.data)) {
+      return response.data;
+    } else if ('results' in response.data) {
+      return response.data.results;
+    }
+    return [];
   }
 
   /**

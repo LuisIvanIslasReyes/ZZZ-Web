@@ -14,7 +14,8 @@ import {
   DevicesListPage, 
   AlertsListPage,
   AdminReportsPage,
-  SettingsPage
+  SettingsPage,
+  SimulatorsPage
 } from '../pages/admin';
 import { 
   SupervisorDashboardPage,
@@ -70,6 +71,10 @@ export const router = createBrowserRouter([
       {
         path: 'alerts',
         element: <AlertsListPage />,
+      },
+      {
+        path: 'simulators',
+        element: <SimulatorsPage />,
       },
       {
         path: 'reports',
