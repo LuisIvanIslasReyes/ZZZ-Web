@@ -7,6 +7,27 @@ import { useState } from 'react';
 import { useAuth } from '../../contexts';
 import toast from 'react-hot-toast';
 import { authService } from '../../services';
+import { exportMyData } from '../../services/admin.service';
+  // Handler para exportar datos del admin
+  const handleExportMyData = async () => {
+    try {
+      toast.loading('Generando archivo...');
+      const blob = await exportMyData();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `mis_datos_${Date.now()}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.dismiss();
+      toast.success('Datos exportados correctamente');
+    } catch (error) {
+      toast.dismiss();
+      toast.error('Error al exportar datos');
+    }
+  };
 
 interface PasswordData {
   old_password: string;
@@ -265,7 +286,10 @@ export function SettingsPage() {
           <div className="bg-white p-6 rounded-2xl shadow-md">
             <h3 className="font-semibold text-gray-900 mb-4">Acciones Rápidas</h3>
             <div className="space-y-2">
-              <button className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-3">
+              <button
+                className="w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-3"
+                onClick={handleExportMyData}
+              >
                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
