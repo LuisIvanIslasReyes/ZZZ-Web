@@ -7,7 +7,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts';
-import { authService, meService, employeeExportService } from '../../services';
+import { authService, meService, employeeExportService, employeeProfileService } from '../../services';
 import { Modal } from '../../components/common';
 import { EditProfileModal } from '../../components/forms/EditProfileModal';
 import toast from 'react-hot-toast';
@@ -15,22 +15,37 @@ import type { User } from '../../types/user.types';
 
 export function EmployeeProfilePage() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, refreshUser } = useAuth();
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
-    // Guardar cambios del perfil (dummy, solo frontend)
-    const handleSaveProfile = async (updatedUser: Partial<User>) => {
-      // Aquí deberías llamar a un servicio real para actualizar el perfil
-      setUser((prev) => ({ ...prev, ...updatedUser } as User));
-      toast.success('Perfil actualizado');
-      setIsEditProfileModalOpen(false);
-    };
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+
+  // Guardar cambios del perfil (real, PATCH a /auth/me/)
+  const handleSaveProfile = async (updatedUser: Partial<User>) => {
+    try {
+      setIsLoading(true);
+      console.log('🔄 Guardando perfil...', updatedUser);
+      await employeeProfileService.updateMyProfile(updatedUser);
+      // Recargar el perfil completo desde el backend
+      const refreshedUser = await meService.getMe();
+      console.log('✅ Perfil recargado:', refreshedUser);
+      setUser(refreshedUser);
+      // Actualizar también el contexto global de autenticación para que se refleje en el sidebar
+      await refreshUser();
+      toast.success('Perfil actualizado');
+      setIsEditProfileModalOpen(false);
+    } catch (error: any) {
+      console.error('❌ Error al actualizar perfil:', error);
+      toast.error(error?.response?.data?.detail || 'Error al actualizar el perfil');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     // console.log('🔄 Cargando perfil del usuario...');

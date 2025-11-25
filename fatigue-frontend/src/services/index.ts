@@ -1,3 +1,4 @@
+export { employeeProfileService } from './employeeProfile.service';
 /**
  * Services Index
  * Exportación centralizada de todos los servicios

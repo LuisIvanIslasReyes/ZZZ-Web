@@ -10,12 +10,13 @@ interface EditProfileModalProps {
 }
 
 export function EditProfileModal({ isOpen, onClose, user, onSave }: EditProfileModalProps) {
-  const [form, setForm] = useState<Partial<User>>({
-    full_name: user?.full_name || '',
-    email: user?.email || '',
-    phone: user?.phone || '',
-    department: user?.department || '',
-    position: user?.position || '',
+  const [form, setForm] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    department: '',
+    position: '',
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -23,7 +24,8 @@ export function EditProfileModal({ isOpen, onClose, user, onSave }: EditProfileM
   useEffect(() => {
     if (isOpen && user) {
       setForm({
-        full_name: user.full_name || '',
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
         email: user.email || '',
         phone: user.phone || '',
         department: user.department || '',
@@ -38,7 +40,13 @@ export function EditProfileModal({ isOpen, onClose, user, onSave }: EditProfileM
 
   const handleSubmit = async () => {
     setIsSaving(true);
-    await onSave(form);
+    // Solo enviar los campos editables (no department ni position)
+    await onSave({
+      first_name: form.first_name,
+      last_name: form.last_name,
+      email: form.email,
+      phone: form.phone,
+    });
     setIsSaving(false);
   };
 
@@ -67,16 +75,29 @@ export function EditProfileModal({ isOpen, onClose, user, onSave }: EditProfileM
       }
     >
       <form className="space-y-4" onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Nombre Completo</label>
-          <input
-            name="full_name"
-            type="text"
-            value={form.full_name}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
-            placeholder="Nombre Completo"
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+            <input
+              name="first_name"
+              type="text"
+              value={form.first_name}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+              placeholder="Nombre"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+            <input
+              name="last_name"
+              type="text"
+              value={form.last_name}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+              placeholder="Apellido"
+            />
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
@@ -106,8 +127,8 @@ export function EditProfileModal({ isOpen, onClose, user, onSave }: EditProfileM
             name="department"
             type="text"
             value={form.department}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+            readOnly
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed"
             placeholder="Departamento"
           />
         </div>
@@ -117,8 +138,8 @@ export function EditProfileModal({ isOpen, onClose, user, onSave }: EditProfileM
             name="position"
             type="text"
             value={form.position}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+            readOnly
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed"
             placeholder="Puesto"
           />
         </div>
