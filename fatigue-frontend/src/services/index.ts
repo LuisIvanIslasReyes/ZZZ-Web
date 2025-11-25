@@ -17,4 +17,5 @@ export { reportService } from './report.service';
 export { reportsService } from './reports.service';
 export { default as simulatorService } from './simulator.service';
 export { default as notificationService } from './notification.service';
+export { default as meService } from './me.service';
 export { default as api } from './api';

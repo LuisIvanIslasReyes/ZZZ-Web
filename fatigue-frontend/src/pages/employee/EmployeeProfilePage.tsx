@@ -4,12 +4,13 @@
  * Diseño ZZZ Admin Style
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts';
-import { authService } from '../../services';
+import { authService, meService } from '../../services';
 import { Modal } from '../../components/common';
 import toast from 'react-hot-toast';
+import type { User } from '../../types/user.types';
 
 export function EmployeeProfilePage() {
   const navigate = useNavigate();
@@ -20,6 +21,20 @@ export function EmployeeProfilePage() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    console.log('🔄 Cargando perfil del usuario...');
+    meService.getMe()
+      .then((userData) => {
+        console.log('✅ Usuario cargado:', userData);
+        setUser(userData);
+      })
+      .catch((error) => {
+        console.error('❌ Error al cargar perfil:', error);
+        toast.error('Error al cargar perfil');
+      });
+  }, []);
 
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || !confirmPassword) {
@@ -82,7 +97,7 @@ export function EmployeeProfilePage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-4xl font-bold text-[#18314F] mb-1">My Profile</h1>
+        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Mi Perfil</h1>
         <p className="text-lg text-[#18314F]/70">Información personal y configuración de cuenta</p>
       </div>
 
@@ -91,12 +106,18 @@ export function EmployeeProfilePage() {
         <div className="flex items-start gap-6">
           <div className="avatar placeholder">
             <div className="bg-[#18314F]/10 text-[#18314F] rounded-2xl w-32 h-32 flex items-center justify-center">
-              <span className="font-bold text-5xl">JD</span>
+              <span className="font-bold text-5xl">
+                {user ? `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}` : '--'}
+              </span>
             </div>
           </div>
           <div className="flex-1">
-            <h2 className="text-3xl font-bold text-[#18314F] mb-2">John Doe</h2>
-            <p className="text-gray-600 mb-4">ID: EMP-2024-001 | Departamento: Producción</p>
+            <h2 className="text-3xl font-bold text-[#18314F] mb-2">
+              {user ? user.full_name : 'Cargando...'}
+            </h2>
+            <p className="text-gray-600 mb-4">
+              {user ? `ID: ${user.username}${user.department ? ` | Departamento: ${user.department}` : ''}` : ''}
+            </p>
             <div className="flex gap-4">
               <button className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-6 rounded-xl transition-colors">
                 Editar Perfil
@@ -117,20 +138,20 @@ export function EmployeeProfilePage() {
           <div className="space-y-4">
             <div>
               <label className="text-sm text-gray-600 font-medium">Nombre Completo</label>
-              <p className="text-lg text-[#18314F]">John Doe</p>
+              <p className="text-lg text-[#18314F]">{user?.full_name || '-'}</p>
             </div>
             <div>
               <label className="text-sm text-gray-600 font-medium">Email</label>
-              <p className="text-lg text-[#18314F]">john.doe@company.com</p>
+              <p className="text-lg text-[#18314F]">{user?.email || '-'}</p>
             </div>
             <div>
               <label className="text-sm text-gray-600 font-medium">Teléfono</label>
-              <p className="text-lg text-[#18314F]">+52 555 123 4567</p>
+              <p className="text-lg text-[#18314F]">{user?.phone || '-'}</p>
             </div>
-            <div>
-              <label className="text-sm text-gray-600 font-medium">Fecha de Nacimiento</label>
-              <p className="text-lg text-[#18314F]">15/03/1990</p>
-            </div>
+            {/* <div>
+              <label className="text-sm text-gray-600 font-medium">Usuario</label>
+              <p className="text-lg text-[#18314F]">{user?.username || '-'}</p>
+            </div> */}
           </div>
         </div>
 
@@ -140,20 +161,20 @@ export function EmployeeProfilePage() {
           <div className="space-y-4">
             <div>
               <label className="text-sm text-gray-600 font-medium">Departamento</label>
-              <p className="text-lg text-[#18314F]">Producción</p>
+              <p className="text-lg text-[#18314F]">{user?.department || '-'}</p>
             </div>
             <div>
               <label className="text-sm text-gray-600 font-medium">Puesto</label>
-              <p className="text-lg text-[#18314F]">Operador de Línea</p>
+              <p className="text-lg text-[#18314F]">{user?.position || '-'}</p>
+            </div>
+            {/* <div>
+              <label className="text-sm text-gray-600 font-medium">Rol</label>
+              <p className="text-lg text-[#18314F]">{user?.role_display || '-'}</p>
             </div>
             <div>
-              <label className="text-sm text-gray-600 font-medium">Turno</label>
-              <p className="text-lg text-[#18314F]">Turno A (06:00 - 14:00)</p>
-            </div>
-            <div>
-              <label className="text-sm text-gray-600 font-medium">Fecha de Ingreso</label>
-              <p className="text-lg text-[#18314F]">01/01/2020</p>
-            </div>
+              <label className="text-sm text-gray-600 font-medium">Empresa</label>
+              <p className="text-lg text-[#18314F]">{user?.company_name || '-'}</p>
+            </div> */}
           </div>
         </div>
       </div>
