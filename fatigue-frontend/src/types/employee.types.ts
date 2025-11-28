@@ -1,6 +1,7 @@
 /**
  * Employee Types
  * Interfaces para empleados (users con rol employee)
+ * NOTA: Los supervisores ahora son la empresa. El campo supervisor se asigna automáticamente.
  */
 
 export interface Employee {
@@ -11,7 +12,7 @@ export interface Employee {
   full_name: string; // Nombre completo
   employee_id: string; // Se puede construir como `EMP-${id}`
   role: 'employee';
-  supervisor?: number; // ID del supervisor
+  supervisor?: number; // ID del supervisor (asignado automáticamente por empresa)
   supervisor_name?: string;
   phone?: string;
   department?: string;
@@ -28,7 +29,7 @@ export interface CreateEmployeeData {
   password: string;
   first_name: string;
   last_name: string;
-  supervisor?: number;
+  // supervisor se asigna automáticamente según la empresa del supervisor que crea el empleado
   phone?: string;
   department?: string;
   position?: string;
@@ -38,7 +39,7 @@ export interface UpdateEmployeeData {
   email?: string;
   first_name?: string;
   last_name?: string;
-  supervisor?: number;
+  // supervisor no se puede cambiar manualmente
   phone?: string;
   department?: string;
   position?: string;

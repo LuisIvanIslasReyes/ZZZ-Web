@@ -7,6 +7,8 @@
 import { useState, useEffect } from 'react';
 import { alertService } from '../../services';
 import { LoadingSpinner } from '../../components/common';
+import { AlertWorkflowModal } from '../../components/alerts';
+import toast from 'react-hot-toast';
 import type { FatigueAlert } from '../../types';
 
 export function SupervisorTeamAlertsPage() {
@@ -14,6 +16,8 @@ export function SupervisorTeamAlertsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [isWorkflowModalOpen, setIsWorkflowModalOpen] = useState(false);
+  const [selectedAlert, setSelectedAlert] = useState<FatigueAlert | null>(null);
 
   useEffect(() => {
     loadAlerts();
@@ -23,30 +27,26 @@ export function SupervisorTeamAlertsPage() {
     try {
       setIsLoading(true);
       const data = await alertService.getRecentAlerts(168); // Última semana
-      setAlerts(data);
+      
+      // Mapear campos del backend a formato del frontend
+      const mappedAlerts = data.map(alert => ({
+        ...alert,
+        status: alert.is_resolved ? 'resolved' : alert.is_acknowledged ? 'acknowledged' : 'pending',
+        fatigue_score: alert.fatigue_index || alert.fatigue_score || 0
+      }));
+      
+      setAlerts(mappedAlerts);
     } catch (error) {
       console.error('Error loading alerts:', error);
+      toast.error('Error al cargar alertas');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleAcknowledge = async (alertId: number) => {
-    try {
-      await alertService.acknowledgeAlert(alertId);
-      await loadAlerts();
-    } catch (error) {
-      console.error('Error acknowledging alert:', error);
-    }
-  };
-
-  const handleResolve = async (alertId: number) => {
-    try {
-      await alertService.resolveAlert(alertId);
-      await loadAlerts();
-    } catch (error) {
-      console.error('Error resolving alert:', error);
-    }
+  const handleManageAlert = (alert: FatigueAlert) => {
+    setSelectedAlert(alert);
+    setIsWorkflowModalOpen(true);
   };
 
   const getSeverityColor = (severity: string) => {
@@ -86,17 +86,14 @@ export function SupervisorTeamAlertsPage() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">Pendiente</span>;
-      case 'acknowledged':
-        return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">Reconocida</span>;
-      case 'resolved':
-        return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Resuelta</span>;
-      default:
-        return <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-semibold">{status}</span>;
+  const getStatusBadge = (alert: FatigueAlert) => {
+    if (alert.is_resolved) {
+      return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">✓ Resuelta</span>;
     }
+    if (alert.is_acknowledged) {
+      return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">👁 Reconocida</span>;
+    }
+    return <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-semibold">⚠ Pendiente</span>;
   };
 
   const filteredAlerts = alerts.filter(alert => {
@@ -105,10 +102,15 @@ export function SupervisorTeamAlertsPage() {
     return matchesSeverity && matchesStatus;
   });
 
-  const criticalCount = alerts.filter(a => a.severity === 'critical' && a.status === 'pending').length;
-  const pendingCount = alerts.filter(a => a.status === 'pending').length;
-  const acknowledgedCount = alerts.filter(a => a.status === 'acknowledged').length;
-  const resolvedToday = alerts.filter(a => a.status === 'resolved' && new Date(a.created_at).toDateString() === new Date().toDateString()).length;
+  const today = new Date().toDateString();
+  const criticalCount = alerts.filter(a => (a.severity === 'critical' || a.severity === 'high') && !a.is_resolved).length;
+  const pendingCount = alerts.filter(a => !a.is_resolved && !a.is_acknowledged).length;
+  const acknowledgedCount = alerts.filter(a => a.is_acknowledged && !a.is_resolved).length;
+  const resolvedToday = alerts.filter(a => {
+    if (!a.is_resolved) return false;
+    const resolvedDate = a.resolved_at ? new Date(a.resolved_at) : new Date(a.timestamp || a.created_at);
+    return resolvedDate.toDateString() === today;
+  }).length;
 
   if (isLoading) {
     return <LoadingSpinner size="lg" text="Cargando alertas..." />;
@@ -281,9 +283,13 @@ export function SupervisorTeamAlertsPage() {
                   <div className="flex items-center gap-3 mb-2">
                     {getSeverityIcon(alert.severity)}
                     <h3 className="text-lg font-semibold text-[#18314F]">
-                      {alert.alert_type === 'notification' ? '📢 Notificación' : alert.alert_type}
+                      {alert.alert_type === 'notification' ? '📢 Notificación' : 
+                       alert.alert_type === 'fatigue_medium' ? '⚠️ Fatiga Moderada' :
+                       alert.alert_type === 'fatigue_high' ? '🔴 Fatiga Alta' :
+                       alert.alert_type === 'fatigue_critical' ? '🚨 Fatiga Crítica' :
+                       alert.alert_type}
                     </h3>
-                    {getStatusBadge(alert.status)}
+                    {getStatusBadge(alert)}
                     {alert.alert_type === 'notification' && (
                       <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold">
                         Mensaje del Equipo
@@ -298,44 +304,81 @@ export function SupervisorTeamAlertsPage() {
                       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
-                      <span>Empleado #{alert.employee}</span>
+                      <span>{alert.employee_name || `Empleado #${alert.employee}`}</span>
                     </div>
+                    {alert.fatigue_score > 0 && (
+                      <div className="flex items-center gap-2">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        <span>Fatiga: {alert.fatigue_score.toFixed(1)}/100</span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2">
                       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>{new Date(alert.created_at).toLocaleString('es-ES')}</span>
+                      <span>{new Date(alert.created_at || alert.timestamp).toLocaleString('es-ES')}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex gap-2 ml-4">
-                  {alert.status === 'pending' && (
-                    <>
+                <div className="flex flex-col gap-2 ml-4 min-w-[180px]">
+                  {/* Alerta pendiente - Sin reconocer */}
+                  {!alert.is_acknowledged && !alert.is_resolved && (
+                    <div className="space-y-2">
+                      <div className="text-xs font-semibold text-red-700 mb-2 flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        ⚠ Requiere Acción
+                      </div>
                       <button
-                        onClick={() => handleAcknowledge(alert.id)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition-colors text-sm"
+                        onClick={() => handleManageAlert(alert)}
+                        className="w-full bg-[#18314F] hover:bg-[#18314F]/90 text-white font-bold py-3.5 px-4 rounded-xl transition-all text-sm shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
                       >
-                        Reconocer
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Gestionar
                       </button>
+                    </div>
+                  )}
+                  
+                  {/* Alerta reconocida pero no resuelta */}
+                  {alert.is_acknowledged && !alert.is_resolved && (
+                    <div className="space-y-2">
+                      <div className="text-xs font-semibold text-blue-700 mb-2 flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        👁 En Seguimiento
+                      </div>
                       <button
-                        onClick={() => handleResolve(alert.id)}
-                        className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-xl transition-colors text-sm"
+                        onClick={() => handleManageAlert(alert)}
+                        className="w-full bg-[#18314F] hover:bg-[#18314F]/90 text-white font-bold py-3.5 px-4 rounded-xl transition-all text-sm shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2"
                       >
-                        Resolver
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Gestionar
                       </button>
-                    </>
+                    </div>
                   )}
-                  {alert.status === 'acknowledged' && (
-                    <button
-                      onClick={() => handleResolve(alert.id)}
-                      className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-xl transition-colors text-sm"
-                    >
-                      Resolver
-                    </button>
-                  )}
-                  {alert.status === 'resolved' && (
-                    <span className="text-green-600 font-semibold py-2 px-4">✓ Completada</span>
+                  
+                  {/* Alerta resuelta */}
+                  {alert.is_resolved && (
+                    <div className="text-center bg-green-50 rounded-xl p-4 border-2 border-green-200">
+                      <div className="bg-green-500 rounded-full p-3 inline-block mb-2">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="3">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <p className="text-sm text-green-700 font-bold">✓ Resuelta</p>
+                      <p className="text-xs text-green-600 mt-1">
+                        {alert.resolved_at && new Date(alert.resolved_at).toLocaleDateString('es-ES')}
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
@@ -343,6 +386,17 @@ export function SupervisorTeamAlertsPage() {
           ))
         )}
       </div>
+
+      {/* Alert Workflow Modal */}
+      <AlertWorkflowModal
+        isOpen={isWorkflowModalOpen}
+        onClose={() => {
+          setIsWorkflowModalOpen(false);
+          setSelectedAlert(null);
+        }}
+        alert={selectedAlert}
+        onUpdate={loadAlerts}
+      />
     </div>
   );
 }

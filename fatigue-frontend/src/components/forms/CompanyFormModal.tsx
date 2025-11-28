@@ -17,6 +17,11 @@ const companySchema = z.object({
   max_employees: z.number().min(1, 'Debe permitir al menos 1 empleado').max(10000, 'Máximo 10,000 empleados'),
   subscription_start: z.string().optional(),
   subscription_end: z.string().optional(),
+  // Datos del supervisor (solo al crear)
+  supervisor_email: z.string().email('Email inválido').optional(),
+  supervisor_password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres').optional(),
+  supervisor_first_name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres').optional(),
+  supervisor_last_name: z.string().min(2, 'El apellido debe tener al menos 2 caracteres').optional(),
 });
 
 type CompanyFormData = z.infer<typeof companySchema>;
@@ -251,6 +256,99 @@ export function CompanyFormModal({
                 💡 Define el límite de empleados permitidos y el período de validez de la suscripción
               </p>
             </div>
+
+            {/* Cuenta del Supervisor (solo al crear) */}
+            {!isEdit && (
+              <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-[#18314F] mb-2 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  Cuenta del Supervisor
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Crea la cuenta de acceso para el supervisor de esta empresa (1 supervisor por empresa)
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Email del Supervisor */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email del Supervisor <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      {...register('supervisor_email')}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
+                        errors.supervisor_email ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                      }`}
+                      placeholder="supervisor@empresa.com"
+                      disabled={isLoading}
+                    />
+                    {errors.supervisor_email && (
+                      <p className="mt-1 text-sm text-red-600">{errors.supervisor_email.message}</p>
+                    )}
+                  </div>
+
+                  {/* Contraseña */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Contraseña <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="password"
+                      {...register('supervisor_password')}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
+                        errors.supervisor_password ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                      }`}
+                      placeholder="Mínimo 6 caracteres"
+                      disabled={isLoading}
+                    />
+                    {errors.supervisor_password && (
+                      <p className="mt-1 text-sm text-red-600">{errors.supervisor_password.message}</p>
+                    )}
+                  </div>
+
+                  {/* Nombre */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nombre <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      {...register('supervisor_first_name')}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
+                        errors.supervisor_first_name ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                      }`}
+                      placeholder="Juan"
+                      disabled={isLoading}
+                    />
+                    {errors.supervisor_first_name && (
+                      <p className="mt-1 text-sm text-red-600">{errors.supervisor_first_name.message}</p>
+                    )}
+                  </div>
+
+                  {/* Apellido */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Apellido <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      {...register('supervisor_last_name')}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
+                        errors.supervisor_last_name ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                      }`}
+                      placeholder="Pérez"
+                      disabled={isLoading}
+                    />
+                    {errors.supervisor_last_name && (
+                      <p className="mt-1 text-sm text-red-600">{errors.supervisor_last_name.message}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer con acciones */}

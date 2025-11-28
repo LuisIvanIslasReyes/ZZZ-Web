@@ -12,7 +12,7 @@ import type { Employee } from '../../types';
 
 const employeeSchema = z.object({
   email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres').optional().or(z.literal('')),
+  password: z.string().optional().or(z.literal('')),
   first_name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
   last_name: z.string().min(2, 'El apellido debe tener al menos 2 caracteres'),
   phone: z.string().optional(),
@@ -46,6 +46,7 @@ export function EmployeeFormModal({
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
   } = useForm<EmployeeFormData>({
     resolver: zodResolver(employeeSchema),
     defaultValues: {
@@ -80,6 +81,15 @@ export function EmployeeFormModal({
   }, [initialData, reset]);
 
   const onFormSubmit = async (data: EmployeeFormData) => {
+    // Validar password para creación
+    if (!isEdit && (!data.password || data.password.length < 8)) {
+      setError('password', {
+        type: 'manual',
+        message: 'La contraseña es requerida y debe tener al menos 8 caracteres',
+      });
+      return;
+    }
+
     // Si es edición y no hay password, eliminarlo del objeto
     if (isEdit && !data.password) {
       const { password, ...dataWithoutPassword } = data;
@@ -181,14 +191,16 @@ export function EmployeeFormModal({
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
                       errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
                     }`}
-                    placeholder={isEdit ? 'Dejar en blanco para no cambiar' : 'Mínimo 6 caracteres'}
+                    placeholder={isEdit ? 'Dejar en blanco para no cambiar' : 'Mínimo 8 caracteres'}
                     disabled={isLoading}
                   />
                   {errors.password && (
                     <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
                   )}
-                  {isEdit && (
+                  {isEdit ? (
                     <p className="mt-1 text-sm text-gray-500">Dejar en blanco para mantener la contraseña actual</p>
+                  ) : (
+                    <p className="mt-1 text-sm text-gray-500">La contraseña debe tener al menos 8 caracteres</p>
                   )}
                 </div>
 

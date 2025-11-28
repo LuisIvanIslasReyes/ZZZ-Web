@@ -61,28 +61,26 @@ class AlertService {
   }
 
   /**
-   * Reconocer alerta
+   * Reconocer alerta (marcar como vista)
    */
-  async acknowledgeAlert(id: number, userId?: number): Promise<FatigueAlert> {
-    const response = await api.post<FatigueAlert>(`${this.BASE_PATH}/${id}/acknowledge/`, 
-      userId ? { acknowledged_by: userId } : {}
-    );
+  async acknowledgeAlert(id: number): Promise<any> {
+    const response = await api.post<any>(`${this.BASE_PATH}/${id}/acknowledge/`);
     return response.data;
   }
 
   /**
    * Resolver alerta
    */
-  async resolveAlert(id: number): Promise<FatigueAlert> {
-    const response = await api.post<FatigueAlert>(`${this.BASE_PATH}/${id}/resolve/`);
+  async resolveAlert(id: number): Promise<any> {
+    const response = await api.post<any>(`${this.BASE_PATH}/${id}/resolve/`);
     return response.data;
   }
 
   /**
-   * Descartar alerta
+   * Reabrir alerta (marcar como no resuelta)
    */
-  async dismissAlert(id: number): Promise<FatigueAlert> {
-    const response = await api.post<FatigueAlert>(`${this.BASE_PATH}/${id}/dismiss/`);
+  async unresolveAlert(id: number): Promise<any> {
+    const response = await api.post<any>(`${this.BASE_PATH}/${id}/unresolve/`);
     return response.data;
   }
 

@@ -6,6 +6,8 @@
 import { useState, useEffect } from 'react';
 import { alertService } from '../../services';
 import { Table, Modal, SearchBar } from '../../components/common';
+import { AlertWorkflowModal } from '../../components/alerts';
+import toast from 'react-hot-toast';
 import type { Column, TableAction } from '../../components/common';
 import type { FatigueAlert } from '../../types';
 
@@ -16,23 +18,53 @@ export function AlertsListPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAlert, setSelectedAlert] = useState<FatigueAlert | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isWorkflowModalOpen, setIsWorkflowModalOpen] = useState(false);
+  const [workflowAlert, setWorkflowAlert] = useState<FatigueAlert | null>(null);
+  const [severityFilter, setSeverityFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
+  const [selectedAlerts, setSelectedAlerts] = useState<number[]>([]);
 
   useEffect(() => {
     loadAlerts();
   }, []);
 
   useEffect(() => {
-    if (searchTerm.trim() === '') {
-      setFilteredAlerts(alerts);
-    } else {
-      const filtered = alerts.filter(
+    applyFilters();
+  }, [searchTerm, alerts, severityFilter, statusFilter, dateFilter]);
+
+  const applyFilters = () => {
+    let filtered = [...alerts];
+
+    // Filtro de búsqueda
+    if (searchTerm.trim() !== '') {
+      filtered = filtered.filter(
         (alert) =>
           (alert.employee_name?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
           (alert.alert_type?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
       );
-      setFilteredAlerts(filtered);
     }
-  }, [searchTerm, alerts]);
+
+    // Filtro de severidad
+    if (severityFilter) {
+      filtered = filtered.filter((alert) => alert.severity === severityFilter);
+    }
+
+    // Filtro de estado
+    if (statusFilter) {
+      filtered = filtered.filter((alert) => alert.status === statusFilter);
+    }
+
+    // Filtro de fecha
+    if (dateFilter) {
+      const now = new Date();
+      const hours = parseInt(dateFilter);
+      const cutoffDate = new Date(now.getTime() - hours * 60 * 60 * 1000);
+      filtered = filtered.filter((alert) => new Date(alert.created_at) >= cutoffDate);
+    }
+
+    setFilteredAlerts(filtered);
+  };
 
   const loadAlerts = async () => {
     try {
@@ -47,27 +79,66 @@ export function AlertsListPage() {
     }
   };
 
-  const handleAcknowledge = async (alert: FatigueAlert) => {
-    try {
-      await alertService.acknowledgeAlert(alert.id);
-      loadAlerts();
-    } catch (error) {
-      console.error('Error acknowledging alert:', error);
-    }
+  const handleManageAlert = (alert: FatigueAlert) => {
+    setWorkflowAlert(alert);
+    setIsWorkflowModalOpen(true);
   };
 
-  const handleResolve = async (alert: FatigueAlert) => {
+  const handleBulkAction = async (action: 'acknowledge' | 'resolve' | 'dismiss') => {
+    if (selectedAlerts.length === 0) {
+      toast.error('Selecciona al menos una alerta');
+      return;
+    }
+
+    const actionLabels = {
+      acknowledge: 'reconocidas',
+      resolve: 'resueltas',
+      dismiss: 'descartadas',
+    };
+
+    if (!confirm(`¿Estás seguro de que deseas ${actionLabels[action]} ${selectedAlerts.length} alerta(s)?`)) {
+      return;
+    }
+
     try {
-      await alertService.resolveAlert(alert.id);
+      const promises = selectedAlerts.map((id) => {
+        switch (action) {
+          case 'acknowledge':
+            return alertService.acknowledgeAlert(id);
+          case 'resolve':
+            return alertService.resolveAlert(id);
+          case 'dismiss':
+            return alertService.dismissAlert(id);
+        }
+      });
+
+      await Promise.all(promises);
+      toast.success(`✓ ${selectedAlerts.length} alerta(s) ${actionLabels[action]} exitosamente`);
+      setSelectedAlerts([]);
       loadAlerts();
     } catch (error) {
-      console.error('Error resolving alert:', error);
+      console.error('Error in bulk action:', error);
+      toast.error('Error al procesar las alertas');
     }
   };
 
   const handleViewDetails = (alert: FatigueAlert) => {
     setSelectedAlert(alert);
     setIsModalOpen(true);
+  };
+
+  const toggleAlertSelection = (id: number) => {
+    setSelectedAlerts((prev) =>
+      prev.includes(id) ? prev.filter((alertId) => alertId !== id) : [...prev, id]
+    );
+  };
+
+  const toggleAllAlerts = () => {
+    if (selectedAlerts.length === filteredAlerts.length) {
+      setSelectedAlerts([]);
+    } else {
+      setSelectedAlerts(filteredAlerts.map((alert) => alert.id));
+    }
   };
 
   const getSeverityColor = (severity: string) => {
@@ -132,6 +203,25 @@ export function AlertsListPage() {
 
   const columns: Column<FatigueAlert>[] = [
     {
+      key: 'checkbox',
+      label: (
+        <input
+          type="checkbox"
+          className="checkbox checkbox-sm"
+          checked={selectedAlerts.length === filteredAlerts.length && filteredAlerts.length > 0}
+          onChange={toggleAllAlerts}
+        />
+      ),
+      render: (alert) => (
+        <input
+          type="checkbox"
+          className="checkbox checkbox-sm"
+          checked={selectedAlerts.includes(alert.id)}
+          onChange={() => toggleAlertSelection(alert.id)}
+        />
+      ),
+    },
+    {
       key: 'created_at',
       label: 'Fecha',
       render: (alert) => new Date(alert.created_at).toLocaleString(),
@@ -194,78 +284,6 @@ export function AlertsListPage() {
     },
   ];
 
-  const actions: TableAction<FatigueAlert>[] = [
-    {
-      label: 'Ver',
-      onClick: handleViewDetails,
-      className: 'btn btn-ghost btn-sm',
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-          />
-        </svg>
-      ),
-    },
-    {
-      label: 'Reconocer',
-      onClick: handleAcknowledge,
-      className: 'btn btn-ghost btn-sm',
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
-      ),
-    },
-    {
-      label: 'Resolver',
-      onClick: handleResolve,
-      className: 'btn btn-ghost btn-sm text-success',
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      ),
-    },
-  ];
-
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -276,128 +294,283 @@ export function AlertsListPage() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Total Alertas</p>
-              <p className="text-3xl font-bold text-[#18314F] mt-2">{alerts.length}</p>
-            </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Pendientes</p>
-              <p className="text-3xl font-bold text-yellow-600 mt-2">
-                {alerts.filter((a) => a.status === 'pending').length}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Críticas</p>
-              <p className="text-3xl font-bold text-red-600 mt-2">
-                {alerts.filter((a) => a.severity === 'critical').length}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      {/* Tabs */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <button
+          onClick={() => {
+            setSeverityFilter('critical');
+            setStatusFilter('');
+          }}
+          className={`bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all ${
+            severityFilter === 'critical' ? 'ring-2 ring-red-500' : ''
+          }`}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-700">Alertas Críticas</h3>
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
           </div>
-        </div>
+          <div className="text-4xl font-bold text-red-600 mb-1">
+            {alerts.filter((a) => a.severity === 'critical').length}
+          </div>
+          <p className="text-sm text-gray-500">Requieren atención inmediata</p>
+        </button>
 
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Reconocidas</p>
-              <p className="text-3xl font-bold text-blue-600 mt-2">
-                {alerts.filter((a) => a.status === 'acknowledged').length}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <button
+          onClick={() => {
+            setSeverityFilter('');
+            setStatusFilter('pending');
+          }}
+          className={`bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all ${
+            statusFilter === 'pending' && !severityFilter ? 'ring-2 ring-yellow-500' : ''
+          }`}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-700">Pendientes</h3>
+            <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
-        </div>
+          <div className="text-4xl font-bold text-yellow-600 mb-1">
+            {alerts.filter((a) => a.status === 'pending').length}
+          </div>
+          <p className="text-sm text-gray-500">Por revisar</p>
+        </button>
 
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-600 text-sm font-medium">Resueltas</p>
-              <p className="text-3xl font-bold text-green-600 mt-2">
-                {alerts.filter((a) => a.status === 'resolved').length}
-              </p>
+        <button
+          onClick={() => {
+            setSeverityFilter('');
+            setStatusFilter('acknowledged');
+          }}
+          className={`bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all ${
+            statusFilter === 'acknowledged' && !severityFilter ? 'ring-2 ring-blue-500' : ''
+          }`}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-700">Reconocidas</h3>
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
             </div>
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          </div>
+          <div className="text-4xl font-bold text-blue-600 mb-1">
+            {alerts.filter((a) => a.status === 'acknowledged').length}
+          </div>
+          <p className="text-sm text-gray-500">En proceso</p>
+        </button>
+
+        <button
+          onClick={() => {
+            setSeverityFilter('');
+            setStatusFilter('resolved');
+          }}
+          className={`bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all ${
+            statusFilter === 'resolved' && !severityFilter ? 'ring-2 ring-green-500' : ''
+          }`}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-700">Resueltas Hoy</h3>
+            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
           </div>
-        </div>
+          <div className="text-4xl font-bold text-green-600 mb-1">
+            {alerts.filter((a) => a.status === 'resolved').length}
+          </div>
+          <p className="text-sm text-gray-500">Completadas</p>
+        </button>
       </div>
 
       {/* Search and Filters */}
       <div className="bg-white p-6 rounded-2xl shadow-md">
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex items-center gap-3 mb-4">
+          <h3 className="font-semibold text-[#18314F]">Filtros Activos</h3>
+          {(severityFilter || statusFilter || dateFilter || searchTerm) && (
+            <button
+              onClick={() => {
+                setSeverityFilter('');
+                setStatusFilter('');
+                setDateFilter('');
+                setSearchTerm('');
+              }}
+              className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Limpiar filtros
+            </button>
+          )}
+        </div>
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder="Buscar por empleado o tipo..."
             className="flex-1"
           />
-          <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white">
+          <select 
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
+            value={severityFilter}
+            onChange={(e) => setSeverityFilter(e.target.value)}
+          >
             <option value="">Todas las severidades</option>
             <option value="critical">Crítica</option>
             <option value="high">Alta</option>
             <option value="medium">Media</option>
             <option value="low">Baja</option>
           </select>
-          <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white">
+          <select 
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
             <option value="">Todos los estados</option>
             <option value="pending">Pendientes</option>
             <option value="acknowledged">Reconocidas</option>
             <option value="resolved">Resueltas</option>
+            <option value="dismissed">Descartadas</option>
           </select>
-          <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white">
-            <option value="">Últimas 24 horas</option>
-            <option value="7">Últimos 7 días</option>
-            <option value="30">Últimos 30 días</option>
+          <select 
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+          >
+            <option value="">Todo el tiempo</option>
+            <option value="24">Últimas 24 horas</option>
+            <option value="168">Últimos 7 días</option>
+            <option value="720">Últimos 30 días</option>
           </select>
         </div>
+
+        {/* Bulk Actions */}
+        {selectedAlerts.length > 0 && (
+          <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <span className="font-semibold text-blue-900">
+              {selectedAlerts.length} {selectedAlerts.length === 1 ? 'alerta seleccionada' : 'alertas seleccionadas'}
+            </span>
+            <div className="flex gap-2 ml-auto">
+              <button
+                onClick={() => handleBulkAction('acknowledge')}
+                className="btn btn-sm btn-info gap-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Reconocer
+              </button>
+              <button
+                onClick={() => handleBulkAction('resolve')}
+                className="btn btn-sm btn-success gap-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Resolver
+              </button>
+              <button
+                onClick={() => handleBulkAction('dismiss')}
+                className="btn btn-sm btn-ghost gap-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Descartar
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Table */}
+      {/* Alerts List */}
       <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-        <Table
-          data={filteredAlerts}
-          columns={columns}
-          actions={actions}
-          keyExtractor={(alert) => alert.id}
-          isLoading={isLoading}
-          emptyMessage="No se encontraron alertas"
-        />
+        {isLoading ? (
+          <div className="p-12 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#18314F] mx-auto"></div>
+            <p className="mt-4 text-gray-600">Cargando alertas...</p>
+          </div>
+        ) : filteredAlerts.length === 0 ? (
+          <div className="p-12 text-center">
+            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+            </svg>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">No se encontraron alertas</h3>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  {columns.map((col, idx) => (
+                    <th key={idx} className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      {typeof col.label === 'string' ? col.label : col.label}
+                    </th>
+                  ))}
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredAlerts.map((alert) => (
+                  <tr key={alert.id} className="hover:bg-gray-50">
+                    {columns.map((col, colIdx) => (
+                      <td key={colIdx} className="px-6 py-4 whitespace-nowrap">
+                        {col.render ? col.render(alert) : String(alert[col.key as keyof FatigueAlert] ?? '')}
+                      </td>
+                    ))}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex gap-2">
+                        {(alert.status === 'pending' || alert.status === 'acknowledged') && (
+                          <button
+                            onClick={() => handleManageAlert(alert)}
+                            className="btn btn-sm bg-[#18314F] hover:bg-[#18314F]/90 text-white gap-1"
+                            title="Gestionar alerta"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            Gestionar
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleViewDetails(alert)}
+                          className="btn btn-ghost btn-sm"
+                          title="Ver detalles"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
+
+      {/* Alert Workflow Modal */}
+      <AlertWorkflowModal
+        isOpen={isWorkflowModalOpen}
+        onClose={() => {
+          setIsWorkflowModalOpen(false);
+          setWorkflowAlert(null);
+        }}
+        alert={workflowAlert}
+        onUpdate={loadAlerts}
+      />
 
       {/* Details Modal */}
       <Modal

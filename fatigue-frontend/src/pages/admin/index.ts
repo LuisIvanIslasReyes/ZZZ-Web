@@ -11,4 +11,5 @@ export { AlertsListPage } from './AlertsListPage';
 export { AdminReportsPage } from './AdminReportsPage';
 export { SettingsPage } from './SettingsPage';
 export { default as SimulatorsPage } from './SimulatorsPage';
+export { MLModelInfoPage } from './MLModelInfoPage';
 

@@ -8,12 +8,15 @@ import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { alertService } from '../../services';
 import { LoadingSpinner } from '../../components/common';
+import { AlertWorkflowModal } from '../../components/alerts';
 import type { FatigueAlert } from '../../types';
 
 export function EmployeeAlertsPage() {
   const [alerts, setAlerts] = useState<FatigueAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [isWorkflowModalOpen, setIsWorkflowModalOpen] = useState(false);
+  const [selectedAlert, setSelectedAlert] = useState<FatigueAlert | null>(null);
 
   useEffect(() => {
     loadAlerts();
@@ -24,7 +27,15 @@ export function EmployeeAlertsPage() {
       setIsLoading(true);
       // Obtener alertas de los últimos 30 días
       const data = await alertService.getRecentAlerts(720);
-      setAlerts(data);
+      
+      // Mapear campos del backend a formato del frontend
+      const mappedAlerts = data.map(alert => ({
+        ...alert,
+        status: alert.is_resolved ? 'resolved' : 'pending',
+        fatigue_score: alert.fatigue_index || alert.fatigue_score || 0
+      }));
+      
+      setAlerts(mappedAlerts);
     } catch (error) {
       console.error('Error loading alerts:', error);
       toast.error('Error al cargar las alertas');
@@ -33,15 +44,9 @@ export function EmployeeAlertsPage() {
     }
   };
 
-  const handleAcknowledge = async (alertId: number) => {
-    try {
-      await alertService.acknowledgeAlert(alertId);
-      toast.success('Alerta reconocida');
-      await loadAlerts();
-    } catch (error) {
-      console.error('Error acknowledging alert:', error);
-      toast.error('Error al reconocer la alerta');
-    }
+  const handleManageAlert = (alert: FatigueAlert) => {
+    setSelectedAlert(alert);
+    setIsWorkflowModalOpen(true);
   };
 
   const getSeverityIcon = (severity: string) => {
@@ -281,23 +286,46 @@ export function EmployeeAlertsPage() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    {alert.status !== 'resolved' && alert.status === 'pending' && (
-                      <button
-                        onClick={() => handleAcknowledge(alert.id)}
-                        className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-4 rounded-xl transition-colors text-sm whitespace-nowrap"
-                      >
-                        ✓ Reconocer
-                      </button>
+                  <div className="flex flex-col gap-2 min-w-[200px]">
+                    {/* Alerta no resuelta - Vista de empleado */}
+                    {!alert.is_resolved && alert.status !== 'resolved' && (
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold text-orange-700 mb-2 flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                          </svg>
+                          Pendiente de Supervisión
+                        </div>
+                        <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4 text-center">
+                          <svg className="w-12 h-12 mx-auto text-orange-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                          </svg>
+                          <p className="text-sm font-bold text-orange-900 mb-1">⏳ En Espera</p>
+                          <p className="text-xs text-orange-700 leading-relaxed">
+                            Tu supervisor será notificado y gestionará esta alerta
+                          </p>
+                        </div>
+                        {alert.recommendations && (
+                          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-3">
+                            <p className="text-xs font-semibold text-blue-900 mb-1">💡 Recomendación:</p>
+                            <p className="text-xs text-blue-700">{alert.recommendations}</p>
+                          </div>
+                        )}
+                      </div>
                     )}
-                    {alert.status === 'resolved' && (
-                      <div className="text-center">
-                        <div className="bg-green-100 rounded-full p-3 inline-block mb-2">
-                          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    
+                    {/* Estado: Resuelta */}
+                    {(alert.is_resolved || alert.status === 'resolved') && (
+                      <div className="text-center bg-green-50 rounded-xl p-4 border-2 border-green-200">
+                        <div className="bg-green-500 rounded-full p-3 inline-block mb-2">
+                          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="3">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
-                        <p className="text-xs text-green-700 font-semibold">Resuelta</p>
+                        <p className="text-sm text-green-700 font-bold">✓ Resuelta</p>
+                        <p className="text-xs text-green-600 mt-1">
+                          {alert.resolved_at && new Date(alert.resolved_at).toLocaleDateString('es-ES')}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -307,6 +335,17 @@ export function EmployeeAlertsPage() {
           })
         )}
       </div>
+
+      {/* Alert Workflow Modal */}
+      <AlertWorkflowModal
+        isOpen={isWorkflowModalOpen}
+        onClose={() => {
+          setIsWorkflowModalOpen(false);
+          setSelectedAlert(null);
+        }}
+        alert={selectedAlert}
+        onUpdate={loadAlerts}
+      />
     </div>
   );
 }

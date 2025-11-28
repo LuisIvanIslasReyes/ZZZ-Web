@@ -1,6 +1,7 @@
 /**
  * User Types
  * Interfaces y tipos relacionados con usuarios del sistema
+ * NOTA: Los supervisores ahora representan empresas (1 supervisor = 1 empresa)
  */
 
 export type UserRole = 'admin' | 'supervisor' | 'employee';
@@ -22,7 +23,7 @@ export interface User {
   role_display: string;
   company: number | null;
   company_name: string | null;
-  supervisor: number | null;
+  supervisor: number | null; // Solo para empleados, asignado automáticamente
   department?: string;
   position?: string;
   phone?: string;
@@ -39,8 +40,8 @@ export interface CreateUserData {
   first_name: string;
   last_name: string;
   role: UserRole;
-  company?: number | null;
-  supervisor?: number | null;
+  company?: number | null; // Requerido para supervisors y employees
+  // supervisor se asigna automáticamente para employees
   department?: string;
   position?: string;
   phone?: string;
@@ -51,7 +52,7 @@ export interface UpdateUserData {
   first_name?: string;
   last_name?: string;
   company?: number | null;
-  supervisor?: number | null;
+  // supervisor no se actualiza manualmente
   department?: string;
   position?: string;
   phone?: string;

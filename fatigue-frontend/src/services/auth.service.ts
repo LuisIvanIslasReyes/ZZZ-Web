@@ -12,7 +12,13 @@ class AuthService {
    * Iniciar sesión
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const response = await api.post<LoginResponse>('/auth/login/', credentials);
+    // El backend espera 'email' y 'password' directamente
+    const loginData = {
+      email: credentials.email,
+      password: credentials.password
+    };
+    
+    const response = await api.post<LoginResponse>('/auth/login/', loginData);
     
     if (response.data.access && response.data.refresh) {
       localStorage.setItem('access_token', response.data.access);

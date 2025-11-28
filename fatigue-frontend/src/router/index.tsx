@@ -15,7 +15,8 @@ import {
   AlertsListPage,
   AdminReportsPage,
   SettingsPage,
-  SimulatorsPage
+  SimulatorsPage,
+  MLModelInfoPage
 } from '../pages/admin';
 import { 
   SupervisorDashboardPage,
@@ -29,7 +30,8 @@ import {
   EmployeeMetricsPage,
   EmployeeRecommendationsPage,
   EmployeeProfilePage,
-  EmployeeAlertsPage
+  EmployeeAlertsPage,
+  EmployeeDeviceMonitorPage
 } from '../pages/employee';
 
 // Pages - Placeholder components (crearemos después)
@@ -83,6 +85,10 @@ export const router = createBrowserRouter([
       {
         path: 'settings',
         element: <SettingsPage />,
+      },
+      {
+        path: 'ml-model',
+        element: <MLModelInfoPage />,
       },
     ],
   },
@@ -143,6 +149,10 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: <EmployeeProfilePage />,
+      },
+      {
+        path: 'device-monitor',
+        element: <EmployeeDeviceMonitorPage />,
       },
     ],
   },

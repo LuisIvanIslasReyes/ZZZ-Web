@@ -25,14 +25,22 @@ export interface FatigueAlert {
   id: number;
   employee: number; // ID del empleado
   employee_name?: string; // Nombre del empleado
-  device: number; // ID del dispositivo
+  supervisor?: number; // ID del supervisor
+  supervisor_name?: string; // Nombre del supervisor
+  device?: number; // ID del dispositivo
   device_name?: string;
-  metrics: number; // ID de ProcessedMetrics relacionado
+  metrics?: number; // ID de ProcessedMetrics relacionado
   severity: AlertSeverity;
-  status: AlertStatus;
+  severity_display?: string; // Display name para severidad
+  status?: AlertStatus; // Campo derivado en frontend
+  is_acknowledged?: boolean; // Si fue reconocida/vista
+  acknowledged_at?: string;
+  acknowledged_by?: number;
+  is_resolved: boolean; // Campo real del backend
   message: string;
   alert_type?: string; // Tipo de alerta (high_fatigue, critical_fatigue, etc)
-  fatigue_score: number;
+  fatigue_index?: number; // Índice de fatiga del backend
+  fatigue_score?: number; // Para compatibilidad
   heart_rate?: number;
   temperature?: number;
   spo2?: number; // Saturación de oxígeno
@@ -40,8 +48,9 @@ export interface FatigueAlert {
   acknowledged_by?: number; // ID del usuario que reconoció
   acknowledged_at?: string;
   resolved_at?: string;
-  created_at: string;
-  updated_at: string;
+  timestamp?: string; // Timestamp del backend
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface CreateAlertData {

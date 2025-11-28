@@ -39,7 +39,7 @@ export function LoginPage() {
   };
 
   const fillDemoCredentials = () => {
-    setEmail('admin@zzz.com');
+    setEmail('supervisor@example.com');
     setPassword('cualquiera');
   };
 
@@ -145,7 +145,7 @@ export function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-200 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="admin@zzz.com"
+                    placeholder="supervisor@example.com"
                     autoComplete="username"
                     required
                     disabled={isLoading}

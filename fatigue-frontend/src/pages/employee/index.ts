@@ -8,3 +8,4 @@ export { EmployeeMetricsPage } from './EmployeeMetricsPage';
 export { EmployeeRecommendationsPage } from './EmployeeRecommendationsPage';
 export { EmployeeProfilePage } from './EmployeeProfilePage';
 export { EmployeeAlertsPage } from './EmployeeAlertsPage';
+export { EmployeeDeviceMonitorPage } from './EmployeeDeviceMonitorPage';

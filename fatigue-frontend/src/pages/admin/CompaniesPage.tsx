@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { companyService } from '../../services';
+import { companyService, supervisorService } from '../../services';
 import { CompanyFormModal } from '../../components/forms/CompanyFormModal';
+import { SupervisorsModal } from '../../components/forms/SupervisorsModal';
 import type { Company, CompanyGlobalStats, CompanyCreateInput, CompanyUpdateInput } from '../../types';
 
 export default function CompaniesPage() {
@@ -11,6 +12,7 @@ export default function CompaniesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCompany, setEditingCompany] = useState<Company | null>(null);
+  const [supervisorsModalCompany, setSupervisorsModalCompany] = useState<Company | null>(null);
 
   useEffect(() => {
     loadCompanies();
@@ -32,11 +34,45 @@ export default function CompaniesPage() {
     }
   };
 
-  const handleCreateCompany = async (data: CompanyCreateInput) => {
+  const handleCreateCompany = async (data: any) => {
     try {
       setIsSubmitting(true);
-      await companyService.createCompany(data);
-      toast.success('Empresa creada exitosamente');
+      
+      // Primero crear la empresa
+      const companyData = {
+        name: data.name,
+        contact_email: data.contact_email,
+        contact_phone: data.contact_phone,
+        address: data.address,
+        max_employees: data.max_employees,
+        subscription_start: data.subscription_start,
+        subscription_end: data.subscription_end,
+      };
+      
+      const newCompany = await companyService.createCompany(companyData);
+      
+      // Si se proporcionaron datos del supervisor, crearlo
+      if (data.supervisor_email && data.supervisor_password) {
+        const supervisorData = {
+          email: data.supervisor_email,
+          password: data.supervisor_password,
+          first_name: data.supervisor_first_name,
+          last_name: data.supervisor_last_name,
+          company: newCompany.id,
+          role: 'supervisor' as const,
+        };
+        
+        try {
+          await supervisorService.createSupervisor(supervisorData);
+          toast.success('Empresa y supervisor creados exitosamente');
+        } catch (error) {
+          console.error('Error creating supervisor:', error);
+          toast.error('Empresa creada pero hubo un error al crear el supervisor. Créalo manualmente desde el botón "Supervisores".');
+        }
+      } else {
+        toast.success('Empresa creada exitosamente. Recuerda crear su cuenta de supervisor.');
+      }
+      
       setIsModalOpen(false);
       setEditingCompany(null);
       await loadCompanies();
@@ -155,10 +191,10 @@ export default function CompaniesPage() {
             <span className="text-4xl font-bold text-[#18314F]">{stats.active_companies}</span>
           </div>
 
-          {/* Total Supervisores */}
+          {/* Empresas con Supervisor Activo */}
           <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-600 text-base font-medium">Total Supervisores</span>
+              <span className="text-gray-600 text-base font-medium">Empresas con Supervisor</span>
               <span className="bg-purple-100 rounded-full p-2">
                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#A855F7">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -166,6 +202,7 @@ export default function CompaniesPage() {
               </span>
             </div>
             <span className="text-4xl font-bold text-[#18314F]">{stats.total_supervisors}</span>
+            <span className="text-xs text-gray-500 mt-1">1 supervisor = 1 empresa</span>
           </div>
 
           {/* Total Empleados */}
@@ -207,7 +244,7 @@ export default function CompaniesPage() {
                 <tr className="border-b border-gray-200">
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Empresa</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Contacto</th>
-                  <th className="text-center py-3 px-4 font-semibold text-gray-700">Supervisores</th>
+                  <th className="text-center py-3 px-4 font-semibold text-gray-700">Supervisor</th>
                   <th className="text-center py-3 px-4 font-semibold text-gray-700">Empleados</th>
                   <th className="text-center py-3 px-4 font-semibold text-gray-700">Max Empleados</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Suscripción</th>
@@ -240,9 +277,15 @@ export default function CompaniesPage() {
                       </div>
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <span className="inline-flex items-center justify-center bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-semibold">
-                        {company.supervisor_count}
-                      </span>
+                      {company.supervisor_count > 0 ? (
+                        <span className="inline-flex items-center justify-center bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
+                          ✓ Activo
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center justify-center bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold">
+                          Sin supervisor
+                        </span>
+                      )}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <span className="inline-flex items-center justify-center bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-semibold">
@@ -284,6 +327,16 @@ export default function CompaniesPage() {
                     <td className="py-3 px-4">
                       <div className="flex gap-2 justify-center">
                         <button
+                          className="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+                          onClick={() => setSupervisorsModalCompany(company)}
+                          title="Gestionar supervisores"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                          Supervisores
+                        </button>
+                        <button
                           className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
                           onClick={() => handleEdit(company)}
                         >
@@ -317,6 +370,19 @@ export default function CompaniesPage() {
         initialData={editingCompany}
         isLoading={isSubmitting}
       />
+
+      {/* Supervisors Management Modal */}
+      {supervisorsModalCompany && (
+        <SupervisorsModal
+          isOpen={!!supervisorsModalCompany}
+          onClose={() => {
+            setSupervisorsModalCompany(null);
+            loadCompanies(); // Recargar para actualizar los conteos
+          }}
+          companyId={supervisorsModalCompany.id}
+          companyName={supervisorsModalCompany.name}
+        />
+      )}
     </div>
   );
 }
