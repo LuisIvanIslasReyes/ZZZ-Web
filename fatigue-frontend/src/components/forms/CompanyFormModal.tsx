@@ -79,9 +79,51 @@ export function CompanyFormModal({
     }
   }, [initialData, reset]);
 
+  const cleanData = (data: CompanyFormData) => {
+    // Limpiar datos: convertir strings vacíos a null o undefined
+    const cleaned: any = {
+      name: data.name,
+      contact_email: data.contact_email,
+      max_employees: data.max_employees,
+    };
+
+    // Solo agregar campos opcionales si tienen valor
+    if (data.contact_phone && data.contact_phone.trim() !== '') {
+      cleaned.contact_phone = data.contact_phone;
+    }
+    if (data.address && data.address.trim() !== '') {
+      cleaned.address = data.address;
+    }
+    if (data.subscription_start && data.subscription_start.trim() !== '') {
+      cleaned.subscription_start = data.subscription_start;
+    }
+    if (data.subscription_end && data.subscription_end.trim() !== '') {
+      cleaned.subscription_end = data.subscription_end;
+    }
+
+    // Para crear empresa, agregar datos del supervisor si existen
+    if (!isEdit) {
+      if (data.supervisor_email && data.supervisor_email.trim() !== '') {
+        cleaned.supervisor_email = data.supervisor_email;
+      }
+      if (data.supervisor_password && data.supervisor_password.trim() !== '') {
+        cleaned.supervisor_password = data.supervisor_password;
+      }
+      if (data.supervisor_first_name && data.supervisor_first_name.trim() !== '') {
+        cleaned.supervisor_first_name = data.supervisor_first_name;
+      }
+      if (data.supervisor_last_name && data.supervisor_last_name.trim() !== '') {
+        cleaned.supervisor_last_name = data.supervisor_last_name;
+      }
+    }
+
+    return cleaned;
+  };
+
   const onFormSubmit = async (data: CompanyFormData) => {
-    console.log('Datos enviados al crear/editar empresa:', data);
-    await onSubmit(data);
+    const cleanedData = cleanData(data);
+    console.log('Datos enviados al crear/editar empresa:', cleanedData);
+    await onSubmit(cleanedData);
     reset();
   };
 

@@ -81,7 +81,7 @@ class ReportService {
     start_date?: string;
     end_date?: string;
   }): Promise<Blob> {
-    const response = await api.get(`${this.BASE_PATH}/team_report/`, {
+    const response = await api.get(`${this.BASE_PATH}/team_report`, {
       params: {
         format: 'csv',
         ...params

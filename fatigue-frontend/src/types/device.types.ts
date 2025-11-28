@@ -21,6 +21,7 @@ export interface Device {
 export interface CreateDeviceData {
   device_identifier: string;
   employee: number;
+  supervisor: number;
   is_active?: boolean;
 }
 

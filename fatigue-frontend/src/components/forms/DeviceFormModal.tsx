@@ -12,7 +12,9 @@ import type { Device, Employee } from '../../types';
 
 const deviceSchema = z.object({
   device_identifier: z.string().min(3, 'El ID debe tener al menos 3 caracteres'),
-  employee: z.number().min(1, 'Debe seleccionar un empleado'),
+  employee: z.coerce.number().refine(val => val > 0, {
+    message: 'Debe seleccionar un empleado válido',
+  }),
   is_active: z.boolean().optional(),
 });
 
@@ -65,7 +67,7 @@ export function DeviceFormModal({
     } else {
       reset({
         device_identifier: '',
-        employee: 0,
+        employee: undefined as any,
         is_active: true,
       });
     }
@@ -84,7 +86,24 @@ export function DeviceFormModal({
   };
 
   const onFormSubmit = async (data: DeviceFormData) => {
-    await onSubmit(data);
+    // Encontrar el empleado seleccionado para obtener su supervisor
+    const selectedEmployee = employees.find(emp => emp.id === Number(data.employee));
+    
+    if (!selectedEmployee) {
+      console.error('No se encontró el empleado seleccionado');
+      return;
+    }
+
+    // Asegurar que employee es un número válido y agregar supervisor
+    const cleanData = {
+      device_identifier: data.device_identifier.trim(),
+      employee: Number(data.employee),
+      supervisor: selectedEmployee.supervisor, // El supervisor del empleado
+      is_active: data.is_active ?? true,
+    };
+    
+    console.log('Datos de dispositivo a enviar:', cleanData);
+    await onSubmit(cleanData);
     reset();
   };
 
@@ -168,7 +187,7 @@ export function DeviceFormModal({
                     }`}
                     disabled={isLoading || loadingEmployees}
                   >
-                    <option value={0}>Seleccionar empleado</option>
+                    <option value="">Seleccionar empleado</option>
                     {employees.map((emp) => (
                       <option key={emp.id} value={emp.id}>
                         {emp.first_name} {emp.last_name} - {emp.email}

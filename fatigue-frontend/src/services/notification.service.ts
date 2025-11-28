@@ -25,7 +25,7 @@ class NotificationService {
    */
   async sendTeamNotification(data: NotificationData): Promise<NotificationResponse> {
     try {
-      const response = await api.post<NotificationResponse>('/alerts/send_team_notification/', data);
+      const response = await api.post<NotificationResponse>('/alerts/send_team_notification', data);
       return response.data;
     } catch (error: any) {
       console.error('Error sending notification:', error);
