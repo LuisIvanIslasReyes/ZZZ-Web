@@ -4,14 +4,16 @@
  * Diseño ZZZ Admin Style
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts';
-import { authService, meService, employeeExportService, employeeProfileService } from '../../services';
+import { authService, meService, employeeExportService, employeeProfileService, deviceService, recommendationService } from '../../services';
 import { Modal } from '../../components/common';
 import { EditProfileModal } from '../../components/forms/EditProfileModal';
 import toast from 'react-hot-toast';
 import type { User } from '../../types/user.types';
+import type { Device } from '../../types/device.types';
+import type { RoutineRecommendation } from '../../types/recommendation.types';
 
 export function EmployeeProfilePage() {
   const navigate = useNavigate();
@@ -24,6 +26,10 @@ export function EmployeeProfilePage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [device, setDevice] = useState<Device | null>(null);
+  const [recommendations, setRecommendations] = useState<RoutineRecommendation[]>([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Guardar cambios del perfil (real, PATCH a /auth/me/)
   const handleSaveProfile = async (updatedUser: Partial<User>) => {
@@ -46,19 +52,41 @@ export function EmployeeProfilePage() {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
-    // console.log('🔄 Cargando perfil del usuario...');
-    meService.getMe()
-      .then((userData) => {
-        // console.log('✅ Usuario cargado:', userData);
-        setUser(userData);
-      })
-      .catch((error) => {
-        // console.error('❌ Error al cargar perfil:', error);
-        toast.error('Error al cargar perfil');
-      });
+    loadUserData();
+    loadRecommendations();
   }, []);
+
+  const loadUserData = async () => {
+    try {
+      const userData = await meService.getMe();
+      setUser(userData);
+      
+      // Cargar dispositivo del empleado
+      const devices = await deviceService.getDevicesByEmployee(userData.id);
+      if (devices && devices.length > 0) {
+        setDevice(devices[0]);
+      }
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+      toast.error('Error al cargar perfil');
+    }
+  };
+
+  const loadRecommendations = async () => {
+    try {
+      setLoadingRecommendations(true);
+      const response = await recommendationService.getRecommendations({
+        page_size: 3,
+        ordering: '-created_at'
+      });
+      setRecommendations(response.results || []);
+    } catch (error) {
+      console.error('Error al cargar recomendaciones:', error);
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  };
 
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || !confirmPassword) {
@@ -123,6 +151,54 @@ export function EmployeeProfilePage() {
       toast.error('Error al cerrar sesión');
     }
   };
+
+  const handlePhotoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validar tipo de archivo
+    if (!file.type.startsWith('image/')) {
+      toast.error('Por favor selecciona una imagen válida');
+      return;
+    }
+
+    // Validar tamaño (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('La imagen no debe superar 5MB');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const formData = new FormData();
+      formData.append('profile_picture', file);
+
+      await employeeProfileService.updateMyProfile(formData as any);
+      await loadUserData();
+      toast.success('Foto actualizada exitosamente');
+    } catch (error: any) {
+      console.error('Error al actualizar foto:', error);
+      toast.error(error?.response?.data?.detail || 'Error al actualizar la foto');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleViewHistory = () => {
+    navigate('/employee/metrics');
+  };
+
+  const handleScheduleBreak = () => {
+    toast.info('Funcionalidad de programar descanso próximamente');
+  };
+
+  const handleReportSymptom = () => {
+    toast.info('Funcionalidad de reportar síntoma próximamente');
+  };
+
+  const handleHelpCenter = () => {
+    toast.info('Centro de ayuda próximamente');
+  };
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -134,11 +210,15 @@ export function EmployeeProfilePage() {
       {/* Profile Card */}
       <div className="bg-white rounded-2xl shadow-md p-8">
         <div className="flex items-start gap-6">
-          <div className="avatar placeholder">
-            <div className="bg-[#18314F]/10 text-[#18314F] rounded-2xl w-32 h-32 flex items-center justify-center">
-              <span className="font-bold text-5xl">
-                {user ? `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}` : '--'}
-              </span>
+          <div className="avatar placeholder relative">
+            <div className="bg-[#18314F]/10 text-[#18314F] rounded-2xl w-32 h-32 flex items-center justify-center overflow-hidden">
+              {user?.profile_picture ? (
+                <img src={user.profile_picture} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <span className="font-bold text-5xl">
+                  {user ? `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}` : '--'}
+                </span>
+              )}
             </div>
           </div>
           <div className="flex-1">
@@ -155,20 +235,77 @@ export function EmployeeProfilePage() {
               >
                 Editar Perfil
               </button>
-                    {/* Edit Profile Modal */}
-                    <EditProfileModal
-                      isOpen={isEditProfileModalOpen}
-                      onClose={() => setIsEditProfileModalOpen(false)}
-                      user={user}
-                      onSave={handleSaveProfile}
-                    />
-              <button className="bg-white hover:bg-gray-50 text-[#18314F] font-medium py-2 px-6 rounded-xl border-2 border-[#18314F] transition-colors">
-                Cambiar Foto
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="hidden"
+              />
+              <button 
+                className="bg-white hover:bg-gray-50 text-[#18314F] font-medium py-2 px-6 rounded-xl border-2 border-[#18314F] transition-colors"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Subiendo...' : 'Cambiar Foto'}
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={isEditProfileModalOpen}
+        onClose={() => setIsEditProfileModalOpen(false)}
+        user={user}
+        onSave={handleSaveProfile}
+      />
+
+      {/* Recomendaciones Personalizadas */}
+      {recommendations.length > 0 && (
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-semibold text-[#18314F] flex items-center gap-2">
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              Recomendaciones Personalizadas
+            </h3>
+            <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
+              {recommendations.length} nuevas
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {recommendations.map((rec) => (
+              <div key={rec.id} className="bg-gray-50 rounded-xl p-4 border-2 border-gray-200">
+                <div className="flex items-start gap-3 mb-3">
+                  {rec.priority === 'high' ? (
+                    <div className="text-3xl">😴</div>
+                  ) : rec.recommendation_type === 'break' ? (
+                    <div className="text-3xl">🧘</div>
+                  ) : (
+                    <div className="text-3xl">💧</div>
+                  )}
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-[#18314F] mb-1">{rec.title}</h4>
+                    <p className="text-sm text-gray-700">{rec.description}</p>
+                  </div>
+                </div>
+                <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full ${
+                  rec.priority === 'high' 
+                    ? 'bg-blue-100 text-blue-800' 
+                    : rec.status === 'recommended'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {rec.priority === 'high' ? 'Alta prioridad' : rec.status === 'recommended' ? 'Recomendado' : 'Pendiente'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Information Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -222,69 +359,97 @@ export function EmployeeProfilePage() {
       {/* Device Information */}
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h3 className="text-xl font-semibold text-[#18314F] mb-6">Información del Dispositivo</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-sm text-gray-600 mb-1">ID del Dispositivo</p>
-            <p className="text-lg font-semibold text-[#18314F]">DEV-001</p>
+        {device ? (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-gray-50 rounded-xl p-4">
+              <p className="text-sm text-gray-600 mb-1">ID del Dispositivo</p>
+              <p className="text-lg font-semibold text-[#18314F]">{device.device_identifier}</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-4">
+              <p className="text-sm text-gray-600 mb-1">Modelo</p>
+              <p className="text-lg font-semibold text-[#18314F]">ESP32 Wearable</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-4">
+              <p className="text-sm text-gray-600 mb-1">Última Conexión</p>
+              <p className="text-lg font-semibold text-[#18314F]">
+                {device.last_connection 
+                  ? new Date(device.last_connection).toLocaleString('es-ES', { 
+                      day: '2-digit', 
+                      month: '2-digit', 
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+                  : 'Nunca'}
+              </p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-4">
+              <p className="text-sm text-gray-600 mb-1">Estado</p>
+              <p className={`text-lg font-semibold ${
+                device.is_active ? 'text-green-600' : 'text-gray-400'
+              }`}>
+                {device.is_active ? 'Activo' : 'Inactivo'}
+              </p>
+            </div>
           </div>
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-sm text-gray-600 mb-1">Modelo</p>
-            <p className="text-lg font-semibold text-[#18314F]">FatigueWatch Pro</p>
+        ) : (
+          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 text-center">
+            <svg className="w-12 h-12 text-yellow-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p className="text-yellow-800 font-semibold mb-1">No tienes un dispositivo asignado</p>
+            <p className="text-yellow-700 text-sm">Contacta a tu supervisor para que te asigne un dispositivo</p>
           </div>
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-sm text-gray-600 mb-1">Firmware</p>
-            <p className="text-lg font-semibold text-[#18314F]">v2.4.1</p>
-          </div>
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-sm text-gray-600 mb-1">Estado</p>
-            <p className="text-lg font-semibold text-green-600">Activo</p>
-          </div>
+        )}
+      </div>
+
+      {/* Acciones Rápidas */}
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        <h3 className="text-xl font-semibold text-[#18314F] mb-6">Acciones Rápidas</h3>
+        <div className="space-y-3">
+          <button
+            onClick={handleViewHistory}
+            className="w-full bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Ver Mi Historial
+          </button>
+          <button
+            onClick={handleScheduleBreak}
+            className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm border-2 border-gray-200 flex items-center justify-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Programar Descanso
+          </button>
+          <button
+            onClick={handleReportSymptom}
+            className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm border-2 border-gray-200 flex items-center justify-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Reportar Síntoma
+          </button>
+          <button
+            onClick={handleHelpCenter}
+            className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm border-2 border-gray-200 flex items-center justify-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Centro de Ayuda
+          </button>
         </div>
       </div>
 
-      {/* Preferences */}
+      {/* Actions de Cuenta */}
       <div className="bg-white rounded-2xl shadow-md p-6">
-        <h3 className="text-xl font-semibold text-[#18314F] mb-6">Preferencias y Notificaciones</h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-            <div>
-              <p className="font-medium text-[#18314F]">Notificaciones por Email</p>
-              <p className="text-sm text-gray-600">Recibe alertas y actualizaciones por correo</p>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" defaultChecked />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#18314F]"></div>
-            </label>
-          </div>
-          
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-            <div>
-              <p className="font-medium text-[#18314F]">Alertas en Dispositivo</p>
-              <p className="text-sm text-gray-600">Vibración cuando se detecta fatiga alta</p>
-            </div>
-            <label className="relative inline-flex items-cursor-pointer">
-              <input type="checkbox" className="sr-only peer" defaultChecked />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#18314F]"></div>
-            </label>
-          </div>
-
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-            <div>
-              <p className="font-medium text-[#18314F]">Recordatorios de Descanso</p>
-              <p className="text-sm text-gray-600">Sugerencias automáticas de pausas</p>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#18314F]"></div>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
-        <h3 className="text-xl font-semibold text-[#18314F] mb-6">Acciones de Cuenta</h3>
-        <div className="flex gap-4">
+        <h3 className="text-xl font-semibold text-[#18314F] mb-6">Configuración de Cuenta</h3>
+        <div className="flex flex-wrap gap-4">
           <button 
             className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm"
             onClick={() => setIsChangePasswordModalOpen(true)}
@@ -297,12 +462,6 @@ export function EmployeeProfilePage() {
           >
             Descargar Mis Datos
           </button>
-          {/* <button 
-            className="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-xl transition-colors"
-            onClick={handleLogout}
-          >
-            Cerrar Sesión
-          </button> */}
         </div>
       </div>
 
