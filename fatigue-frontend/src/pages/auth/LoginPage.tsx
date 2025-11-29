@@ -32,7 +32,12 @@ export function LoginPage() {
       }
     } catch (err) {
       const apiError = err as ApiError;
-      setError(apiError.message || 'Error al iniciar sesión. Verifica tus credenciales.');
+      // Mostrar mensaje amigable según el tipo de error
+      if (apiError.status === 400 || apiError.status === 401) {
+        setError('Credenciales incorrectas. Verifica tu usuario y contraseña.');
+      } else {
+        setError(apiError.message || 'Error al iniciar sesión. Intenta de nuevo.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -124,11 +129,11 @@ export function LoginPage() {
             <p className="text-gray-500 mb-6">Ingresa tus credenciales para acceder al panel administrativo</p>
             {/* Error Alert */}
             {error && (
-              <div className="alert alert-error mb-6 shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="flex items-center gap-2 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
-                <span>{error}</span>
+                <span className="text-sm">{error}</span>
               </div>
             )}
             <form onSubmit={handleSubmit} className="space-y-4">

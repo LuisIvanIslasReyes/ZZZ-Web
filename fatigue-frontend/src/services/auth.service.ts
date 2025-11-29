@@ -136,10 +136,11 @@ class AuthService {
   /**
    * Cambiar contraseña
    */
-  async changePassword(oldPassword: string, newPassword: string): Promise<void> {
+  async changePassword(oldPassword: string, newPassword: string, newPasswordConfirm: string): Promise<void> {
     await api.post('/auth/change-password/', {
       old_password: oldPassword,
       new_password: newPassword,
+      new_password_confirm: newPasswordConfirm,
     });
   }
 

@@ -24,6 +24,7 @@ export function EmployeeProfilePage() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmTouched, setConfirmTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [device, setDevice] = useState<Device | null>(null);
@@ -106,7 +107,7 @@ export function EmployeeProfilePage() {
 
     try {
       setIsLoading(true);
-      await authService.changePassword(oldPassword, newPassword);
+      await authService.changePassword(oldPassword, newPassword, confirmPassword);
       toast.success('Contraseña cambiada exitosamente');
       setIsChangePasswordModalOpen(false);
       setOldPassword('');
@@ -226,7 +227,7 @@ export function EmployeeProfilePage() {
               {user ? user.full_name : 'Cargando...'}
             </h2>
             <p className="text-gray-600 mb-4">
-              {user ? `ID: ${user.username}${user.department ? ` | Departamento: ${user.department}` : ''}` : ''}
+              {user ? ` Departamento: ${user.department}` : ''}
             </p>
             <div className="flex gap-4">
               <button
@@ -473,6 +474,7 @@ export function EmployeeProfilePage() {
           setOldPassword('');
           setNewPassword('');
           setConfirmPassword('');
+          setConfirmTouched(false);
         }}
         title="Cambiar Contraseña"
         footer={
@@ -483,6 +485,7 @@ export function EmployeeProfilePage() {
                 setOldPassword('');
                 setNewPassword('');
                 setConfirmPassword('');
+                setConfirmTouched(false);
               }}
               className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-semibold transition-colors"
             >
@@ -531,9 +534,17 @@ export function EmployeeProfilePage() {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+              onBlur={() => setConfirmTouched(true)}
+              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent ${
+                confirmTouched && confirmPassword && newPassword !== confirmPassword
+                  ? 'border-red-500'
+                  : 'border-gray-300'
+              }`}
               placeholder="Confirma tu nueva contraseña"
             />
+            {confirmTouched && confirmPassword && newPassword !== confirmPassword && (
+              <p className="text-red-500 text-sm mt-1">Las contraseñas no coinciden</p>
+            )}
           </div>
           <p className="text-sm text-gray-500">
             La contraseña debe tener al menos 8 caracteres.
