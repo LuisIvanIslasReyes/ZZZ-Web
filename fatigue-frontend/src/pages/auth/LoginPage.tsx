@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts';
 import type { ApiError } from '../../types';
+import LogoBlanco from '../../assets/logo/LogoBlanco.png';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -43,162 +44,184 @@ export function LoginPage() {
     }
   };
 
-  const fillDemoCredentials = () => {
-    setEmail('supervisor@example.com');
-    setPassword('cualquiera');
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#18314F] to-[#14223A]">
-      <div className="flex flex-col md:flex-row w-full max-w-5xl mx-auto p-4 gap-8">
-        {/* Panel izquierdo */}
-        <div className="flex-1 flex flex-col justify-center text-white pr-0 md:pr-12">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="rounded-full bg-white/10 p-3">
-              {/* Icono escudo */}
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L19 6V11C19 16.52 15.36 20.74 12 21C8.64 20.74 5 16.52 5 11V6L12 3Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </span>
-            <div>
-              <h1 className="text-3xl font-bold leading-tight">ZZZ</h1>
-              <p className="text-base text-white/80">Zero to Zero-Fatigue Zone</p>
-            </div>
+    <div className="min-h-screen relative overflow-hidden bg-[#0a1628]">
+      {/* Fondo con gradiente y elementos decorativos */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#18314F] via-[#0f2137] to-[#0a1628]" />
+      
+      {/* Círculos decorativos con blur - Estilo glassmorphism */}
+      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-[#18314F]/30 rounded-full blur-[120px]" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-[#18314F]/25 rounded-full blur-[120px]" />
+      <div className="absolute top-[40%] right-[20%] w-[300px] h-[300px] bg-[#1e3a5f]/20 rounded-full blur-[100px]" />
+      
+      {/* Patrón de grid sutil */}
+      <div 
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px'
+        }}
+      />
+
+      {/* Contenido principal */}
+      <div className="relative z-10 min-h-screen flex flex-col">
+        
+        {/* Header con logo */}
+        <header className="p-8">
+          <div className="flex items-center gap-3">
+            <img src={LogoBlanco} alt="ZZZ" className="h-10 w-auto" />
+            <span className="text-white font-bold text-xl tracking-tight">Zero to Zero-Fatigue Zone</span>
           </div>
-          <h2 className="text-2xl font-semibold mt-4 mb-2">Panel de Control Administrativo</h2>
-          <p className="text-white/80 mb-6">Sistema de monitoreo integral de fatiga para empleados industriales. Supervisa en tiempo real el estado de salud de tu equipo y previene riesgos laborales.</p>
-          <div className="flex flex-col gap-4 mb-8">
-            <div className="flex items-center gap-3 bg-white/5 rounded-xl p-4">
-              <span className="bg-green-600/20 rounded-full p-2">
-                {/* Icono corazón */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21C12 21 4 13.36 4 8.5C4 5.42 6.42 3 9.5 3C11.24 3 12.91 3.81 14 5.08C15.09 3.81 16.76 3 18.5 3C21.58 3 24 5.42 24 8.5C24 13.36 16 21 16 21H12Z" fill="#22C55E"/></svg>
-              </span>
-              <div>
-                <p className="font-semibold">Monitoreo en Tiempo Real</p>
-                <p className="text-sm text-white/70">Métricas fisiológicas continuas</p>
-              </div>
+        </header>
+
+        {/* Contenido central */}
+        <main className="flex-1 flex items-center justify-center px-4 pb-20">
+          <div className="w-full max-w-md">
+            
+            {/* Título principal */}
+            <div className="text-center mb-10">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+                Bienvenido
+              </h1>
+              <p className="text-white/60 text-lg">
+                Sistema de Monitoreo de Fatiga Industrial
+              </p>
             </div>
-            <div className="flex items-center gap-3 bg-white/5 rounded-xl p-4">
-              <span className="bg-yellow-500/20 rounded-full p-2">
-                {/* Icono IA */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="#FACC15" strokeWidth="2"/><path d="M8 12H16" stroke="#FACC15" strokeWidth="2" strokeLinecap="round"/></svg>
-              </span>
-              <div>
-                <p className="font-semibold">Análisis Predictivo con IA</p>
-                <p className="text-sm text-white/70">Prevención de fatiga laboral</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-white/5 rounded-xl p-4">
-              <span className="bg-red-500/20 rounded-full p-2">
-                {/* Icono alerta */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 8V12" stroke="#EF4444" strokeWidth="2" strokeLinecap="round"/><circle cx="12" cy="16" r="1" fill="#EF4444"/><path d="M21 18H3L12 4L21 18Z" stroke="#EF4444" strokeWidth="2" strokeLinejoin="round"/></svg>
-              </span>
-              <div>
-                <p className="font-semibold">Sistema de Alertas Inteligente</p>
-                <p className="text-sm text-white/70">Notificaciones en tiempo real</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-white/5 rounded-xl p-4">
-              <span className="bg-white/10 rounded-full p-2">
-                {/* Icono reporte */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 17V15C8 13.8954 8.89543 13 10 13H14C15.1046 13 16 13.8954 16 15V17" stroke="#fff" strokeWidth="2" strokeLinecap="round"/><rect x="4" y="4" width="16" height="16" rx="4" stroke="#fff" strokeWidth="2"/></svg>
-              </span>
-              <div>
-                <p className="font-semibold">Reportes Detallados</p>
-                <p className="text-sm text-white/70">Análisis y estadísticas avanzadas</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Tarjeta de login */}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-            <h2 className="text-2xl font-semibold mb-2 text-gray-800">Iniciar Sesión</h2>
-            <p className="text-gray-500 mb-6">Ingresa tus credenciales para acceder al panel administrativo</p>
-            {/* Error Alert */}
-            {error && (
-              <div className="flex items-center gap-2 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-                <span className="text-sm">{error}</span>
-              </div>
-            )}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    {/* Icono usuario */}
-                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                  </span>
-                  <input
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-200 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="supervisor@example.com"
-                    autoComplete="username"
-                    required
-                    disabled={isLoading}
-                    autoFocus
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    {/* Icono candado */}
-                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                  </span>
-                  <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-4 py-2 w-full rounded-lg border border-gray-200 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="••••••••"
-                    autoComplete="current-password"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="form-checkbox rounded border-gray-300"
-                  />
-                  Recordar sesión
-                </label>
-                <button type="button" className="text-blue-600 hover:underline">¿Olvidaste tu contraseña?</button>
-              </div>
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 bg-[#18314F] text-white font-semibold py-2 rounded-lg shadow hover:bg-[#14223A] transition-colors"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <span className="loading loading-spinner"></span>
-                    Iniciando Sesión
-                  </>
-                ) : (
-                  <>
-                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mr-2"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                    Iniciar Sesión
-                  </>
+
+            {/* Card de login con glassmorphism */}
+            <div className="relative">
+              {/* Borde con gradiente */}
+              <div className="absolute -inset-[1px] bg-gradient-to-b from-white/20 to-white/5 rounded-2xl" />
+              
+              <div className="relative bg-white/[0.08] backdrop-blur-xl rounded-2xl p-8 shadow-2xl">
+                
+                {/* Error Alert */}
+                {error && (
+                  <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-xl mb-6">
+                    <svg className="h-5 w-5 text-red-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm">{error}</span>
+                  </div>
                 )}
-              </button>
-            </form>
-            <div className="mt-8 text-center text-xs text-gray-400">
-              © 2025 Zero to Zero-Fatigue Zone. Sistema de Monitoreo Industrial.
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Email Input */}
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Correo electrónico
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-4 py-3.5 bg-white/[0.06] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-[#3b82f6]/50 focus:ring-2 focus:ring-[#3b82f6]/20 transition-all"
+                      placeholder="ejemplo@zzz.com"
+                      autoComplete="username"
+                      required
+                      disabled={isLoading}
+                      autoFocus
+                    />
+                  </div>
+
+                  {/* Password Input */}
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-2">
+                      Contraseña
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-4 py-3.5 bg-white/[0.06] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-[#3b82f6]/50 focus:ring-2 focus:ring-[#3b82f6]/20 transition-all"
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      required
+                      disabled={isLoading}
+                    />
+                  </div>
+
+                  {/* Options row */}
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-2 cursor-pointer group">
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          checked={rememberMe}
+                          onChange={(e) => setRememberMe(e.target.checked)}
+                          className="peer sr-only"
+                        />
+                        <div className="w-5 h-5 border border-white/20 rounded-md bg-white/5 peer-checked:bg-[#18314F] peer-checked:border-[#3b82f6] transition-all">
+                          <svg className="w-5 h-5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                      </div>
+                      <span className="text-sm text-white/60 group-hover:text-white/80 transition-colors">Recordarme</span>
+                    </label>
+                    <button type="button" className="text-sm text-[#3b82f6] hover:text-[#60a5fa] transition-colors">
+                      ¿Olvidaste tu contraseña?
+                    </button>
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    className="w-full relative group mt-2"
+                    disabled={isLoading}
+                  >
+                    <div className="absolute -inset-[1px] bg-gradient-to-r from-[#18314F] to-[#1e3a5f] rounded-xl opacity-50 group-hover:opacity-70 transition-opacity blur-sm" />
+                    <div className="relative flex items-center justify-center gap-2 bg-gradient-to-r from-[#18314F] to-[#1e3a5f] text-white font-semibold py-3.5 px-6 rounded-xl transition-all group-hover:shadow-lg group-hover:shadow-[#18314F]/30 disabled:opacity-50">
+                      {isLoading ? (
+                        <>
+                          <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          <span>Ingresando...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Iniciar Sesión</span>
+                          <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                          </svg>
+                        </>
+                      )}
+                    </div>
+                  </button>
+                </form>
+              </div>
             </div>
+
+            {/* Features pills */}
+            <div className="flex flex-wrap justify-center gap-3 mt-10">
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.05] border border-white/10 rounded-full">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                <span className="text-white/60 text-sm">Monitoreo 24/7</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.05] border border-white/10 rounded-full">
+                <div className="w-2 h-2 bg-blue-400 rounded-full" />
+                <span className="text-white/60 text-sm">IA Predictiva</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/[0.05] border border-white/10 rounded-full">
+                <div className="w-2 h-2 bg-sky-400 rounded-full" />
+                <span className="text-white/60 text-sm">Alertas en tiempo real</span>
+              </div>
+            </div>
+
           </div>
-        </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="p-8 text-center">
+          <p className="text-white/30 text-sm">
+            © 2025 ZZZ · Zero to Zero-Fatigue Zone
+          </p>
+        </footer>
+
       </div>
     </div>
   );
