@@ -196,46 +196,44 @@ export default function SimulatorsPage() {
             <h1 className="text-3xl font-bold text-gray-900 mb-1">Gestión de Simuladores</h1>
             <p className="text-gray-600">Control de simuladores ESP32 en tiempo real</p>
           </div>
-          <div className="flex gap-3">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-[#18314F] hover:bg-[#18314F]/90 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Nuevo Simulador
+          </button>
+        </div>
+      </div>
+
+      {/* Stats Cards - Layout asimétrico */}
+      <div className="bg-gray-50 rounded-xl p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Resumen en Tiempo Real</h3>
+          <div className="flex items-center gap-4">
+            {/* Toggle Auto-refresh elegante */}
             <button
               onClick={() => setAutoRefresh(!autoRefresh)}
-              className={`px-4 py-3 rounded-xl font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 ${
-                autoRefresh
-                  ? 'bg-green-500 hover:bg-green-600 text-white'
-                  : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-              }`}
+              className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
             >
-              {autoRefresh ? (
-                <>
-                  <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  Auto-refresh ON
-                </>
-              ) : (
-                <>
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Auto-refresh OFF
-                </>
-              )}
+              <span className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                autoRefresh ? 'bg-green-500' : 'bg-gray-300'
+              }`}>
+                <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-transform ${
+                  autoRefresh ? 'translate-x-4' : 'translate-x-1'
+                }`} />
+              </span>
+              <span className={autoRefresh ? 'text-green-600' : 'text-gray-500'}>Auto-refresh</span>
             </button>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-[#18314F] hover:bg-[#18314F]/90 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Nuevo Simulador
-            </button>
+            {/* Botón Detener Todos - solo si hay sesiones */}
             {sessions.length > 0 && (
               <button
                 onClick={handleStopAll}
-                className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+                className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
                 </svg>
@@ -244,71 +242,66 @@ export default function SimulatorsPage() {
             )}
           </div>
         </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Simuladores Totales */}
+        
+        {/* Grid asimétrico: 2 grandes + 2 pequeños */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Simuladores Totales - Card grande */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-4">
             <span className="text-gray-600 text-base font-medium">Total Simuladores</span>
-            <span className="bg-blue-100 rounded-full p-2">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-              </svg>
-            </span>
+            <svg className="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-gray-900">
-            {Array.isArray(sessions) ? sessions.filter(s => s.status === 'running').length : 0}
-            <span className="text-xl text-gray-400">/{Array.isArray(sessions) ? sessions.length : 0}</span>
-          </span>
-          <span className="text-sm text-gray-500 mt-1">Activos / Total</span>
+          <div>
+            <span className="text-4xl font-bold text-gray-900">
+              {Array.isArray(sessions) ? sessions.filter(s => s.status === 'running').length : 0}
+            </span>
+            <span className="text-xl text-gray-400 ml-1">/ {Array.isArray(sessions) ? sessions.length : 0}</span>
+          </div>
+          <span className="text-sm text-gray-500 mt-2">Activos / Total</span>
         </div>
 
-        {/* Empleados Disponibles */}
+        {/* Empleados Disponibles - Card grande */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-4">
             <span className="text-gray-600 text-base font-medium">Empleados Disponibles</span>
-            <span className="bg-green-100 rounded-full p-2">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </span>
+            <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
           </div>
           <span className="text-4xl font-bold text-gray-900">
             {employees.filter((e) => !e.has_active_simulator).length}
           </span>
-          <span className="text-sm text-gray-500 mt-1">Sin simulador activo</span>
+          <span className="text-sm text-gray-500 mt-2">Sin simulador activo</span>
         </div>
 
-        {/* Mensajes Totales */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Mensajes Totales</span>
-            <span className="bg-purple-100 rounded-full p-2">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#A855F7">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </span>
+        {/* Columna derecha: 2 cards pequeñas apiladas */}
+        <div className="flex flex-col gap-4">
+          {/* Mensajes Totales */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex items-center justify-between">
+            <div>
+              <span className="text-gray-500 text-sm font-medium">Mensajes MQTT</span>
+              <div className="text-2xl font-bold text-gray-900">
+                {Array.isArray(sessions) ? sessions.reduce((sum, s) => sum + (s.live_stats?.messages_sent || s.messages_sent), 0) : 0}
+              </div>
+            </div>
+            <svg className="w-7 h-7 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-gray-900">
-            {Array.isArray(sessions) ? sessions.reduce((sum, s) => sum + (s.live_stats?.messages_sent || s.messages_sent), 0) : 0}
-          </span>
-          <span className="text-sm text-gray-500 mt-1">Datos MQTT enviados</span>
-        </div>
 
-        {/* Alertas Generadas */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Análisis ML</span>
-            <span className="bg-orange-100 rounded-full p-2">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#F97316">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-            </span>
+          {/* Análisis ML */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex items-center justify-between">
+            <div>
+              <span className="text-gray-500 text-sm font-medium">Análisis ML</span>
+              <div className="text-2xl font-bold text-green-600">Activo</div>
+            </div>
+            <svg className="w-7 h-7 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-gray-900">Activo</span>
-          <span className="text-sm text-gray-500 mt-1">Cada 2 minutos</span>
+        </div>
         </div>
       </div>
 
@@ -316,11 +309,13 @@ export default function SimulatorsPage() {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">Todos los Simuladores</h2>
-          <div className="flex gap-2">
-            <span className="badge badge-success badge-lg">
+          <div className="flex gap-3">
+            <span className="flex items-center gap-2 text-sm font-medium text-gray-600">
+              <span className="w-2 h-2 rounded-full bg-green-500"></span>
               {Array.isArray(sessions) ? sessions.filter(s => s.status === 'running').length : 0} Activos
             </span>
-            <span className="badge badge-ghost badge-lg">
+            <span className="flex items-center gap-2 text-sm font-medium text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-gray-300"></span>
               {Array.isArray(sessions) ? sessions.filter(s => s.status === 'stopped').length : 0} Detenidos
             </span>
           </div>
@@ -506,10 +501,10 @@ function SimulatorCard({
           <button
             onClick={() => onConfig(session)}
             disabled={session.status !== 'running'}
-            className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+            className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
               session.status === 'running'
-                ? 'bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer'
-                : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                ? 'bg-[#18314F] hover:bg-[#18314F]/90 text-white cursor-pointer'
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -533,7 +528,7 @@ function SimulatorCard({
           {session.status === 'running' ? (
             <button
               onClick={() => onStop(session.id)}
-              className="flex-1 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -545,10 +540,10 @@ function SimulatorCard({
             <button
               onClick={() => onRestart(session.id)}
               disabled={session.status !== 'stopped'}
-              className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
                 session.status === 'stopped'
-                  ? 'bg-green-100 hover:bg-green-200 text-green-700 cursor-pointer'
-                  : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                  ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -563,7 +558,7 @@ function SimulatorCard({
         {/* Botón Eliminar */}
         <button
           onClick={() => onDelete(session.id)}
-          className="w-full px-4 py-2 bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-700 border border-gray-200 hover:border-red-200 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+          className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

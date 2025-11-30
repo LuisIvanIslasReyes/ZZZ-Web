@@ -524,7 +524,7 @@ export function MachineLearningDashboard() {
           <button
             className={`px-4 py-2 font-semibold text-sm transition-colors ${
               activeTab === 'clustering'
-                ? 'border-b-2 border-blue-600 text-blue-600'
+                ? 'border-b-2 border-[#18314F] text-[#18314F]'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
             onClick={() => setActiveTab('clustering')}
@@ -534,7 +534,7 @@ export function MachineLearningDashboard() {
           <button
             className={`px-4 py-2 font-semibold text-sm transition-colors ${
               activeTab === 'features'
-                ? 'border-b-2 border-blue-600 text-blue-600'
+                ? 'border-b-2 border-[#18314F] text-[#18314F]'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
             onClick={() => setActiveTab('features')}

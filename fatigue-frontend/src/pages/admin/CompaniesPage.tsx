@@ -164,16 +164,15 @@ export default function CompaniesPage() {
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-gray-50 rounded-xl p-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Total Empresas */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600 text-base font-medium">Total Empresas</span>
-              <span className="bg-blue-100 rounded-full p-2">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </span>
+              <svg className="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
             </div>
             <span className="text-4xl font-bold text-gray-900">{stats.total_companies}</span>
           </div>
@@ -182,11 +181,9 @@ export default function CompaniesPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600 text-base font-medium">Activas</span>
-              <span className="bg-green-100 rounded-full p-2">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </span>
+              <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
             <span className="text-4xl font-bold text-gray-900">{stats.active_companies}</span>
           </div>
@@ -195,11 +192,9 @@ export default function CompaniesPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600 text-base font-medium">Empresas con Supervisor</span>
-              <span className="bg-purple-100 rounded-full p-2">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#A855F7">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </span>
+              <svg className="w-8 h-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
             </div>
             <span className="text-4xl font-bold text-gray-900">{stats.total_supervisors}</span>
             <span className="text-xs text-gray-500 mt-1">1 supervisor = 1 empresa</span>
@@ -209,13 +204,12 @@ export default function CompaniesPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600 text-base font-medium">Total Empleados</span>
-              <span className="bg-orange-100 rounded-full p-2">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#F97316">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </span>
+              <svg className="w-8 h-8 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
             </div>
             <span className="text-4xl font-bold text-gray-900">{stats.total_employees}</span>
+          </div>
           </div>
         </div>
       )}
@@ -249,7 +243,6 @@ export default function CompaniesPage() {
                   <th className="text-center py-3 px-4 font-semibold text-gray-700">Max Empleados</th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-700">Suscripción</th>
                   <th className="text-center py-3 px-4 font-semibold text-gray-700">Estado</th>
-                  <th className="text-center py-3 px-4 font-semibold text-gray-700">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -257,14 +250,12 @@ export default function CompaniesPage() {
                   <tr key={company.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        <span className="bg-blue-100 rounded-full p-2">
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                          </svg>
-                        </span>
+                        <svg className="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
                         <div>
                           <div className="font-bold text-gray-900">{company.name}</div>
-                          <div className="text-sm text-gray-500">ID: {company.id}</div>
+                          {/* <div className="text-sm text-gray-500">ID: {company.id}</div> */}
                         </div>
                       </div>
                     </td>
@@ -278,19 +269,13 @@ export default function CompaniesPage() {
                     </td>
                     <td className="py-3 px-4 text-center">
                       {company.supervisor_count > 0 ? (
-                        <span className="inline-flex items-center justify-center bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                          ✓ Activo
-                        </span>
+                        <span className="text-green-600 font-medium">✓ Activo</span>
                       ) : (
-                        <span className="inline-flex items-center justify-center bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold">
-                          Sin supervisor
-                        </span>
+                        <span className="text-gray-400">Sin supervisor</span>
                       )}
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <span className="inline-flex items-center justify-center bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-semibold">
-                        {company.employee_count}
-                      </span>
+                      <span className="text-gray-900 font-medium">{company.employee_count}</span>
                     </td>
                     <td className="py-3 px-4 text-center">
                       <span className="text-gray-600 font-medium">{company.max_employees}</span>
@@ -299,35 +284,36 @@ export default function CompaniesPage() {
                       <div className="text-sm">
                         {company.subscription_end ? (
                           <>
-                            <div className="text-gray-900">Hasta: {new Date(company.subscription_end).toLocaleDateString()}</div>
-                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold mt-1 ${
+                            <div className="text-gray-600">Hasta: {new Date(company.subscription_end).toLocaleDateString()}</div>
+                            <span className={`text-xs font-medium ${
                               company.is_subscription_active 
-                                ? 'bg-green-100 text-green-700' 
-                                : 'bg-red-100 text-red-700'
+                                ? 'text-green-600' 
+                                : 'text-red-500'
                             }`}>
                               {company.is_subscription_active ? 'Activa' : 'Vencida'}
                             </span>
                           </>
                         ) : (
-                          <span className="inline-flex items-center bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">
-                            Indefinida
-                          </span>
+                          <span className="text-gray-400 text-xs">Indefinida</span>
                         )}
                       </div>
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-                        company.is_active 
-                          ? 'bg-green-100 text-green-700' 
-                          : 'bg-red-100 text-red-700'
-                      }`}>
-                        {company.is_active ? 'Activa' : 'Inactiva'}
-                      </span>
+                      <div className="flex items-center justify-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${
+                          company.is_active ? 'bg-green-500' : 'bg-gray-300'
+                        }`}></span>
+                        <span className={`text-sm font-medium ${
+                          company.is_active ? 'text-gray-900' : 'text-gray-400'
+                        }`}>
+                          {company.is_active ? 'Activa' : 'Inactiva'}
+                        </span>
+                      </div>
                     </td>
                     <td className="py-3 px-4">
-                      <div className="flex gap-2 justify-center">
+                      <div className="flex flex-col gap-2 items-center">
                         <button
-                          className="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
+                          className="w-full px-3 py-1.5 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-1"
                           onClick={() => setSupervisorsModalCompany(company)}
                           title="Gestionar supervisores"
                         >
@@ -336,22 +322,24 @@ export default function CompaniesPage() {
                           </svg>
                           Supervisores
                         </button>
-                        <button
-                          className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
-                          onClick={() => handleEdit(company)}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                            company.is_active 
-                              ? 'bg-yellow-100 hover:bg-yellow-200 text-yellow-700' 
-                              : 'bg-green-100 hover:bg-green-200 text-green-700'
-                          }`}
-                          onClick={() => handleToggleActive(company.id)}
-                        >
-                          {company.is_active ? 'Desactivar' : 'Activar'}
-                        </button>
+                        <div className="flex gap-2 w-full">
+                          <button
+                            className="flex-1 px-3 py-1.5 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg text-sm font-semibold transition-colors"
+                            onClick={() => handleEdit(company)}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            className={`flex-1 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                              company.is_active 
+                                ? 'bg-red-500 hover:bg-red-600 text-white' 
+                                : 'bg-green-500 hover:bg-green-600 text-white'
+                            }`}
+                            onClick={() => handleToggleActive(company.id)}
+                          >
+                            {company.is_active ? 'Desactivar' : 'Activar'}
+                          </button>
+                        </div>
                       </div>
                     </td>
                   </tr>
