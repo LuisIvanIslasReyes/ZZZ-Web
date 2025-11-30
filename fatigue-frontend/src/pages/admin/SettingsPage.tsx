@@ -53,8 +53,8 @@ export function SettingsPage() {
       return;
     }
 
-    if (passwordData.new_password.length < 6) {
-      toast.error('La contraseña debe tener al menos 6 caracteres');
+    if (passwordData.new_password.length < 8) {
+      toast.error('La contraseña debe tener al menos 8 caracteres');
       return;
     }
 
@@ -62,7 +62,8 @@ export function SettingsPage() {
       setIsChangingPassword(true);
       await authService.changePassword(
         passwordData.old_password,
-        passwordData.new_password
+        passwordData.new_password,
+        passwordData.confirm_password
       );
       toast.success('Contraseña actualizada correctamente');
       setPasswordData({
