@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Font family */
+body {
+  font-family: 'Lato', system-ui, -apple-system, sans-serif;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
