@@ -59,14 +59,14 @@ export function EditProfileModal({ isOpen, onClose, user, onSave }: EditProfileM
         <>
           <button
             onClick={onClose}
-            className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-semibold transition-colors"
+            className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-semibold transition-colors"
             disabled={isSaving}
           >
             Cancelar
           </button>
           <button
             onClick={handleSubmit}
-            className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-semibold transition-colors disabled:opacity-50 ml-2"
+            className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 ml-2"
             disabled={isSaving}
           >
             {isSaving ? 'Guardando...' : 'Guardar Cambios'}
@@ -77,69 +77,69 @@ export function EditProfileModal({ isOpen, onClose, user, onSave }: EditProfileM
       <form className="space-y-4" onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Nombre</label>
             <input
               name="first_name"
               type="text"
               value={form.first_name}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
               placeholder="Nombre"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Apellido</label>
             <input
               name="last_name"
               type="text"
               value={form.last_name}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
               placeholder="Apellido"
             />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
           <input
             name="email"
             type="email"
             value={form.email}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
             placeholder="Correo Electrónico"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Teléfono</label>
           <input
             name="phone"
             type="tel"
             value={form.phone}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
             placeholder="Teléfono"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Departamento</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Departamento</label>
           <input
             name="department"
             type="text"
             value={form.department}
             readOnly
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
             placeholder="Departamento"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Puesto</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Puesto</label>
           <input
             name="position"
             type="text"
             value={form.position}
             readOnly
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
             placeholder="Puesto"
           />
         </div>

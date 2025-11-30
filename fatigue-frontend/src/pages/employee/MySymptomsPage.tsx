@@ -110,7 +110,7 @@ export function MySymptomsPage() {
         </div>
         <button
           onClick={() => setIsReportModalOpen(true)}
-          className="flex items-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-3 px-6 rounded-xl transition-colors shadow-md"
+          className="flex items-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
         >
           <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -121,59 +121,51 @@ export function MySymptomsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-blue-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Total</p>
               <p className="text-3xl font-bold text-[#18314F]">{stats.total}</p>
             </div>
-            <div className="bg-blue-100 rounded-full p-3">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-yellow-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-yellow-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">En Espera</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">En Espera</p>
               <p className="text-3xl font-bold text-[#18314F]">{stats.pending}</p>
             </div>
-            <div className="bg-yellow-100 rounded-full p-3">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-green-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-green-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Revisados</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Revisados</p>
               <p className="text-3xl font-bold text-[#18314F]">{stats.reviewed}</p>
             </div>
-            <div className="bg-green-100 rounded-full p-3">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-gray-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-gray-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Descartados</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Descartados</p>
               <p className="text-3xl font-bold text-[#18314F]">{stats.dismissed}</p>
             </div>
-            <div className="bg-gray-100 rounded-full p-3">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#6B7280">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </div>
         </div>
       </div>
@@ -182,9 +174,9 @@ export function MySymptomsPage() {
       <div className="flex gap-3">
         <button
           onClick={() => setActiveFilter('all')}
-          className={`px-6 py-2 rounded-xl font-medium transition-all ${
+          className={`px-6 py-2 rounded-lg font-semibold transition-all ${
             activeFilter === 'all'
-              ? 'bg-[#18314F] text-white shadow-md'
+              ? 'bg-[#18314F] text-white'
               : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
           }`}
         >
@@ -192,9 +184,9 @@ export function MySymptomsPage() {
         </button>
         <button
           onClick={() => setActiveFilter('pending')}
-          className={`px-6 py-2 rounded-xl font-medium transition-all ${
+          className={`px-6 py-2 rounded-lg font-semibold transition-all ${
             activeFilter === 'pending'
-              ? 'bg-[#18314F] text-white shadow-md'
+              ? 'bg-[#18314F] text-white'
               : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
           }`}
         >
@@ -202,9 +194,9 @@ export function MySymptomsPage() {
         </button>
         <button
           onClick={() => setActiveFilter('reviewed')}
-          className={`px-6 py-2 rounded-xl font-medium transition-all ${
+          className={`px-6 py-2 rounded-lg font-semibold transition-all ${
             activeFilter === 'reviewed'
-              ? 'bg-[#18314F] text-white shadow-md'
+              ? 'bg-[#18314F] text-white'
               : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
           }`}
         >
@@ -213,7 +205,7 @@ export function MySymptomsPage() {
       </div>
 
       {/* Symptoms List */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {filteredSymptoms.length === 0 ? (
           <div className="text-center py-16">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

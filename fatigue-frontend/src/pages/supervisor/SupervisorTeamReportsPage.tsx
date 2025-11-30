@@ -71,19 +71,19 @@ export function SupervisorTeamReportsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Team Reports</h1>
+        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Reportes del Equipo</h1>
         <p className="text-lg text-[#18314F]/70">Análisis y reportes detallados del equipo</p>
       </div>
 
       {/* Controls */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
           <div>
             <h3 className="font-semibold text-[#18314F] mb-2">Período de Tiempo</h3>
             <div className="flex gap-2">
               <button
                 onClick={() => setTimeRange('week')}
-                className={`px-4 py-2 rounded-xl font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   timeRange === 'week' ? 'bg-[#18314F] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -91,7 +91,7 @@ export function SupervisorTeamReportsPage() {
               </button>
               <button
                 onClick={() => setTimeRange('month')}
-                className={`px-4 py-2 rounded-xl font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   timeRange === 'month' ? 'bg-[#18314F] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -99,7 +99,7 @@ export function SupervisorTeamReportsPage() {
               </button>
               <button
                 onClick={() => setTimeRange('quarter')}
-                className={`px-4 py-2 rounded-xl font-medium transition-colors ${
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   timeRange === 'quarter' ? 'bg-[#18314F] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -114,7 +114,7 @@ export function SupervisorTeamReportsPage() {
               <button
                 onClick={() => exportReport('pdf')}
                 disabled={isExporting}
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-xl transition-colors"
+                className="flex items-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
               >
                 <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -124,7 +124,7 @@ export function SupervisorTeamReportsPage() {
               <button
                 onClick={() => exportReport('excel')}
                 disabled={isExporting}
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-xl transition-colors"
+                className="flex items-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
               >
                 <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
@@ -134,7 +134,7 @@ export function SupervisorTeamReportsPage() {
               <button
                 onClick={() => exportReport('csv')}
                 disabled={isExporting}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-xl transition-colors"
+                className="flex items-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
               >
                 {isExporting ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -151,10 +151,10 @@ export function SupervisorTeamReportsPage() {
       </div>
 
       {/* Report Type Tabs */}
-      <div className="bg-white rounded-2xl shadow-md p-2 flex gap-2">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex gap-2">
         <button
           onClick={() => setSelectedReport('overview')}
-          className={`flex-1 py-3 rounded-xl font-semibold transition-colors ${
+          className={`flex-1 py-3 rounded-lg font-semibold transition-colors ${
             selectedReport === 'overview' ? 'bg-[#18314F] text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
@@ -162,7 +162,7 @@ export function SupervisorTeamReportsPage() {
         </button>
         <button
           onClick={() => setSelectedReport('fatigue')}
-          className={`flex-1 py-3 rounded-xl font-semibold transition-colors ${
+          className={`flex-1 py-3 rounded-lg font-semibold transition-colors ${
             selectedReport === 'fatigue' ? 'bg-[#18314F] text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
@@ -170,7 +170,7 @@ export function SupervisorTeamReportsPage() {
         </button>
         <button
           onClick={() => setSelectedReport('productivity')}
-          className={`flex-1 py-3 rounded-xl font-semibold transition-colors ${
+          className={`flex-1 py-3 rounded-lg font-semibold transition-colors ${
             selectedReport === 'productivity' ? 'bg-[#18314F] text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
@@ -178,7 +178,7 @@ export function SupervisorTeamReportsPage() {
         </button>
         <button
           onClick={() => setSelectedReport('alerts')}
-          className={`flex-1 py-3 rounded-xl font-semibold transition-colors ${
+          className={`flex-1 py-3 rounded-lg font-semibold transition-colors ${
             selectedReport === 'alerts' ? 'bg-[#18314F] text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
@@ -188,15 +188,13 @@ export function SupervisorTeamReportsPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
             <div>
-              <p className="text-sm text-gray-600">Empleados Activos</p>
+              <p className="text-sm text-gray-600 font-semibold">Empleados Activos</p>
               <p className="text-2xl font-bold text-[#18314F]">
                 {isLoading ? '...' : summary?.total_employees || 0}
               </p>
@@ -204,15 +202,13 @@ export function SupervisorTeamReportsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
             <div>
-              <p className="text-sm text-gray-600">Productividad Promedio</p>
+              <p className="text-sm text-gray-600 font-semibold">Productividad Promedio</p>
               <p className="text-2xl font-bold text-[#18314F]">
                 {isLoading ? '...' : `${summary?.avg_productivity?.toFixed(1) || 0}%`}
               </p>
@@ -220,15 +216,13 @@ export function SupervisorTeamReportsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <div>
-              <p className="text-sm text-gray-600">Horas Trabajadas</p>
+              <p className="text-sm text-gray-600 font-semibold">Horas Trabajadas</p>
               <p className="text-2xl font-bold text-[#18314F]">
                 {isLoading ? '...' : `${summary?.total_work_hours?.toFixed(0) || 0}h`}
               </p>
@@ -236,15 +230,13 @@ export function SupervisorTeamReportsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#EF4444">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#EF4444">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
             <div>
-              <p className="text-sm text-gray-600">Alertas Críticas</p>
+              <p className="text-sm text-gray-600 font-semibold">Alertas Críticas</p>
               <p className="text-2xl font-bold text-[#18314F]">
                 {isLoading ? '...' : summary?.critical_alerts || 0}
               </p>
@@ -255,7 +247,7 @@ export function SupervisorTeamReportsPage() {
 
       {/* Charts - Overview Report */}
       {selectedReport === 'overview' && (
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-[#18314F] mb-4">Vista General del Equipo</h2>
           <div className="flex items-center justify-center h-[300px] text-gray-400">
             <p>Los datos de vista general estarán disponibles próximamente</p>
@@ -265,8 +257,8 @@ export function SupervisorTeamReportsPage() {
 
       {/* Fatigue Analysis Report */}
       {selectedReport === 'fatigue' && (
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="text-2xl font-bold text-[#18314F] mb-6">Análisis Detallado de Fatiga</h2>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-bold text-[#18314F] mb-6">Análisis Detallado de Fatiga</h2>
           <div className="flex items-center justify-center h-[300px] text-gray-400">
             <p>Los datos de análisis de fatiga estarán disponibles próximamente</p>
           </div>
@@ -278,24 +270,24 @@ export function SupervisorTeamReportsPage() {
         <div className="space-y-6">
           {/* Gráficas */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-[#18314F] mb-4">Actividad vs Fatiga</h3>
               <ProductivityFatigueChart days={days} height={280} title="" />
             </div>
             
-            <div className="bg-white rounded-2xl shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-[#18314F] mb-4">Horas de Trabajo</h3>
               <WorkHoursChart days={days} height={280} title="" />
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-md p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-[#18314F] mb-4">Tendencia de Fatiga</h3>
             <TeamFatigueTrendChart days={days} interval="day" height={300} title="" />
           </div>
 
           {/* Tabla de Empleados */}
-          <div className="bg-white rounded-2xl shadow-md p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h3 className="text-xl font-bold text-[#18314F] mb-6">Análisis por Empleado</h3>
             
             {isLoading ? (
@@ -383,8 +375,8 @@ export function SupervisorTeamReportsPage() {
 
       {/* Alerts History Report */}
       {selectedReport === 'alerts' && (
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="text-2xl font-bold text-[#18314F] mb-6">Historial de Alertas</h2>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-bold text-[#18314F] mb-6">Historial de Alertas</h2>
           <div className="flex items-center justify-center h-[300px] text-gray-400">
             <p>Los datos de alertas estarán disponibles próximamente</p>
           </div>

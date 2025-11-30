@@ -218,10 +218,10 @@ export function EmployeeProfilePage() {
       </div>
 
       {/* Profile Card */}
-      <div className="bg-white rounded-2xl shadow-md p-8">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
         <div className="flex items-start gap-6">
           <div className="avatar placeholder relative">
-            <div className="bg-[#18314F]/10 text-[#18314F] rounded-2xl w-32 h-32 flex items-center justify-center overflow-hidden">
+            <div className="bg-[#18314F]/10 text-[#18314F] rounded-lg w-32 h-32 flex items-center justify-center overflow-hidden">
               {user?.avatar_url && !imageError ? (
                 <img 
                   src={user.avatar_url} 
@@ -249,7 +249,7 @@ export function EmployeeProfilePage() {
             </p>
             <div className="flex gap-4">
               <button
-                className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-6 rounded-xl transition-colors"
+                className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
                 onClick={() => setIsEditProfileModalOpen(true)}
               >
                 Editar Perfil
@@ -262,7 +262,7 @@ export function EmployeeProfilePage() {
                 className="hidden"
               />
               <button 
-                className="bg-white hover:bg-gray-50 text-[#18314F] font-medium py-2 px-6 rounded-xl border-2 border-[#18314F] transition-colors"
+                className="bg-white hover:bg-gray-50 text-[#18314F] font-semibold py-2 px-6 rounded-lg border-2 border-[#18314F] transition-colors"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
               >
@@ -270,7 +270,7 @@ export function EmployeeProfilePage() {
               </button>
               {user?.avatar_url && (
                 <button 
-                  className="bg-white hover:bg-red-50 text-red-600 font-medium py-2 px-6 rounded-xl border-2 border-red-300 transition-colors"
+                  className="bg-white hover:bg-red-50 text-red-600 font-semibold py-2 px-6 rounded-lg border-2 border-red-300 transition-colors"
                   onClick={() => setIsDeleteAvatarModalOpen(true)}
                   disabled={isLoading}
                 >
@@ -292,10 +292,10 @@ export function EmployeeProfilePage() {
 
       {/* Recomendaciones Personalizadas */}
       {recommendations.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-[#18314F] flex items-center gap-2">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <h3 className="text-lg font-semibold text-[#18314F] flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
               Recomendaciones Personalizadas
@@ -306,26 +306,20 @@ export function EmployeeProfilePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {recommendations.map((rec) => (
-              <div key={rec.id} className="bg-gray-50 rounded-xl p-4 border-2 border-gray-200">
+              <div key={rec.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <div className="flex items-start gap-3 mb-3">
                   {rec.priority === 'high' ? (
-                    <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                      </svg>
-                    </div>
+                    <svg className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
                   ) : rec.recommendation_type === 'break' ? (
-                    <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
+                    <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   ) : (
-                    <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <svg className="w-6 h-6 text-sky-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8zm0 18c-3.35 0-6-2.57-6-6.2 0-2.34 1.95-5.44 6-9.14 4.05 3.7 6 6.79 6 9.14 0 3.63-2.65 6.2-6 6.2z"/>
-                      </svg>
-                    </div>
+                    <svg className="w-5 h-5 text-sky-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8zm0 18c-3.35 0-6-2.57-6-6.2 0-2.34 1.95-5.44 6-9.14 4.05 3.7 6 6.79 6 9.14 0 3.63-2.65 6.2-6 6.2z"/>
+                    </svg>
                   )}
                   <div className="flex-1">
                     <h4 className="font-semibold text-[#18314F] mb-1">{rec.title}</h4>
@@ -350,8 +344,8 @@ export function EmployeeProfilePage() {
       {/* Information Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Personal Information */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h3 className="text-xl font-semibold text-[#18314F] mb-6">Información Personal</h3>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-[#18314F] mb-6">Información Personal</h3>
           <div className="space-y-4">
             <div>
               <label className="text-sm text-gray-600 font-medium">Nombre Completo</label>
@@ -373,8 +367,8 @@ export function EmployeeProfilePage() {
         </div>
 
         {/* Work Information */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h3 className="text-xl font-semibold text-[#18314F] mb-6">Información Laboral</h3>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-[#18314F] mb-6">Información Laboral</h3>
           <div className="space-y-4">
             <div>
               <label className="text-sm text-gray-600 font-medium">Departamento</label>
@@ -397,19 +391,19 @@ export function EmployeeProfilePage() {
       </div>
 
       {/* Device Information */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
-        <h3 className="text-xl font-semibold text-[#18314F] mb-6">Información del Dispositivo</h3>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-[#18314F] mb-6">Información del Dispositivo</h3>
         {device ? (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-gray-50 rounded-xl p-4">
+            <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm text-gray-600 mb-1">ID del Dispositivo</p>
               <p className="text-lg font-semibold text-[#18314F]">{device.device_identifier}</p>
             </div>
-            <div className="bg-gray-50 rounded-xl p-4">
+            <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm text-gray-600 mb-1">Modelo</p>
               <p className="text-lg font-semibold text-[#18314F]">ESP32 Wearable</p>
             </div>
-            <div className="bg-gray-50 rounded-xl p-4">
+            <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm text-gray-600 mb-1">Última Conexión</p>
               <p className="text-lg font-semibold text-[#18314F]">
                 {device.last_connection 
@@ -423,7 +417,7 @@ export function EmployeeProfilePage() {
                   : 'Nunca'}
               </p>
             </div>
-            <div className="bg-gray-50 rounded-xl p-4">
+            <div className="bg-gray-50 rounded-lg p-4">
               <p className="text-sm text-gray-600 mb-1">Estado</p>
               <p className={`text-lg font-semibold ${
                 device.is_active ? 'text-green-600' : 'text-gray-400'
@@ -433,7 +427,7 @@ export function EmployeeProfilePage() {
             </div>
           </div>
         ) : (
-          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6 text-center">
+          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-6 text-center">
             <svg className="w-12 h-12 text-yellow-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
@@ -444,17 +438,17 @@ export function EmployeeProfilePage() {
       </div>
 
       {/* Actions de Cuenta */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
-        <h3 className="text-xl font-semibold text-[#18314F] mb-6">Configuración de Cuenta</h3>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-[#18314F] mb-6">Configuración de Cuenta</h3>
         <div className="flex flex-wrap gap-4">
           <button 
-            className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm"
+            className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
             onClick={() => setIsChangePasswordModalOpen(true)}
           >
             Cambiar Contraseña
           </button>
           <button 
-            className="bg-[#C98A05] hover:bg-[#A87404] text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm"
+            className="bg-[#C98A05] hover:bg-[#A87404] text-white font-semibold py-3 px-6 rounded-lg transition-colors"
             onClick={() => setIsDownloadModalOpen(true)}
           >
             Descargar Mis Datos
@@ -483,14 +477,14 @@ export function EmployeeProfilePage() {
                 setConfirmPassword('');
                 setConfirmTouched(false);
               }}
-              className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-semibold transition-colors"
+              className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-semibold transition-colors"
             >
               Cancelar
             </button>
             <button
               onClick={handleChangePassword}
               disabled={isLoading}
-              className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-semibold transition-colors disabled:opacity-50"
+              className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
             >
               {isLoading ? 'Guardando...' : 'Cambiar Contraseña'}
             </button>
@@ -506,7 +500,7 @@ export function EmployeeProfilePage() {
               type="password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
               placeholder="Ingresa tu contraseña actual"
             />
           </div>
@@ -518,7 +512,7 @@ export function EmployeeProfilePage() {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
               placeholder="Ingresa tu nueva contraseña"
             />
           </div>
@@ -531,10 +525,10 @@ export function EmployeeProfilePage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               onBlur={() => setConfirmTouched(true)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent ${
+              className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 ${
                 confirmTouched && confirmPassword && newPassword !== confirmPassword
                   ? 'border-red-500'
-                  : 'border-gray-300'
+                  : 'border-gray-200 focus:border-[#18314F]'
               }`}
               placeholder="Confirma tu nueva contraseña"
             />
@@ -557,14 +551,14 @@ export function EmployeeProfilePage() {
           <>
             <button
               onClick={() => setIsDownloadModalOpen(false)}
-              className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-semibold transition-colors"
+              className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-semibold transition-colors"
             >
               Cancelar
             </button>
             <button
               onClick={handleDownloadData}
               disabled={isLoading}
-              className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl font-semibold transition-colors disabled:opacity-50"
+              className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
             >
               {isLoading ? 'Descargando...' : 'Descargar'}
             </button>
@@ -575,7 +569,7 @@ export function EmployeeProfilePage() {
           <p className="text-gray-700">
             Se descargará un archivo con toda tu información personal y métricas registradas en el sistema.
           </p>
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-800">
               <strong>Nota:</strong> El archivo incluirá:
             </p>
@@ -599,14 +593,14 @@ export function EmployeeProfilePage() {
           <>
             <button
               onClick={() => setIsDeleteAvatarModalOpen(false)}
-              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-medium transition-colors"
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-colors"
             >
               Cancelar
             </button>
             <button
               onClick={handleDeleteAvatar}
               disabled={isLoading}
-              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
             >
               {isLoading ? 'Eliminando...' : 'Confirmar'}
             </button>

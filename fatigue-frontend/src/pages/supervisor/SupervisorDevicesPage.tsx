@@ -158,30 +158,26 @@ export function SupervisorDevicesPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Dispositivos */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Total Dispositivos</span>
-            <span className="bg-blue-100 rounded-full p-2">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Total Dispositivos</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-[#18314F]">{devices.length}</span>
+          <span className="text-3xl font-bold text-[#18314F]">{devices.length}</span>
         </div>
 
         {/* Activos */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Activos</span>
-            <span className="bg-green-100 rounded-full p-2">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Activos</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
           <div className="flex items-end gap-2">
-            <span className="text-4xl font-bold text-[#18314F]">{activeDevices}</span>
+            <span className="text-3xl font-bold text-[#18314F]">{activeDevices}</span>
             <span className="text-green-600 font-semibold text-sm mb-1">
               {devices.length > 0 ? Math.round((activeDevices / devices.length) * 100) : 0}%
             </span>
@@ -189,17 +185,15 @@ export function SupervisorDevicesPage() {
         </div>
 
         {/* Inactivos */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Inactivos</span>
-            <span className="bg-red-100 rounded-full p-2">
-              <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#EF4444">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Inactivos</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#EF4444">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </div>
           <div className="flex items-end gap-2">
-            <span className="text-4xl font-bold text-[#18314F]">{inactiveDevices}</span>
+            <span className="text-3xl font-bold text-[#18314F]">{inactiveDevices}</span>
             <span className="text-red-600 font-semibold text-sm mb-1">
               {devices.length > 0 ? Math.round((inactiveDevices / devices.length) * 100) : 0}%
             </span>
@@ -208,7 +202,7 @@ export function SupervisorDevicesPage() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <input
@@ -216,14 +210,14 @@ export function SupervisorDevicesPage() {
               placeholder="Buscar por identificador, empleado o email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+              className="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 transition-all"
             />
             <svg className="w-5 h-5 text-gray-400 absolute left-4 top-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
           <select 
-            className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white"
+            className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 bg-white transition-all"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive')}
           >
@@ -235,8 +229,8 @@ export function SupervisorDevicesPage() {
       </div>
 
       {/* Devices Table */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
-        <h2 className="text-2xl font-bold text-[#18314F] mb-6">Dispositivos del Equipo</h2>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-bold text-[#18314F] mb-6">Dispositivos del Equipo</h2>
         
         {filteredDevices.length === 0 ? (
           <div className="text-center py-12">
@@ -263,11 +257,9 @@ export function SupervisorDevicesPage() {
                   <tr key={device.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
-                        <span className="bg-blue-100 rounded-full p-1.5">
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                          </svg>
-                        </span>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
                         <span className="font-mono text-sm font-medium text-[#18314F]">
                           {device.device_identifier}
                         </span>

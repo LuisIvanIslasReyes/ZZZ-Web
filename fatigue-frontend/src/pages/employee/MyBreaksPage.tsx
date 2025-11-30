@@ -145,7 +145,7 @@ export function MyBreaksPage() {
         </div>
         <button
           onClick={() => setIsScheduleModalOpen(true)}
-          className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-medium transition-colors flex items-center gap-2 shadow-md"
+          className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -156,75 +156,67 @@ export function MyBreaksPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-blue-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Total</p>
-              <p className="text-4xl font-bold text-blue-600">{stats.total}</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Total</p>
+              <p className="text-3xl font-bold text-blue-600">{stats.total}</p>
               <p className="text-xs text-gray-500 mt-1">Descansos registrados</p>
             </div>
-            <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-yellow-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-yellow-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Pendientes</p>
-              <p className="text-4xl font-bold text-yellow-600">{stats.pending}</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Pendientes</p>
+              <p className="text-3xl font-bold text-yellow-600">{stats.pending}</p>
               <p className="text-xs text-gray-500 mt-1">Esperando aprobación</p>
             </div>
-            <div className="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-green-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-green-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Aprobados</p>
-              <p className="text-4xl font-bold text-green-600">{stats.approved}</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Aprobados</p>
+              <p className="text-3xl font-bold text-green-600">{stats.approved}</p>
               <p className="text-xs text-gray-500 mt-1">Listos para usar</p>
             </div>
-            <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-red-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-red-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Rechazados</p>
-              <p className="text-4xl font-bold text-red-600">{stats.rejected}</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Rechazados</p>
+              <p className="text-3xl font-bold text-red-600">{stats.rejected}</p>
               <p className="text-xs text-gray-500 mt-1">No autorizados</p>
             </div>
-            <div className="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl shadow-md p-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilterStatus('all')}
-            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
               filterStatus === 'all'
-                ? 'bg-[#18314F] text-white shadow-md'
+                ? 'bg-[#18314F] text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -232,9 +224,9 @@ export function MyBreaksPage() {
           </button>
           <button
             onClick={() => setFilterStatus('pending')}
-            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
               filterStatus === 'pending'
-                ? 'bg-yellow-500 text-white shadow-md'
+                ? 'bg-[#18314F] text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -242,9 +234,9 @@ export function MyBreaksPage() {
           </button>
           <button
             onClick={() => setFilterStatus('approved')}
-            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
               filterStatus === 'approved'
-                ? 'bg-green-500 text-white shadow-md'
+                ? 'bg-[#18314F] text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -252,9 +244,9 @@ export function MyBreaksPage() {
           </button>
           <button
             onClick={() => setFilterStatus('rejected')}
-            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
               filterStatus === 'rejected'
-                ? 'bg-red-500 text-white shadow-md'
+                ? 'bg-[#18314F] text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -262,9 +254,9 @@ export function MyBreaksPage() {
           </button>
           <button
             onClick={() => setFilterStatus('completed')}
-            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
               filterStatus === 'completed'
-                ? 'bg-blue-500 text-white shadow-md'
+                ? 'bg-[#18314F] text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -274,7 +266,7 @@ export function MyBreaksPage() {
       </div>
 
       {/* Breaks List */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="p-6">
           {filteredBreaks.length === 0 ? (
             <div className="text-center py-16">
@@ -290,7 +282,7 @@ export function MyBreaksPage() {
               {filterStatus === 'all' && (
                 <button
                   onClick={() => setIsScheduleModalOpen(true)}
-                  className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-medium transition-colors shadow-md"
+                  className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-semibold transition-colors"
                 >
                   Programar mi primer descanso
                 </button>
@@ -330,26 +322,15 @@ export function MyBreaksPage() {
                         </span>
                       </td>
                       <td className="py-4 px-4">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-sm ${
+                        <span className={`text-sm font-semibold ${
                             breakItem.status === 'approved' ? 'text-green-600' :
                             breakItem.status === 'rejected' ? 'text-red-600' :
                             breakItem.status === 'completed' ? 'text-blue-600' :
-                            breakItem.status === 'cancelled' ? 'text-gray-600' :
+                            breakItem.status === 'cancelled' ? 'text-gray-500' :
                             'text-yellow-600'
-                          }`}>
-                            {getStatusIcon(breakItem.status)}
-                          </span>
-                          <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                            breakItem.status === 'approved' ? 'bg-green-100 text-green-700' :
-                            breakItem.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                            breakItem.status === 'completed' ? 'bg-blue-100 text-blue-700' :
-                            breakItem.status === 'cancelled' ? 'bg-gray-100 text-gray-700' :
-                            'bg-yellow-100 text-yellow-700'
                           }`}>
                             {breakItem.status_display}
                           </span>
-                        </div>
                       </td>
                       <td className="py-4 px-4">
                         <div className="max-w-xs">

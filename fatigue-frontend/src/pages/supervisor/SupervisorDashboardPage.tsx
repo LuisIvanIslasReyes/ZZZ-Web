@@ -125,115 +125,103 @@ export function SupervisorDashboardPage() {
       <div className="mb-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-[#18314F] mb-1">Dashboard del Supervisor</h1>
-            <p className="text-lg text-[#18314F]/70">Monitoreo de tu equipo de trabajo</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-1">Dashboard del Supervisor</h1>
+            <p className="text-gray-600">Monitoreo de tu equipo de trabajo</p>
           </div>
-          {user?.company_name && (
-            <div className="bg-[#18314F] text-white rounded-xl px-6 py-3 shadow-lg">
-              <div className="flex items-center gap-3">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                <div>
-                  <p className="text-xs text-white/70">Mi Empresa</p>
-                  <p className="text-base font-bold">{user.company_name}</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Acción Destacada: Enviar Notificación */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-6 mb-6">
-        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
-              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {/* Botón Enviar Notificación */}
+            <button
+              onClick={() => setIsNotificationModalOpen(true)}
+              className="bg-[#18314F] hover:bg-[#18314F]/90 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
               </svg>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-white mb-1">Comunicación con el Equipo</h3>
-              <p className="text-white/90 text-sm">Envía notificaciones importantes a tus empleados</p>
-            </div>
+              Notificar Equipo
+            </button>
+            {/* Badge Empresa */}
+            {user?.company_name && (
+              <div className="bg-[#18314F] text-white rounded-xl px-5 py-2.5 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                  <div>
+                    <p className="text-xs text-white/70">Mi Empresa</p>
+                    <p className="text-sm font-bold">{user.company_name}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-          <button
-            onClick={() => setIsNotificationModalOpen(true)}
-            className="bg-white text-indigo-600 hover:bg-indigo-50 px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Enviar Notificación al Equipo
-          </button>
         </div>
       </div>
 
       {/* Cards superiores - Métricas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Empleados en mi Equipo */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Empleados en mi Equipo</span>
-            <span className="bg-gray-100 rounded-full p-2">
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-            </span>
+      <div className="bg-gray-50 rounded-xl p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Empleados en mi Equipo */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-gray-600 text-base font-medium">Empleados en mi Equipo</span>
+              <svg className="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-bold text-gray-900">{stats.total_employees}</span>
+              <span className="text-sm text-green-600 font-medium">
+                ↑ {stats.active_devices} con dispositivos
+              </span>
+            </div>
           </div>
-          <div className="flex items-end gap-2">
-            <span className="text-4xl font-bold text-[#18314F]">{stats.total_employees}</span>
-            <span className="flex items-center gap-1 text-green-600 font-semibold text-sm">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#22C55E"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 17l7-7 7 7" /></svg>
-              {stats.active_devices} con dispositivos
-            </span>
-          </div>
-        </div>
 
-        {/* Alertas Activas */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Alertas Activas</span>
-            <span className="bg-red-100 rounded-full p-2">
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-            </span>
+          {/* Alertas Activas */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-gray-600 text-base font-medium">Alertas Activas</span>
+              <svg className={`w-8 h-8 ${stats.pending_alerts > 0 ? 'text-red-500' : 'text-green-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className={`text-4xl font-bold ${stats.pending_alerts > 0 ? 'text-red-500' : 'text-gray-900'}`}>{stats.pending_alerts}</span>
+              <span className={`text-sm font-medium ${stats.pending_alerts > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                {stats.pending_alerts > 0 ? 'Requieren atención' : 'Todo normal'}
+              </span>
+            </div>
           </div>
-          <div className="flex items-end gap-2">
-            <span className={`text-4xl font-bold ${stats.pending_alerts > 0 ? 'text-[#E53E3E]' : 'text-[#18314F]'}`}>{stats.pending_alerts}</span>
-            <span className={`font-semibold text-sm ${stats.pending_alerts > 0 ? 'text-red-600' : 'text-green-600'}`}>
-              {stats.pending_alerts > 0 ? 'Requieren atención' : 'Todo normal'}
-            </span>
-          </div>
-        </div>
 
-        {/* Nivel Promedio de Fatiga */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Nivel Promedio de Fatiga</span>
-            <span className={`rounded-full p-2 ${stats.avg_fatigue_score > 70 ? 'bg-red-100' : 'bg-green-100'}`}>
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-            </span>
+          {/* Nivel Promedio de Fatiga */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-gray-600 text-base font-medium">Nivel Promedio de Fatiga</span>
+              <svg className={`w-8 h-8 ${stats.avg_fatigue_score > 70 ? 'text-red-500' : 'text-green-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-bold text-gray-900">{stats.avg_fatigue_score}%</span>
+              <span className={`text-sm font-medium ${stats.avg_fatigue_score > 70 ? 'text-red-600' : 'text-green-600'}`}>
+                {stats.avg_fatigue_score > 70 ? 'Alto nivel' : 'Nivel controlado'}
+              </span>
+            </div>
           </div>
-          <div className="flex items-end gap-2">
-            <span className="text-4xl font-bold text-[#18314F]">{stats.avg_fatigue_score}%</span>
-            <span className={`font-semibold text-sm ${stats.avg_fatigue_score > 70 ? 'text-red-600' : 'text-green-600'}`}>
-              {stats.avg_fatigue_score > 70 ? 'Alto nivel' : 'Nivel controlado'}
-            </span>
-          </div>
-        </div>
 
-        {/* Empleados en Riesgo */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Empleados en Riesgo</span>
-            <span className={`rounded-full p-2 ${(stats.high_risk_employees || 0) > 0 ? 'bg-red-100' : 'bg-green-100'}`}>
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </span>
-          </div>
-          <div className="flex items-end gap-2">
-            <span className={`text-4xl font-bold ${(stats.high_risk_employees || 0) > 0 ? 'text-[#E53E3E]' : 'text-[#18314F]'}`}>{stats.high_risk_employees || 0}</span>
-            <span className={`font-semibold text-sm ${(stats.high_risk_employees || 0) > 0 ? 'text-red-600' : 'text-green-600'}`}>
-              {(stats.high_risk_employees || 0) > 0 ? 'Acción requerida' : 'Equipo estable'}
-            </span>
+          {/* Empleados en Riesgo */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-gray-600 text-base font-medium">Empleados en Riesgo</span>
+              <svg className={`w-8 h-8 ${(stats.high_risk_employees || 0) > 0 ? 'text-red-500' : 'text-green-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className={`text-4xl font-bold ${(stats.high_risk_employees || 0) > 0 ? 'text-red-500' : 'text-gray-900'}`}>{stats.high_risk_employees || 0}</span>
+              <span className={`text-sm font-medium ${(stats.high_risk_employees || 0) > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                {(stats.high_risk_employees || 0) > 0 ? 'Acción requerida' : 'Equipo estable'}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -241,22 +229,26 @@ export function SupervisorDashboardPage() {
       {/* Charts Grid - Fila 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Fatiga del Equipo - Últimos 7 días */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
-            <span className="text-lg font-semibold text-[#18314F]">Tendencia de Fatiga del Equipo</span>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center gap-2 mb-1">
+            <svg className="w-5 h-5 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+            </svg>
+            <span className="text-lg font-bold text-gray-900">Tendencia de Fatiga del Equipo</span>
           </div>
-          <p className="text-sm text-[#18314F]/70 mb-4">Últimos 7 días</p>
+          <p className="text-sm text-gray-500 mb-4">Últimos 7 días</p>
           <TeamFatigueTrendChart days={7} interval="day" height={220} title="" />
         </div>
 
         {/* Estado del Equipo */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
-          <div className="flex items-center gap-2 mb-4">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 12h16M12 4v16" /></svg>
-            <span className="text-lg font-semibold text-[#18314F]">Estado del Equipo</span>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
+          <div className="flex items-center gap-2 mb-1">
+            <svg className="w-5 h-5 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12h16M12 4v16" />
+            </svg>
+            <span className="text-lg font-bold text-gray-900">Estado del Equipo</span>
           </div>
-          <p className="text-sm text-[#18314F]/70 mb-4">Distribución por nivel de riesgo</p>
+          <p className="text-sm text-gray-500 mb-4">Distribución por nivel de riesgo</p>
           {stats.high_risk_employees !== undefined && stats.high_risk_employees > 0 ? (
             <DoughnutChart
               labels={['Normal', 'Alto Riesgo']}
@@ -282,34 +274,38 @@ export function SupervisorDashboardPage() {
       {/* Charts Grid - Fila 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Productividad vs Fatiga */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3v18h18" /></svg>
-            <span className="text-lg font-semibold text-[#18314F]">Actividad vs Fatiga</span>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center gap-2 mb-1">
+            <svg className="w-5 h-5 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3v18h18" />
+            </svg>
+            <span className="text-lg font-bold text-gray-900">Actividad vs Fatiga</span>
           </div>
-          <p className="text-sm text-[#18314F]/70 mb-4">Correlación semanal</p>
+          <p className="text-sm text-gray-500 mb-4">Correlación semanal</p>
           <ProductivityFatigueChart days={7} height={220} title="" />
         </div>
 
         {/* Horas de Trabajo del Equipo */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#18314F"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span className="text-lg font-semibold text-[#18314F]">Horas de Actividad del Equipo</span>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center gap-2 mb-1">
+            <svg className="w-5 h-5 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-lg font-bold text-gray-900">Horas de Actividad del Equipo</span>
           </div>
-          <p className="text-sm text-[#18314F]/70 mb-4">Comparación con recomendaciones</p>
+          <p className="text-sm text-gray-500 mb-4">Comparación con recomendaciones</p>
           <WorkHoursChart days={7} height={220} title="" />
         </div>
       </div>
 
       {/* Acciones Rápidas */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-200 px-8 py-6">
-        <h2 className="text-xl font-semibold text-[#18314F] mb-6">Exportar Reportes</h2>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 className="text-lg font-bold text-gray-900 mb-4">Exportar Reportes</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <button 
             onClick={() => handleGenerateReport('csv')}
             disabled={isGeneratingReport}
-            className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isGeneratingReport ? (
               <>
@@ -321,15 +317,17 @@ export function SupervisorDashboardPage() {
               </>
             ) : (
               <>
-                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                📊 Exportar CSV
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Exportar CSV
               </>
             )}
           </button>
           <button 
             onClick={() => handleGenerateReport('excel')}
             disabled={isGeneratingReport}
-            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isGeneratingReport ? (
               <>
@@ -341,15 +339,17 @@ export function SupervisorDashboardPage() {
               </>
             ) : (
               <>
-                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                📈 Exportar Excel
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Exportar Excel
               </>
             )}
           </button>
           <button 
             onClick={() => handleGenerateReport('pdf')}
             disabled={isGeneratingReport}
-            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isGeneratingReport ? (
               <>
@@ -361,23 +361,25 @@ export function SupervisorDashboardPage() {
               </>
             ) : (
               <>
-                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                📄 Exportar PDF
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                Exportar PDF
               </>
             )}
           </button>
         </div>
 
-        <h3 className="text-lg font-semibold text-[#18314F] mb-4 mt-6">Otras Acciones</h3>
-        <div className="grid grid-cols-1 gap-4">
-          <button 
-            onClick={handleViewTeamDetails}
-            className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-6 rounded-xl border-2 border-[#18314F] transition-colors"
-          >
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-            Ver Detalles del Equipo
-          </button>
-        </div>
+        <h3 className="text-base font-bold text-gray-900 mb-3 pt-4 border-t border-gray-200">Otras Acciones</h3>
+        <button 
+          onClick={handleViewTeamDetails}
+          className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-semibold py-3 px-6 rounded-lg border-2 border-gray-300 hover:border-[#18314F] transition-all"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          Ver Detalles del Equipo
+        </button>
       </div>
 
       {/* Send Notification Modal */}

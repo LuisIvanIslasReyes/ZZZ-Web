@@ -19,13 +19,13 @@ export function HelpCenterPage() {
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
 
   const categories = [
-    { id: 'all', name: 'Todas', icon: '📚' },
-    { id: 'fatigue', name: 'Fatiga', icon: '😴' },
-    { id: 'breaks', name: 'Descansos', icon: '⏸️' },
-    { id: 'recommendations', name: 'Recomendaciones', icon: '💡' },
-    { id: 'alerts', name: 'Alertas', icon: '🔔' },
-    { id: 'device', name: 'Dispositivo', icon: '⌚' },
-    { id: 'account', name: 'Cuenta', icon: '👤' }
+    { id: 'all', name: 'Todas' },
+    { id: 'fatigue', name: 'Fatiga' },
+    { id: 'breaks', name: 'Descansos' },
+    { id: 'recommendations', name: 'Recomendaciones' },
+    { id: 'alerts', name: 'Alertas' },
+    { id: 'device', name: 'Dispositivo' },
+    { id: 'account', name: 'Cuenta' }
   ];
 
   const faqs: FAQItem[] = [
@@ -147,28 +147,28 @@ export function HelpCenterPage() {
 
   const contactOptions = [
     {
-      icon: '📞',
+      icon: 'phone',
       title: 'Soporte Técnico',
       description: 'Problemas con dispositivos o la plataforma',
       contact: 'Ext. 2500 | soporte@empresa.com',
       hours: 'Lun-Vie 8:00-18:00'
     },
     {
-      icon: '👥',
+      icon: 'users',
       title: 'Recursos Humanos',
       description: 'Consultas sobre políticas y bienestar',
       contact: 'Ext. 2100 | rh@empresa.com',
       hours: 'Lun-Vie 9:00-17:00'
     },
     {
-      icon: '🏥',
+      icon: 'medical',
       title: 'Servicio Médico',
       description: 'Emergencias y consultas de salud',
       contact: 'Ext. 2911 | medico@empresa.com',
       hours: '24/7 Disponible'
     },
     {
-      icon: '👷',
+      icon: 'shield',
       title: 'Seguridad Laboral',
       description: 'Reportar incidentes o riesgos',
       contact: 'Ext. 2300 | seguridad@empresa.com',
@@ -193,14 +193,14 @@ export function HelpCenterPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="relative">
           <input
             type="text"
             placeholder="Buscar preguntas frecuentes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+            className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
           />
           <svg 
             className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -214,20 +214,19 @@ export function HelpCenterPage() {
       </div>
 
       {/* Category Filters */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-xl font-semibold text-[#18314F] mb-4">Categorías</h2>
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`px-4 py-2 rounded-xl font-medium transition-all ${
+              className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 selectedCategory === category.id
                   ? 'bg-[#18314F] text-white shadow-md'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <span className="mr-2">{category.icon}</span>
               {category.name}
             </button>
           ))}
@@ -235,7 +234,7 @@ export function HelpCenterPage() {
       </div>
 
       {/* FAQs */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-xl font-semibold text-[#18314F] mb-4">
           Preguntas Frecuentes {filteredFAQs.length > 0 && `(${filteredFAQs.length})`}
         </h2>
@@ -251,7 +250,7 @@ export function HelpCenterPage() {
         ) : (
           <div className="space-y-3">
             {filteredFAQs.map((faq) => (
-              <div key={faq.id} className="border border-gray-200 rounded-xl overflow-hidden">
+              <div key={faq.id} className="border border-gray-200 rounded-lg overflow-hidden">
                 <button
                   onClick={() => setExpandedFAQ(expandedFAQ === faq.id ? null : faq.id)}
                   className="w-full px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors"
@@ -280,58 +279,87 @@ export function HelpCenterPage() {
       </div>
 
       {/* Contact Section */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-xl font-semibold text-[#18314F] mb-4">¿Necesitas más ayuda?</h2>
         <p className="text-gray-600 mb-6">
           Si no encontraste la respuesta que buscabas, contacta a nuestros equipos de soporte:
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {contactOptions.map((option, index) => (
-            <div key={index} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
-              <div className="flex items-start gap-4">
-                <div className="text-4xl">{option.icon}</div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-[#18314F] mb-1">{option.title}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{option.description}</p>
-                  <p className="text-sm font-medium text-[#18314F] mb-1">{option.contact}</p>
-                  <p className="text-xs text-gray-500">{option.hours}</p>
+          {contactOptions.map((option, index) => {
+            const getIcon = () => {
+              switch(option.icon) {
+                case 'phone':
+                  return (
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  );
+                case 'users':
+                  return (
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  );
+                case 'medical':
+                  return (
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  );
+                case 'shield':
+                  return (
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  );
+                default:
+                  return null;
+              }
+            };
+            return (
+              <div key={index} className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+                <div className="flex items-start gap-4">
+                  <div className="text-[#18314F]">{getIcon()}</div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-[#18314F] mb-1">{option.title}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{option.description}</p>
+                    <p className="text-sm font-medium text-[#18314F] mb-1">{option.contact}</p>
+                    <p className="text-xs text-gray-500">{option.hours}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* Quick Tips */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-md p-6 border border-blue-100">
-        <div className="flex items-start gap-4">
-          <div className="text-3xl">💡</div>
-          <div>
-            <h3 className="font-bold text-[#18314F] mb-2">Consejos Rápidos</h3>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-1">•</span>
-                <span>Revisa tu dashboard diariamente para monitorear tu nivel de fatiga</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-1">•</span>
-                <span>Programa descansos regulares, especialmente durante jornadas largas</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-1">•</span>
-                <span>Mantén tu dispositivo cargado y sincronizado en todo momento</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-1">•</span>
-                <span>Responde a las alertas de fatiga alta inmediatamente</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 mt-1">•</span>
-                <span>Consulta las recomendaciones personalizadas semanalmente</span>
-              </li>
-            </ul>
-          </div>
+      <div className="bg-[#18314F]/5 rounded-lg shadow-sm border border-[#18314F]/20 p-6">
+        <div>
+          <h3 className="font-bold text-[#18314F] mb-4 text-lg">Consejos Rápidos</h3>
+          <ul className="space-y-3 text-gray-700">
+            <li className="flex items-start gap-3">
+              <span className="text-[#18314F] mt-0.5">•</span>
+              <span>Revisa tu dashboard diariamente para monitorear tu nivel de fatiga</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#18314F] mt-0.5">•</span>
+              <span>Programa descansos regulares, especialmente durante jornadas largas</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#18314F] mt-0.5">•</span>
+              <span>Mantén tu dispositivo cargado y sincronizado en todo momento</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#18314F] mt-0.5">•</span>
+              <span>Responde a las alertas de fatiga alta inmediatamente</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-[#18314F] mt-0.5">•</span>
+              <span>Consulta las recomendaciones personalizadas semanalmente</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

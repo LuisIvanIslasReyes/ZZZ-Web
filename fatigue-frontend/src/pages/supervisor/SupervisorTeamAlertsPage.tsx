@@ -68,37 +68,37 @@ export function SupervisorTeamAlertsPage() {
   const getAlertTypeLabel = (alertType: string) => {
     switch (alertType) {
       case 'notification':
-        return '📢 Notificación';
+        return 'Notificación';
       case 'fatigue_low':
-        return '📊 Fatiga Baja';
+        return 'Fatiga Baja';
       case 'fatigue_medium':
       case 'fatigue_moderate':
-        return '⚠️ Fatiga Moderada';
+        return 'Fatiga Moderada';
       case 'fatigue_high':
-        return '🔴 Fatiga Alta';
+        return 'Fatiga Alta';
       case 'fatigue_critical':
-        return '🚨 Fatiga Crítica';
+        return 'Fatiga Crítica';
       case 'combined_fatigue_hr':
-        return '🔴 Fatiga y Ritmo Cardíaco Combinados';
+        return 'Fatiga y Ritmo Cardíaco';
       case 'heart_rate_very_high':
       case 'high_hr':
-        return '❤️ Ritmo Cardíaco Muy Alto';
+        return 'Ritmo Cardíaco Alto';
       case 'symptom_severe':
-        return '🩺 Síntoma Severo';
+        return 'Síntoma Severo';
       case 'symptom_moderate':
-        return '🩺 Síntoma Moderado';
+        return 'Síntoma Moderado';
       case 'symptom_mild':
-        return '🩺 Síntoma Leve';
+        return 'Síntoma Leve';
       case 'device_disconnected':
-        return '📱 Dispositivo Desconectado';
+        return 'Dispositivo Desconectado';
       case 'device_battery_low':
-        return '🔋 Batería Baja';
+        return 'Batería Baja';
       case 'break_required':
-        return '☕ Descanso Requerido';
+        return 'Descanso Requerido';
       case 'overtime_alert':
-        return '⏰ Alerta de Horas Extras';
+        return 'Alerta de Horas Extras';
       case 'low_spo2':
-        return '🫁 Oxigenación Baja';
+        return 'Oxigenación Baja';
       default:
         return alertType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
@@ -146,12 +146,12 @@ export function SupervisorTeamAlertsPage() {
 
   const getStatusBadge = (alert: FatigueAlert) => {
     if (alert.is_resolved) {
-      return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">✓ Resuelta</span>;
+      return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Resuelta</span>;
     }
     if (alert.is_acknowledged) {
-      return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">👁 Reconocida</span>;
+      return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">Reconocida</span>;
     }
-    return <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-semibold">⚠ Pendiente</span>;
+    return <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-semibold">Pendiente</span>;
   };
 
   const filteredAlerts = alerts.filter(alert => {
@@ -178,68 +178,60 @@ export function SupervisorTeamAlertsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Team Alerts</h1>
+        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Alertas</h1>
         <p className="text-lg text-[#18314F]/70">Gestión y seguimiento de alertas del equipo</p>
       </div>
 
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Alertas Críticas</span>
-            <span className="bg-red-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#DC2626">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Alertas Críticas</span>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#DC2626">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-red-600">{criticalCount}</span>
+          <span className="text-3xl font-bold text-red-600">{criticalCount}</span>
           <p className="text-sm text-gray-500 mt-1">Requieren atención inmediata</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Pendientes</span>
-            <span className="bg-yellow-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Pendientes</span>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-yellow-600">{pendingCount}</span>
+          <span className="text-3xl font-bold text-yellow-600">{pendingCount}</span>
           <p className="text-sm text-gray-500 mt-1">Por revisar</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Reconocidas</span>
-            <span className="bg-blue-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Reconocidas</span>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-blue-600">{acknowledgedCount}</span>
+          <span className="text-3xl font-bold text-blue-600">{acknowledgedCount}</span>
           <p className="text-sm text-gray-500 mt-1">En proceso</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Resueltas Hoy</span>
-            <span className="bg-green-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Resueltas Hoy</span>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-green-600">{resolvedToday}</span>
+          <span className="text-3xl font-bold text-green-600">{resolvedToday}</span>
           <p className="text-sm text-gray-500 mt-1">Completadas</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
           <div>
             <h3 className="font-semibold text-[#18314F] mb-2">Filtrar por Severidad</h3>
@@ -322,7 +314,7 @@ export function SupervisorTeamAlertsPage() {
       {/* Alerts List */}
       <div className="space-y-4">
         {filteredAlerts.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-md p-12 text-center">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <svg className="mx-auto mb-4" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="#18314F">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -331,10 +323,10 @@ export function SupervisorTeamAlertsPage() {
           </div>
         ) : (
           filteredAlerts.map((alert) => (
-            <div key={alert.id} className={`bg-white rounded-2xl shadow-md p-6 border-l-4 ${
-              alert.severity === 'critical' ? 'border-red-500' :
-              alert.severity === 'high' ? 'border-orange-500' :
-              alert.severity === 'medium' ? 'border-yellow-500' : 'border-blue-500'
+            <div key={alert.id} className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 ${
+              alert.severity === 'critical' ? 'border-l-red-500' :
+              alert.severity === 'high' ? 'border-l-orange-500' :
+              alert.severity === 'medium' ? 'border-l-yellow-500' : 'border-l-blue-500'
             }`}>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -388,7 +380,7 @@ export function SupervisorTeamAlertsPage() {
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
-                        ⚠ Requiere Acción
+                        Requiere Acción
                       </div>
                       <button
                         onClick={() => handleManageAlert(alert)}
@@ -409,7 +401,7 @@ export function SupervisorTeamAlertsPage() {
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        👁 En Seguimiento
+                        En Seguimiento
                       </div>
                       <button
                         onClick={() => handleManageAlert(alert)}
@@ -431,7 +423,7 @@ export function SupervisorTeamAlertsPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <p className="text-sm text-green-700 font-bold">✓ Resuelta</p>
+                      <p className="text-sm text-green-700 font-bold">Resuelta</p>
                       <p className="text-xs text-green-600 mt-1">
                         {alert.resolved_at && new Date(alert.resolved_at).toLocaleDateString('es-ES')}
                       </p>

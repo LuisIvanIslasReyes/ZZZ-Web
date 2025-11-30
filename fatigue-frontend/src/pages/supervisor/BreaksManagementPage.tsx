@@ -156,57 +156,51 @@ export function BreaksManagementPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-yellow-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-yellow-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Pendientes de Aprobación</p>
-              <p className="text-4xl font-bold text-yellow-600">{stats.pending}</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Pendientes de Aprobación</p>
+              <p className="text-3xl font-bold text-yellow-600">{stats.pending}</p>
               <p className="text-xs text-gray-500 mt-1">Requieren tu atención</p>
             </div>
-            <div className="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
         
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-green-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-green-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Aprobados</p>
-              <p className="text-4xl font-bold text-green-600">{stats.approved}</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Aprobados</p>
+              <p className="text-3xl font-bold text-green-600">{stats.approved}</p>
               <p className="text-xs text-gray-500 mt-1">En periodo actual</p>
             </div>
-            <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
         
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-blue-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Total</p>
-              <p className="text-4xl font-bold text-blue-600">{stats.total}</p>
+              <p className="text-sm font-semibold text-gray-600 mb-1">Total</p>
+              <p className="text-3xl font-bold text-blue-600">{stats.total}</p>
               <p className="text-xs text-gray-500 mt-1">Descansos en vista</p>
             </div>
-            <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-2xl shadow-md p-2 inline-flex gap-2">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2 inline-flex gap-2">
         <button
           onClick={() => setActiveTab('pending')}
-          className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+          className={`px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 ${
             activeTab === 'pending'
               ? 'bg-[#18314F] text-white shadow-md'
               : 'text-gray-600 hover:bg-gray-100'
@@ -219,7 +213,7 @@ export function BreaksManagementPage() {
         </button>
         <button
           onClick={() => setActiveTab('today')}
-          className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+          className={`px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 ${
             activeTab === 'today'
               ? 'bg-[#18314F] text-white shadow-md'
               : 'text-gray-600 hover:bg-gray-100'
@@ -232,7 +226,7 @@ export function BreaksManagementPage() {
         </button>
         <button
           onClick={() => setActiveTab('upcoming')}
-          className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+          className={`px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 ${
             activeTab === 'upcoming'
               ? 'bg-[#18314F] text-white shadow-md'
               : 'text-gray-600 hover:bg-gray-100'
@@ -245,7 +239,7 @@ export function BreaksManagementPage() {
         </button>
         <button
           onClick={() => setActiveTab('history')}
-          className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+          className={`px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 ${
             activeTab === 'history'
               ? 'bg-[#18314F] text-white shadow-md'
               : 'text-gray-600 hover:bg-gray-100'
@@ -259,7 +253,7 @@ export function BreaksManagementPage() {
       </div>
 
       {/* Breaks Table */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="p-6">
           {breaks.length === 0 ? (
             <div className="text-center py-16">
@@ -324,7 +318,7 @@ export function BreaksManagementPage() {
                           <td className="py-4 px-4">
                             <button
                               onClick={() => setReviewingBreakId(breakItem.id)}
-                              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                              className="px-4 py-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -351,14 +345,14 @@ export function BreaksManagementPage() {
                       {reviewingBreakId === breakItem.id && (
                         <tr>
                           <td colSpan={6} className="py-0">
-                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 mx-4 my-3 rounded-xl border border-blue-100">
+                            <div className="bg-gray-50 p-6 mx-4 my-3 rounded-lg border border-gray-200">
                               <h4 className="font-bold text-[#18314F] mb-4 text-lg">Revisar Solicitud</h4>
                               <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
                                   Notas de revisión (opcional)
                                 </label>
                                 <textarea
-                                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 resize-none transition-all"
                                   placeholder="Agrega comentarios sobre tu decisión..."
                                   value={reviewNotes}
                                   onChange={(e) => setReviewNotes(e.target.value)}
@@ -368,7 +362,7 @@ export function BreaksManagementPage() {
                               <div className="flex gap-3">
                                 <button
                                   onClick={() => handleReview(breakItem.id, 'approved')}
-                                  className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors flex items-center gap-2 shadow-md"
+                                  className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
                                 >
                                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -377,7 +371,7 @@ export function BreaksManagementPage() {
                                 </button>
                                 <button
                                   onClick={() => handleReview(breakItem.id, 'rejected')}
-                                  className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors flex items-center gap-2 shadow-md"
+                                  className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
                                 >
                                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -389,7 +383,7 @@ export function BreaksManagementPage() {
                                     setReviewingBreakId(null);
                                     setReviewNotes('');
                                   }}
-                                  className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-medium transition-colors"
+                                  className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors"
                                 >
                                   Cancelar
                                 </button>

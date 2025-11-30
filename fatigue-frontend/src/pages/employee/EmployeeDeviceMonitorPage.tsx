@@ -136,39 +136,43 @@ export function EmployeeDeviceMonitorPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setAutoRefresh(!autoRefresh)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              autoRefresh
-                ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {autoRefresh ? (
-              <span className="flex items-center gap-2">
-                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Auto-actualización ON
-              </span>
-            ) : (
-              'Auto-actualización OFF'
+          <div className="flex items-center gap-3 bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-2">
+            <span className="text-sm font-medium text-gray-600">Auto-actualización</span>
+            <button
+              onClick={() => setAutoRefresh(!autoRefresh)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                autoRefresh ? 'bg-[#18314F]' : 'bg-gray-300'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  autoRefresh ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+            {autoRefresh && (
+              <svg className="w-4 h-4 text-green-600 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
             )}
-          </button>
+          </div>
           <button
             onClick={() => loadData()}
-            className="bg-[#18314F] hover:bg-[#18314F]/90 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            className="bg-[#18314F] hover:bg-[#18314F]/90 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2"
           >
-            Actualizar Ahora
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Actualizar
           </button>
         </div>
       </div>
 
       {/* Estado del Dispositivo */}
-      <div className="bg-white rounded-2xl shadow-md p-8">
-        <h2 className="text-2xl font-bold text-[#18314F] mb-6 flex items-center gap-3">
-          <svg className="w-8 h-8 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <h2 className="text-xl font-bold text-[#18314F] mb-6 flex items-center gap-3">
+          <svg className="w-6 h-6 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           Estado del Dispositivo
@@ -203,38 +207,38 @@ export function EmployeeDeviceMonitorPage() {
 
             {/* Métricas en Tiempo Real */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6">
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-sm font-medium text-red-900">Nivel de Fatiga</div>
-                  <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="text-sm font-semibold text-gray-600">Nivel de Fatiga</div>
+                  <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <div className={`text-3xl font-bold px-3 py-1 rounded-lg inline-block ${getFatigueColor(simulator.current_fatigue)}`}>
+                <div className={`text-2xl font-bold px-3 py-1 rounded-lg inline-block ${getFatigueColor(simulator.current_fatigue)}`}>
                   {simulator.current_fatigue.toFixed(1)}%
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6">
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-sm font-medium text-blue-900">Perfil de Fatiga</div>
-                  <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="text-sm font-semibold text-gray-600">Perfil de Fatiga</div>
+                  <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
-                <div className="text-lg font-bold text-blue-900">
+                <div className="text-lg font-bold text-[#18314F]">
                   {simulator.fatigue_profile_display}
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-sm font-medium text-green-900">Actividad Actual</div>
-                  <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="text-sm font-semibold text-gray-600">Actividad Actual</div>
+                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <div className="text-lg font-bold text-green-900">
+                <div className="text-lg font-bold text-[#18314F]">
                   {recentReadings.length > 0 ? (() => {
                     const latest = recentReadings[0];
                     const accelMagnitude = Math.sqrt(
@@ -250,21 +254,21 @@ export function EmployeeDeviceMonitorPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6">
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-sm font-medium text-purple-900">Mensajes Enviados</div>
-                  <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="text-sm font-semibold text-gray-600">Mensajes Enviados</div>
+                  <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
-                <div className="text-3xl font-bold text-purple-900">
+                <div className="text-2xl font-bold text-[#18314F]">
                   {simulator.messages_sent}
                 </div>
               </div>
             </div>
 
             {/* Información Adicional */}
-            <div className="bg-gray-50 rounded-xl p-6">
+            <div className="bg-gray-50 rounded-lg p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-gray-600">Iniciado:</span>
@@ -299,9 +303,9 @@ export function EmployeeDeviceMonitorPage() {
       </div>
 
       {/* Lecturas Recientes */}
-      <div className="bg-white rounded-2xl shadow-md p-8">
-        <h2 className="text-2xl font-bold text-[#18314F] mb-6 flex items-center gap-3">
-          <svg className="w-8 h-8 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <h2 className="text-xl font-bold text-[#18314F] mb-6 flex items-center gap-3">
+          <svg className="w-6 h-6 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
           Lecturas Recientes de Sensores
@@ -371,12 +375,13 @@ export function EmployeeDeviceMonitorPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex flex-col gap-1">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${activityColor}`}>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm font-medium ${activityColor.replace('bg-', 'text-').replace('-100', '-700')}`}>
                             {activityLevel}
                           </span>
-                          <span className="text-xs text-gray-500">
-                            {accelMagnitude.toFixed(2)} m/s²
+                          <span className="text-xs text-gray-400">|</span>
+                          <span className="text-xs text-gray-500 font-mono">
+                            {accelMagnitude.toFixed(1)} m/s²
                           </span>
                         </div>
                       </td>

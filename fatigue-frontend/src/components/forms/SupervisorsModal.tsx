@@ -319,8 +319,8 @@ export function SupervisorsModal({ isOpen, onClose, companyId, companyName }: Su
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
-                          <span className="text-purple-700 font-bold text-lg">
+                        <div className="w-12 h-12 rounded-full bg-[#18314F]/10 flex items-center justify-center">
+                          <span className="text-[#18314F] font-bold text-lg">
                             {supervisor.first_name[0]}{supervisor.last_name[0]}
                           </span>
                         </div>
@@ -334,20 +334,23 @@ export function SupervisorsModal({ isOpen, onClose, companyId, companyName }: Su
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          supervisor.is_active 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-red-100 text-red-700'
-                        }`}>
-                          {supervisor.is_active ? 'Activo' : 'Inactivo'}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full ${
+                            supervisor.is_active ? 'bg-green-500' : 'bg-gray-300'
+                          }`}></span>
+                          <span className={`text-sm font-medium ${
+                            supervisor.is_active ? 'text-green-600' : 'text-gray-400'
+                          }`}>
+                            {supervisor.is_active ? 'Activo' : 'Inactivo'}
+                          </span>
+                        </div>
                         
                         <button
                           onClick={() => handleToggleActive(supervisor.id, supervisor.is_active)}
-                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
                             supervisor.is_active 
-                              ? 'bg-yellow-100 hover:bg-yellow-200 text-yellow-700' 
-                              : 'bg-green-100 hover:bg-green-200 text-green-700'
+                              ? 'bg-yellow-500 hover:bg-yellow-600 text-white' 
+                              : 'bg-green-500 hover:bg-green-600 text-white'
                           }`}
                         >
                           {supervisor.is_active ? 'Desactivar' : 'Activar'}
@@ -355,7 +358,7 @@ export function SupervisorsModal({ isOpen, onClose, companyId, companyName }: Su
 
                         <button
                           onClick={() => handleDelete(supervisor.id)}
-                          className="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors"
+                          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors"
                         >
                           Eliminar
                         </button>
@@ -373,7 +376,7 @@ export function SupervisorsModal({ isOpen, onClose, companyId, companyName }: Su
           <div className="flex justify-end">
             <button
               onClick={onClose}
-              className="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition-colors"
+              className="px-6 py-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-semibold transition-colors"
             >
               Cerrar
             </button>

@@ -45,12 +45,32 @@ export function EmployeeRecommendationsPage() {
   };
 
   const getTypeIcon = (type: string) => {
-    const icons: Record<string, string> = {
-      'break': '☕',
-      'task_redistribution': '⚖️',
-      'shift_rotation': '🔄'
-    };
-    return icons[type] || '📋';
+    switch (type) {
+      case 'break':
+        return (
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case 'task_redistribution':
+        return (
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        );
+      case 'shift_rotation':
+        return (
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          </svg>
+        );
+      default:
+        return (
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        );
+    }
   };
 
   const getPriorityColor = (priority: number) => {
@@ -78,13 +98,13 @@ export function EmployeeRecommendationsPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl shadow-md p-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <div className="flex gap-2">
           <button
             onClick={() => setFilter('pending')}
-            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
               filter === 'pending'
-                ? 'bg-[#18314F] text-white shadow-md'
+                ? 'bg-[#18314F] text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -92,9 +112,9 @@ export function EmployeeRecommendationsPage() {
           </button>
           <button
             onClick={() => setFilter('all')}
-            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
               filter === 'all'
-                ? 'bg-[#18314F] text-white shadow-md'
+                ? 'bg-[#18314F] text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -105,7 +125,7 @@ export function EmployeeRecommendationsPage() {
 
       {/* Content */}
       {loading ? (
-        <div className="bg-white rounded-2xl shadow-md p-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <div className="flex items-center justify-center h-[200px]">
             <div className="text-center">
               <div className="loading loading-spinner loading-lg text-[#18314F]"></div>
@@ -114,7 +134,7 @@ export function EmployeeRecommendationsPage() {
           </div>
         </div>
       ) : error ? (
-        <div className="bg-white rounded-2xl shadow-md p-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <div className="alert alert-error">
             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -123,7 +143,7 @@ export function EmployeeRecommendationsPage() {
           </div>
         </div>
       ) : recommendations.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-md p-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <div className="flex flex-col items-center justify-center h-[300px] text-gray-400">
             <svg className="w-20 h-20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -145,13 +165,13 @@ export function EmployeeRecommendationsPage() {
           {recommendations.map((recommendation) => (
             <div
               key={recommendation.id}
-              className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow overflow-hidden"
             >
               <div className="p-6">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-3xl">{getTypeIcon(recommendation.recommendation_type)}</span>
+                    <span className="text-[#18314F]">{getTypeIcon(recommendation.recommendation_type)}</span>
                     <div>
                       <h3 className="text-xl font-bold text-[#18314F]">
                         {getTypeLabel(recommendation.recommendation_type)}
@@ -178,7 +198,7 @@ export function EmployeeRecommendationsPage() {
                 </div>
 
                 {/* Description */}
-                <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                <div className="bg-gray-50 rounded-lg p-4 mb-4">
                   <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-line">
                     {recommendation.description}
                   </div>

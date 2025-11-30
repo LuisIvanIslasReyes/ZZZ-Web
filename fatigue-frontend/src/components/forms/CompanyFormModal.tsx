@@ -136,16 +136,16 @@ export function CompanyFormModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="bg-[#18314F] text-white px-8 py-6 rounded-t-2xl">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col">
+        {/* Header - Sticky */}
+        <div className="bg-[#18314F] text-white px-8 py-6 rounded-t-2xl flex-shrink-0">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">
               {isEdit ? 'Editar Empresa' : 'Nueva Empresa'}
             </h2>
             <button
               onClick={handleClose}
-              className="text-white hover:text-gray-300 transition-colors"
+              className="text-white hover:text-gray-300 transition-colors p-1 hover:bg-white/10 rounded-lg"
               disabled={isLoading}
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -153,13 +153,13 @@ export function CompanyFormModal({
               </svg>
             </button>
           </div>
-          <p className="text-white/80 mt-2">
+          <p className="text-white/80 mt-1 text-sm">
             {isEdit ? 'Actualiza los datos de la empresa cliente' : 'Registra una nueva empresa cliente en el sistema'}
           </p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit(onFormSubmit)} className="px-8 py-6">
+        {/* Form - Scrollable */}
+        <form onSubmit={handleSubmit(onFormSubmit)} className="px-8 py-6 overflow-y-auto flex-1">
           <div className="space-y-6">
             {/* Información Básica */}
             <div>
@@ -172,14 +172,14 @@ export function CompanyFormModal({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Nombre */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Nombre de la Empresa <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     {...register('name')}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
-                      errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none transition-all ${
+                      errors.name ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white'
                     }`}
                     placeholder="Acme Corp."
                     disabled={isLoading}
@@ -191,14 +191,14 @@ export function CompanyFormModal({
 
                 {/* Email de Contacto */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Email de Contacto <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
                     {...register('contact_email')}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
-                      errors.contact_email ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none transition-all ${
+                      errors.contact_email ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white'
                     }`}
                     placeholder="contacto@empresa.com"
                     disabled={isLoading}
@@ -210,13 +210,13 @@ export function CompanyFormModal({
 
                 {/* Teléfono */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Teléfono de Contacto
                   </label>
                   <input
                     type="tel"
                     {...register('contact_phone')}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white transition-all"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none bg-white transition-all"
                     placeholder="+52 123 456 7890"
                     disabled={isLoading}
                   />
@@ -224,13 +224,13 @@ export function CompanyFormModal({
 
                 {/* Dirección */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Dirección
                   </label>
                   <textarea
                     {...register('address')}
                     rows={2}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white transition-all resize-none"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none bg-white transition-all resize-none"
                     placeholder="Calle Principal #123, Colonia Centro, Ciudad"
                     disabled={isLoading}
                   />
@@ -249,14 +249,14 @@ export function CompanyFormModal({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Máximo de Empleados */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Máximo de Empleados <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
                     {...register('max_employees', { valueAsNumber: true })}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
-                      errors.max_employees ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none transition-all ${
+                      errors.max_employees ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white'
                     }`}
                     placeholder="100"
                     min="1"
@@ -270,26 +270,26 @@ export function CompanyFormModal({
 
                 {/* Fecha de Inicio */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Fecha de Inicio
                   </label>
                   <input
                     type="date"
                     {...register('subscription_start')}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white transition-all"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none bg-white transition-all"
                     disabled={isLoading}
                   />
                 </div>
 
                 {/* Fecha de Fin */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Fecha de Fin
                   </label>
                   <input
                     type="date"
                     {...register('subscription_end')}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent bg-white transition-all"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none bg-white transition-all"
                     disabled={isLoading}
                   />
                 </div>
@@ -301,9 +301,9 @@ export function CompanyFormModal({
 
             {/* Cuenta del Supervisor (solo al crear) */}
             {!isEdit && (
-              <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-[#18314F] mb-2 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   Cuenta del Supervisor
@@ -315,14 +315,14 @@ export function CompanyFormModal({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Email del Supervisor */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Email del Supervisor <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
                       {...register('supervisor_email')}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
-                        errors.supervisor_email ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none transition-all ${
+                        errors.supervisor_email ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white'
                       }`}
                       placeholder="supervisor@empresa.com"
                       disabled={isLoading}
@@ -334,14 +334,14 @@ export function CompanyFormModal({
 
                   {/* Contraseña */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Contraseña <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="password"
                       {...register('supervisor_password')}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
-                        errors.supervisor_password ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none transition-all ${
+                        errors.supervisor_password ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white'
                       }`}
                       placeholder="Mínimo 6 caracteres"
                       disabled={isLoading}
@@ -353,14 +353,14 @@ export function CompanyFormModal({
 
                   {/* Nombre */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Nombre <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       {...register('supervisor_first_name')}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
-                        errors.supervisor_first_name ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none transition-all ${
+                        errors.supervisor_first_name ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white'
                       }`}
                       placeholder="Juan"
                       disabled={isLoading}
@@ -372,14 +372,14 @@ export function CompanyFormModal({
 
                   {/* Apellido */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
                       Apellido <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       {...register('supervisor_last_name')}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent transition-all ${
-                        errors.supervisor_last_name ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] focus:outline-none transition-all ${
+                        errors.supervisor_last_name ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white'
                       }`}
                       placeholder="Pérez"
                       disabled={isLoading}
@@ -398,14 +398,14 @@ export function CompanyFormModal({
             <button
               type="button"
               onClick={handleClose}
-              className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+              className="px-6 py-3 border-2 border-gray-300 hover:border-gray-400 text-gray-700 hover:bg-gray-50 rounded-lg font-semibold transition-colors"
               disabled={isLoading}
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-[#18314F] text-white rounded-lg hover:bg-[#18314F]/90 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-3 bg-[#18314F] text-white rounded-lg hover:bg-[#18314F]/90 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl"
               disabled={isLoading}
             >
               {isLoading ? (

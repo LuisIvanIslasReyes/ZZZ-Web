@@ -160,15 +160,15 @@ export function ReportSymptomModal({ isOpen, onClose, onSuccess }: ReportSymptom
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             maxLength={500}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent resize-none"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 resize-none"
             placeholder="Describe brevemente cómo te sientes..."
           />
           <p className="text-xs text-gray-400 mt-1 text-right">{description.length}/500</p>
         </div>
 
         {/* Nota informativa */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-          <p className="text-sm text-blue-800">
+        <div className="bg-[#18314F]/5 border border-[#18314F]/20 rounded-lg p-4">
+          <p className="text-sm text-[#18314F]">
             <strong>Nota:</strong> Tu reporte será enviado a tu supervisor para que pueda tomar las medidas necesarias.
             Si experimentas síntomas severos, considera tomar un descanso inmediato.
           </p>

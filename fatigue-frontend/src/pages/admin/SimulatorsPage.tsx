@@ -781,7 +781,7 @@ function CreateSimulatorModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold transition-colors"
+            className="px-6 py-3 border-2 border-gray-300 hover:border-gray-400 text-gray-700 hover:bg-gray-50 rounded-lg font-semibold transition-colors"
             disabled={loading}
           >
             Cancelar
@@ -822,13 +822,13 @@ function CreateSimulatorModal({
     >
       <form id="simulator-form" onSubmit={handleSubmit} className="space-y-5">
           {/* Empleado */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold text-gray-700">Empleado *</span>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Empleado <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <select
-                className="select select-bordered w-full bg-white border-gray-300 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 pr-10 appearance-none"
+                className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-gray-700 font-medium focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 focus:outline-none transition-all appearance-none cursor-pointer disabled:bg-gray-100 disabled:cursor-not-allowed"
                 value={formData.employee}
                 onChange={(e) => handleEmployeeChange(Number(e.target.value))}
                 required
@@ -841,31 +841,29 @@ function CreateSimulatorModal({
                   </option>
                 ))}
               </select>
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </span>
             </div>
-            <label className="label">
-              <span className="label-text-alt text-gray-500">
-                {availableEmployees.length} empleado(s) disponible(s)
-              </span>
-            </label>
+            <p className="mt-1.5 text-sm text-gray-500">
+              {availableEmployees.length} empleado(s) disponible(s)
+            </p>
           </div>
 
           {/* Loading Device */}
           {loadingDevice && (
-            <div className="alert bg-blue-50 border border-blue-200">
-              <span className="loading loading-spinner loading-sm text-blue-600"></span>
-              <span className="text-blue-800">Buscando dispositivo del empleado...</span>
+            <div className="flex items-center gap-3 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+              <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-blue-800 font-medium">Buscando dispositivo del empleado...</span>
             </div>
           )}
 
           {/* Device Info - Cuando existe */}
           {employeeDevice && !showCreateDevice && (
-            <div className="alert bg-green-50 border border-green-200">
-              <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="flex items-center gap-3 p-4 bg-green-50 border-2 border-green-200 rounded-lg">
+              <svg className="w-6 h-6 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div className="flex-1">
@@ -890,13 +888,13 @@ function CreateSimulatorModal({
                   <p className="text-sm text-amber-700 mb-4">Crea un nuevo dispositivo para poder iniciar el simulador</p>
 
                   <div className="space-y-3">
-                    <div className="form-control">
-                      <label className="label">
-                        <span className="label-text font-semibold text-gray-700">Device ID *</span>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Device ID <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
-                        className="input input-bordered w-full bg-white border-gray-300 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
+                        className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-gray-700 font-medium focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 focus:outline-none transition-all"
                         value={newDeviceData.device_id}
                         onChange={(e) => setNewDeviceData({ ...newDeviceData, device_id: e.target.value })}
                         placeholder="ESP32-001"
@@ -932,13 +930,13 @@ function CreateSimulatorModal({
           )}
 
           {/* Perfil de Fatiga */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold text-gray-700">Perfil de Fatiga *</span>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Perfil de Fatiga <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <select
-                className="select select-bordered w-full bg-white border-gray-300 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 pr-10 appearance-none"
+                className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-lg text-gray-700 font-medium focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 focus:outline-none transition-all appearance-none cursor-pointer disabled:bg-gray-100 disabled:cursor-not-allowed"
                 value={formData.fatigue_profile}
                 onChange={(e) =>
                   setFormData({
@@ -954,7 +952,7 @@ function CreateSimulatorModal({
                   </option>
                 ))}
               </select>
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -963,9 +961,9 @@ function CreateSimulatorModal({
           </div>
 
           {/* Modo de Actividad */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold text-gray-700">Modo de Actividad *</span>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Modo de Actividad <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-2 gap-3">
               {activityModes.map((mode) => (
@@ -973,14 +971,14 @@ function CreateSimulatorModal({
                   key={mode.value}
                   className={`cursor-pointer p-4 border-2 rounded-lg transition-all flex items-center gap-3 ${
                     formData.activity_mode === mode.value
-                      ? 'border-[#18314F] bg-[#18314F]/5'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-[#18314F] bg-[#18314F]/5 shadow-sm'
+                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                   } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <input
                     type="radio"
                     name="activity_mode"
-                    className="radio radio-primary hidden"
+                    className="hidden"
                     value={mode.value}
                     checked={formData.activity_mode === mode.value}
                     onChange={(e) =>
@@ -992,7 +990,7 @@ function CreateSimulatorModal({
                     disabled={loading}
                   />
                   <span>{mode.icon}</span>
-                  <span className="font-medium text-gray-700">{mode.label}</span>
+                  <span className={`font-medium ${formData.activity_mode === mode.value ? 'text-[#18314F]' : 'text-gray-700'}`}>{mode.label}</span>
                 </label>
               ))}
             </div>

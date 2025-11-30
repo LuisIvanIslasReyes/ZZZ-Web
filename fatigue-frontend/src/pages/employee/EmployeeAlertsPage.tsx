@@ -47,39 +47,39 @@ export function EmployeeAlertsPage() {
   const getAlertTypeLabel = (alertType: string) => {
     switch (alertType) {
       case 'notification':
-        return '📢 Notificación de tu Supervisor';
+        return 'Notificación de tu Supervisor';
       case 'high_fatigue':
       case 'fatigue_high':
-        return '⚠️ Nivel Alto de Fatiga';
+        return 'Nivel Alto de Fatiga';
       case 'fatigue_critical':
-        return '🚨 Fatiga Crítica';
+        return 'Fatiga Crítica';
       case 'fatigue_medium':
       case 'fatigue_moderate':
-        return '⚠️ Fatiga Moderada';
+        return 'Fatiga Moderada';
       case 'combined_fatigue_hr':
-        return '🔴 Fatiga y Ritmo Cardíaco Combinados';
+        return 'Fatiga y Ritmo Cardíaco';
       case 'heart_rate_very_high':
-        return '❤️ Ritmo Cardíaco Muy Alto';
+        return 'Ritmo Cardíaco Muy Alto';
       case 'low_spo2':
-        return '🫁 Oxigenación Baja';
+        return 'Oxigenación Baja';
       case 'high_hr':
-        return '❤️ Ritmo Cardíaco Elevado';
+        return 'Ritmo Cardíaco Elevado';
       case 'symptom_reviewed':
-        return '✅ Síntoma Revisado por Supervisor';
+        return 'Síntoma Revisado por Supervisor';
       case 'symptom_severe':
-        return '🩺 Síntoma Severo Detectado';
+        return 'Síntoma Severo Detectado';
       case 'symptom_moderate':
-        return '🩺 Síntoma Moderado';
+        return 'Síntoma Moderado';
       case 'symptom_mild':
-        return '🩺 Síntoma Leve';
+        return 'Síntoma Leve';
       case 'device_disconnected':
-        return '📱 Dispositivo Desconectado';
+        return 'Dispositivo Desconectado';
       case 'device_battery_low':
-        return '🔋 Batería Baja del Dispositivo';
+        return 'Batería Baja del Dispositivo';
       case 'break_required':
-        return '☕ Es Hora de un Descanso';
+        return 'Es Hora de un Descanso';
       case 'overtime_alert':
-        return '⏰ Exceso de Horas de Trabajo';
+        return 'Exceso de Horas de Trabajo';
       default:
         return alertType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
@@ -111,13 +111,13 @@ export function EmployeeAlertsPage() {
 
   const getStatusBadge = (status: string, isResolved?: boolean) => {
     if (isResolved || status === 'resolved') {
-      return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">✓ Resuelta</span>;
+      return <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Resuelta</span>;
     }
     switch (status) {
       case 'pending':
-        return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">⚠ Pendiente</span>;
+        return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">Pendiente</span>;
       case 'acknowledged':
-        return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">👁 Reconocida</span>;
+        return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">Reconocida</span>;
       default:
         return <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-semibold">{status}</span>;
     }
@@ -149,69 +149,61 @@ export function EmployeeAlertsPage() {
 
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Críticas</span>
-            <span className="bg-red-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#DC2626">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Críticas</span>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#DC2626">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
           </div>
-          <span className={`text-4xl font-bold ${criticalCount > 0 ? 'text-red-600' : 'text-[#18314F]'}`}>
+          <span className={`text-3xl font-bold ${criticalCount > 0 ? 'text-red-600' : 'text-[#18314F]'}`}>
             {criticalCount}
           </span>
           <p className="text-sm text-gray-500 mt-1">Requieren atención</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Pendientes</span>
-            <span className="bg-yellow-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Pendientes</span>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-yellow-600">{pendingCount}</span>
+          <span className="text-3xl font-bold text-yellow-600">{pendingCount}</span>
           <p className="text-sm text-gray-500 mt-1">Sin revisar</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Reconocidas</span>
-            <span className="bg-blue-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Reconocidas</span>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-blue-600">{acknowledgedCount}</span>
+          <span className="text-3xl font-bold text-blue-600">{acknowledgedCount}</span>
           <p className="text-sm text-gray-500 mt-1">En seguimiento</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Resueltas</span>
-            <span className="bg-green-100 rounded-full p-2">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </span>
+            <span className="text-gray-600 text-sm font-semibold">Resueltas</span>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <span className="text-4xl font-bold text-green-600">{resolvedCount}</span>
+          <span className="text-3xl font-bold text-green-600">{resolvedCount}</span>
           <p className="text-sm text-gray-500 mt-1">Completadas</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h3 className="font-semibold text-[#18314F] mb-4">Filtrar alertas</h3>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilterStatus('all')}
-            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
+            className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
               filterStatus === 'all' ? 'bg-[#18314F] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -219,32 +211,32 @@ export function EmployeeAlertsPage() {
           </button>
           <button
             onClick={() => setFilterStatus('pending')}
-            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
-              filterStatus === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+              filterStatus === 'pending' ? 'bg-[#18314F] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             Pendientes
           </button>
           <button
             onClick={() => setFilterStatus('acknowledged')}
-            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
-              filterStatus === 'acknowledged' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+              filterStatus === 'acknowledged' ? 'bg-[#18314F] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             Reconocidas
           </button>
           <button
             onClick={() => setFilterStatus('resolved')}
-            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
-              filterStatus === 'resolved' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+              filterStatus === 'resolved' ? 'bg-[#18314F] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             Resueltas
           </button>
           <button
             onClick={() => setFilterStatus('unresolved')}
-            className={`px-4 py-2 rounded-xl font-medium transition-colors text-sm ${
-              filterStatus === 'unresolved' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
+              filterStatus === 'unresolved' ? 'bg-[#18314F] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             Sin Resolver
@@ -255,7 +247,7 @@ export function EmployeeAlertsPage() {
       {/* Alerts List */}
       <div className="space-y-4">
         {filteredAlerts.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-md p-12 text-center">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <svg className="mx-auto mb-4" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="#18314F">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -269,14 +261,14 @@ export function EmployeeAlertsPage() {
             return (
               <div 
                 key={alert.id} 
-                className={`rounded-2xl shadow-lg p-6 border-l-8 transition-all hover:shadow-xl ${
+                className={`rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 transition-all hover:shadow-md ${
                   isNotification 
-                    ? 'border-indigo-600 bg-gradient-to-r from-indigo-50 via-purple-50 to-white shadow-indigo-200/50' 
+                    ? 'border-l-indigo-600 bg-gradient-to-r from-indigo-50 via-purple-50 to-white' 
                     : alert.severity === 'critical' || alert.severity === 'high' 
-                    ? 'border-red-500 bg-white' 
+                    ? 'border-l-red-500 bg-white' 
                     : alert.severity === 'medium' 
-                    ? 'border-yellow-500 bg-white' 
-                    : 'border-blue-500 bg-white'
+                    ? 'border-l-yellow-500 bg-white' 
+                    : 'border-l-blue-500 bg-white'
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -357,26 +349,17 @@ export function EmployeeAlertsPage() {
                   <div className="flex flex-col gap-2 min-w-[200px]">
                     {/* Alerta no resuelta - Vista de empleado */}
                     {!alert.is_resolved && alert.status !== 'resolved' && (
-                      <div className="space-y-2">
-                        <div className="text-xs font-semibold text-orange-700 mb-2 flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                          </svg>
-                          Pendiente de Supervisión
-                        </div>
-                        <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4 text-center">
-                          <svg className="w-12 h-12 mx-auto text-orange-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                          </svg>
-                          <p className="text-sm font-bold text-orange-900 mb-1">⏳ En Espera</p>
-                          <p className="text-xs text-orange-700 leading-relaxed">
+                      <div className="space-y-3">
+                        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
+                          <p className="text-sm font-bold text-orange-800 mb-1">En Espera</p>
+                          <p className="text-xs text-orange-600 leading-relaxed">
                             Tu supervisor será notificado y gestionará esta alerta
                           </p>
                         </div>
                         {alert.recommendations && (
-                          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-3">
-                            <p className="text-xs font-semibold text-blue-900 mb-1">💡 Recomendación:</p>
-                            <p className="text-xs text-blue-700">{alert.recommendations}</p>
+                          <div className="bg-[#18314F]/5 border border-[#18314F]/20 rounded-lg p-3">
+                            <p className="text-xs font-semibold text-[#18314F] mb-1">Recomendación:</p>
+                            <p className="text-xs text-gray-700">{alert.recommendations}</p>
                           </div>
                         )}
                       </div>
@@ -384,16 +367,18 @@ export function EmployeeAlertsPage() {
                     
                     {/* Estado: Resuelta */}
                     {(alert.is_resolved || alert.status === 'resolved') && (
-                      <div className="text-center bg-green-50 rounded-xl p-4 border-2 border-green-200">
-                        <div className="bg-green-500 rounded-full p-3 inline-block mb-2">
-                          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="3">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
+                      <div className="flex items-center gap-2 text-green-600">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <div>
+                          <p className="text-sm font-bold">Resuelta</p>
+                          {alert.resolved_at && (
+                            <p className="text-xs text-green-500">
+                              {new Date(alert.resolved_at).toLocaleDateString('es-ES')}
+                            </p>
+                          )}
                         </div>
-                        <p className="text-sm text-green-700 font-bold">✓ Resuelta</p>
-                        <p className="text-xs text-green-600 mt-1">
-                          {alert.resolved_at && new Date(alert.resolved_at).toLocaleDateString('es-ES')}
-                        </p>
                       </div>
                     )}
                   </div>

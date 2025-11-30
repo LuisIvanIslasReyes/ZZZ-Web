@@ -132,13 +132,13 @@ export function TeamSymptomsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-[#18314F]">Síntomas del Equipo</h1>
-          <p className="text-gray-600 mt-1">Revisa y gestiona los síntomas reportados por tu equipo</p>
+          <h1 className="text-4xl font-bold text-[#18314F] mb-1">Síntomas del Equipo</h1>
+          <p className="text-lg text-[#18314F]/70">Revisa y gestiona los síntomas reportados por tu equipo</p>
         </div>
         {stats.pending > 0 && (
-          <div className="bg-red-500 text-white px-4 py-2 rounded-xl font-bold animate-pulse">
+          <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold animate-pulse">
             {stats.pending} pendiente{stats.pending !== 1 ? 's' : ''}
           </div>
         )}
@@ -146,59 +146,51 @@ export function TeamSymptomsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-blue-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total</p>
+              <p className="text-sm text-gray-600 font-semibold mb-1">Total</p>
               <p className="text-3xl font-bold text-[#18314F]">{stats.total}</p>
             </div>
-            <div className="bg-blue-100 rounded-full p-3">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-yellow-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-yellow-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">En Espera</p>
+              <p className="text-sm text-gray-600 font-semibold mb-1">En Espera</p>
               <p className="text-3xl font-bold text-[#18314F]">{stats.pending}</p>
             </div>
-            <div className="bg-yellow-100 rounded-full p-3">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-green-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-green-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Revisados</p>
+              <p className="text-sm text-gray-600 font-semibold mb-1">Revisados</p>
               <p className="text-3xl font-bold text-[#18314F]">{stats.reviewed}</p>
             </div>
-            <div className="bg-green-100 rounded-full p-3">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-gray-500">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 border-l-gray-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Descartados</p>
+              <p className="text-sm text-gray-600 font-semibold mb-1">Descartados</p>
               <p className="text-3xl font-bold text-[#18314F]">{stats.dismissed}</p>
             </div>
-            <div className="bg-gray-100 rounded-full p-3">
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </div>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#6B7280">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </div>
         </div>
       </div>
@@ -207,30 +199,30 @@ export function TeamSymptomsPage() {
       <div className="flex gap-3">
         <button
           onClick={() => setActiveFilter('all')}
-          className={`px-6 py-2 rounded-xl font-medium transition-all ${
+          className={`px-6 py-2 rounded-lg font-medium transition-all ${
             activeFilter === 'all'
               ? 'bg-[#18314F] text-white shadow-md'
-              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+              : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
           }`}
         >
           Todos
         </button>
         <button
           onClick={() => setActiveFilter('pending')}
-          className={`px-6 py-2 rounded-xl font-medium transition-all ${
+          className={`px-6 py-2 rounded-lg font-medium transition-all ${
             activeFilter === 'pending'
               ? 'bg-[#18314F] text-white shadow-md'
-              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+              : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
           }`}
         >
           En Espera {stats.pending > 0 && <span className="ml-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-xs">{stats.pending}</span>}
         </button>
         <button
           onClick={() => setActiveFilter('reviewed')}
-          className={`px-6 py-2 rounded-xl font-medium transition-all ${
+          className={`px-6 py-2 rounded-lg font-medium transition-all ${
             activeFilter === 'reviewed'
               ? 'bg-[#18314F] text-white shadow-md'
-              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+              : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
           }`}
         >
           Revisados
@@ -238,7 +230,7 @@ export function TeamSymptomsPage() {
       </div>
 
       {/* Symptoms List */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {filteredSymptoms.length === 0 ? (
           <div className="text-center py-16">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -265,7 +257,9 @@ export function TeamSymptomsPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         {isReviewed && (
-                          <span className="text-2xl">✓</span>
+                          <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
                         )}
                         <h3 className={`text-lg font-semibold ${isReviewed ? 'text-gray-600 line-through' : 'text-[#18314F]'}`}>
                           {symptom.symptom_type_display || symptom.symptom_type}
@@ -306,9 +300,9 @@ export function TeamSymptomsPage() {
                       <div className="ml-4 flex flex-col gap-2">
                         <button
                           onClick={() => handleReviewSymptom(symptom)}
-                          className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-4 rounded-xl transition-colors whitespace-nowrap"
+                          className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-2 px-4 rounded-lg transition-colors whitespace-nowrap"
                         >
-                          ✏️ Revisar
+                          Revisar
                         </button>
                         <button
                           onClick={async () => {
@@ -325,9 +319,9 @@ export function TeamSymptomsPage() {
                               toast.error('Error al marcar síntoma');
                             }
                           }}
-                          className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-xl transition-colors whitespace-nowrap text-sm"
+                          className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors whitespace-nowrap text-sm"
                         >
-                          ✅ Atendido
+                          Atendido
                         </button>
                         <button
                           onClick={async () => {
@@ -344,9 +338,9 @@ export function TeamSymptomsPage() {
                               toast.error('Error al descartar síntoma');
                             }
                           }}
-                          className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-xl transition-colors whitespace-nowrap text-sm"
+                          className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition-colors whitespace-nowrap text-sm"
                         >
-                          🚫 Descartar
+                          Descartar
                         </button>
                       </div>
                     )}
@@ -393,7 +387,7 @@ export function TeamSymptomsPage() {
         <div className="space-y-4">
           {selectedSymptom && (
             <>
-              <div className="bg-gray-50 p-4 rounded-xl">
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <h3 className="font-semibold text-[#18314F] mb-2">
                   {selectedSymptom.symptom_type_display || selectedSymptom.symptom_type}
                 </h3>
@@ -410,42 +404,42 @@ export function TeamSymptomsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Estado de revisión
                 </label>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setReviewStatus('reviewed')}
-                    className={`flex-1 py-2 px-4 rounded-xl font-medium transition-all ${
+                    className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
                       reviewStatus === 'reviewed'
                         ? 'bg-green-500 text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    ✓ Revisado
+                    Revisado
                   </button>
                   <button
                     onClick={() => setReviewStatus('dismissed')}
-                    className={`flex-1 py-2 px-4 rounded-xl font-medium transition-all ${
+                    className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
                       reviewStatus === 'dismissed'
                         ? 'bg-gray-500 text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    ✕ Descartar
+                    Descartar
                   </button>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Notas de revisión
                 </label>
                 <textarea
                   value={reviewNotes}
                   onChange={(e) => setReviewNotes(e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 transition-all"
                   placeholder="Escribe tus observaciones sobre este síntoma..."
                 />
               </div>
@@ -453,14 +447,14 @@ export function TeamSymptomsPage() {
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => setIsReviewModalOpen(false)}
-                  className="flex-1 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+                  className="flex-1 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
                   disabled={isSubmitting}
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleSubmitReview}
-                  className="flex-1 py-3 px-4 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium rounded-xl transition-colors disabled:opacity-50"
+                  className="flex-1 py-3 px-4 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Guardando...' : 'Guardar Revisión'}

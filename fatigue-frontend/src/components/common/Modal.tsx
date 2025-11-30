@@ -51,19 +51,19 @@ export function Modal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
+    <div className="fixed top-0 left-0 right-0 bottom-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm" style={{ minHeight: '100vh', minWidth: '100vw' }}>
       {/* Modal Content Container */}
       <div 
-        className="flex min-h-full items-center justify-center p-4"
+        className="flex min-h-screen items-center justify-center p-4"
         onClick={(e) => {
           if (e.currentTarget === e.target) {
             onClose();
           }
         }}
       >
-        <div className={`relative bg-white rounded-2xl shadow-2xl ${sizeClasses[size]} w-full transform transition-all`}>
+        <div className={`relative bg-white rounded-lg shadow-2xl ${sizeClasses[size]} w-full transform transition-all`}>
           {/* Header */}
-          <div className="flex items-center justify-between px-8 py-5 border-b border-gray-200 bg-[#18314F] rounded-t-2xl">
+          <div className="flex items-center justify-between px-8 py-5 border-b border-gray-200 bg-[#18314F] rounded-t-lg">
             <h3 className="text-2xl font-bold text-white">{title}</h3>
             <button
               type="button"
@@ -83,7 +83,7 @@ export function Modal({
 
           {/* Footer */}
           {footer && (
-            <div className="flex items-center justify-end gap-3 px-8 py-5 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+            <div className="flex items-center justify-end gap-3 px-8 py-5 border-t border-gray-200 bg-gray-50 rounded-b-lg">
               {footer}
             </div>
           )}
