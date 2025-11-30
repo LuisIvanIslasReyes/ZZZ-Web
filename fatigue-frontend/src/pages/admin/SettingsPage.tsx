@@ -90,9 +90,11 @@ export function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Information */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Profile Card */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Información del Perfil</h2>
+          {/* Profile & Password Section with gray background */}
+          <div className="bg-gray-50 rounded-xl p-6 space-y-6">
+            {/* Profile Card */}
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Información del Perfil</h2>
             
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -121,17 +123,6 @@ export function SettingsPage() {
                 </label>
                 <div className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-700">
                   {user?.email}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rol
-                </label>
-                <div className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                    {user?.role === 'admin' ? 'Administrador' : user?.role === 'supervisor' ? 'Supervisor' : 'Empleado'}
-                  </span>
                 </div>
               </div>
             </div>
@@ -190,11 +181,27 @@ export function SettingsPage() {
               <button
                 type="submit"
                 disabled={isChangingPassword}
-                className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {isChangingPassword ? 'Actualizando...' : 'Actualizar Contraseña'}
+                {isChangingPassword ? (
+                  <>
+                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Actualizando...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                    Actualizar Contraseña
+                  </>
+                )}
               </button>
             </form>
+          </div>
           </div>
 
           {/* System Settings - Solo para Admin */}
@@ -269,17 +276,10 @@ export function SettingsPage() {
               </div>
 
               <div className="flex items-center gap-3 text-sm">
-                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span className="text-gray-600 break-all">{user?.email}</span>
-              </div>
-
-              <div className="flex items-center gap-3 text-sm">
                 <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-gray-600">Cuenta activa</span>
+                <span className="text-green-600 font-medium">Cuenta activa</span>
               </div>
             </div>
           </div>
