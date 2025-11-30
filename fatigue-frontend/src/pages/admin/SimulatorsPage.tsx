@@ -231,7 +231,7 @@ export default function SimulatorsPage() {
             {sessions.length > 0 && (
               <button
                 onClick={handleStopAll}
-                className="px-3 py-1.5 border border-red-200 hover:border-red-300 hover:bg-red-50 text-red-500 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5"
+                className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -501,10 +501,10 @@ function SimulatorCard({
           <button
             onClick={() => onConfig(session)}
             disabled={session.status !== 'running'}
-            className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+            className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
               session.status === 'running'
-                ? 'bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer'
-                : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                ? 'bg-[#18314F] hover:bg-[#18314F]/90 text-white cursor-pointer'
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -528,7 +528,7 @@ function SimulatorCard({
           {session.status === 'running' ? (
             <button
               onClick={() => onStop(session.id)}
-              className="flex-1 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -540,10 +540,10 @@ function SimulatorCard({
             <button
               onClick={() => onRestart(session.id)}
               disabled={session.status !== 'stopped'}
-              className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              className={`flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
                 session.status === 'stopped'
-                  ? 'bg-green-100 hover:bg-green-200 text-green-700 cursor-pointer'
-                  : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                  ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -558,7 +558,7 @@ function SimulatorCard({
         {/* Botón Eliminar */}
         <button
           onClick={() => onDelete(session.id)}
-          className="w-full px-4 py-2 bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-700 border border-gray-200 hover:border-red-200 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+          className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

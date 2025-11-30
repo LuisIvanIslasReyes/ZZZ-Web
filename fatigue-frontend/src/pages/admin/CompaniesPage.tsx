@@ -313,7 +313,7 @@ export default function CompaniesPage() {
                     <td className="py-3 px-4">
                       <div className="flex flex-col gap-2 items-center">
                         <button
-                          className="w-full px-3 py-1.5 border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-600 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-1"
+                          className="w-full px-3 py-1.5 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-1"
                           onClick={() => setSupervisorsModalCompany(company)}
                           title="Gestionar supervisores"
                         >
@@ -324,16 +324,16 @@ export default function CompaniesPage() {
                         </button>
                         <div className="flex gap-2 w-full">
                           <button
-                            className="flex-1 px-3 py-1.5 border border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-600 rounded-lg text-sm font-medium transition-colors"
+                            className="flex-1 px-3 py-1.5 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg text-sm font-semibold transition-colors"
                             onClick={() => handleEdit(company)}
                           >
                             Editar
                           </button>
                           <button
-                            className={`flex-1 px-3 py-1.5 border rounded-lg text-sm font-medium transition-colors ${
+                            className={`flex-1 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
                               company.is_active 
-                                ? 'border-red-200 hover:border-red-300 hover:bg-red-50 text-red-500' 
-                                : 'border-green-200 hover:border-green-300 hover:bg-green-50 text-green-600'
+                                ? 'bg-red-500 hover:bg-red-600 text-white' 
+                                : 'bg-green-500 hover:bg-green-600 text-white'
                             }`}
                             onClick={() => handleToggleActive(company.id)}
                           >
