@@ -126,13 +126,13 @@ export function EmployeesListPage() {
     {
       key: 'employee_id',
       label: 'ID Empleado',
-      className: 'font-mono text-[#18314F] font-semibold',
+      className: 'font-mono text-gray-900 font-semibold',
     },
     {
       key: 'first_name',
       label: 'Nombre',
       render: (emp) => (
-        <span className="text-[#18314F] font-medium">
+        <span className="text-gray-900 font-medium">
           {emp.first_name} {emp.last_name}
         </span>
       ),
@@ -253,8 +253,8 @@ export function EmployeesListPage() {
       {/* Header */}
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h1 className="text-4xl font-bold text-[#18314F] mb-1">Empleados</h1>
-          <p className="text-lg text-[#18314F]/70">Gestión de empleados del sistema</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-1">Empleados</h1>
+          <p className="text-lg text-gray-900/70">Gestión de empleados del sistema</p>
         </div>
         <button 
           className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 shadow-md transition-all"
@@ -270,7 +270,7 @@ export function EmployeesListPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Empleados */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-base font-medium">Total Empleados</span>
             <span className="bg-blue-100 rounded-full p-2">
@@ -279,11 +279,11 @@ export function EmployeesListPage() {
               </svg>
             </span>
           </div>
-          <div className="text-4xl font-bold text-[#18314F]">{employees.length}</div>
+          <div className="text-4xl font-bold text-gray-900">{employees.length}</div>
         </div>
 
         {/* Activos */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-base font-medium">Activos</span>
             <span className="bg-green-100 rounded-full p-2">
@@ -298,7 +298,7 @@ export function EmployeesListPage() {
         </div>
 
         {/* Inactivos */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-base font-medium">Inactivos</span>
             <span className="bg-red-100 rounded-full p-2">
@@ -313,7 +313,7 @@ export function EmployeesListPage() {
         </div>
 
         {/* Departamentos */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-base font-medium">Departamentos</span>
             <span className="bg-purple-100 rounded-full p-2">
@@ -322,14 +322,14 @@ export function EmployeesListPage() {
               </svg>
             </span>
           </div>
-          <div className="text-4xl font-bold text-[#18314F]">
+          <div className="text-4xl font-bold text-gray-900">
             {new Set(employees.map((e) => e.department).filter(Boolean)).size}
           </div>
         </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 border border-gray-200 p-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <SearchBar
@@ -354,7 +354,7 @@ export function EmployeesListPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 border border-gray-200 overflow-hidden">
         <Table
           data={filteredEmployees}
           columns={columns}
@@ -382,7 +382,7 @@ export function EmployeesListPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   ID Empleado
                 </label>
-                <p className="font-mono text-[#18314F] font-semibold text-lg">{selectedEmployee.employee_id}</p>
+                <p className="font-mono text-gray-900 font-semibold text-lg">{selectedEmployee.employee_id}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -477,7 +477,7 @@ export function EmployeesListPage() {
         {selectedEmployee && (
           <p className="text-gray-700">
             ¿Estás seguro de que deseas eliminar al empleado{' '}
-            <strong className="text-[#18314F]">
+            <strong className="text-gray-900">
               {selectedEmployee.first_name} {selectedEmployee.last_name}
             </strong>
             ? Esta acción no se puede deshacer.
@@ -548,3 +548,4 @@ export function EmployeesListPage() {
     </div>
   );
 }
+

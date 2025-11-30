@@ -8,12 +8,12 @@ export function MLModelInfoPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-[#18314F]">Modelo de Machine Learning</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Modelo de Machine Learning</h1>
         <p className="text-gray-600 mt-1">Sistema inteligente de detección y clasificación de niveles de fatiga</p>
       </div>
 
       {/* Problema que Resuelve */}
-      <div className="bg-white p-6 rounded-2xl shadow-md border-l-4 border-red-500">
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 border-l-4 border-red-500">
         <div className="flex items-start gap-4">
           <div className="p-3 bg-red-100 rounded-lg flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -21,7 +21,7 @@ export function MLModelInfoPage() {
             </svg>
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-[#18314F] mb-3">¿Qué Problema Estamos Resolviendo?</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">¿Qué Problema Estamos Resolviendo?</h2>
             
             <div className="space-y-4">
               <div className="bg-red-50 p-4 rounded-xl">
@@ -126,14 +126,14 @@ export function MLModelInfoPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tipo de Modelo */}
-        <div className="bg-white p-6 rounded-2xl shadow-md">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 bg-blue-100 rounded-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-[#18314F]">Tipo de Modelo</h2>
+            <h2 className="text-xl font-bold text-gray-900">Tipo de Modelo</h2>
           </div>
           
           <div className="space-y-4">
@@ -145,7 +145,7 @@ export function MLModelInfoPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-3 text-[#18314F]">¿Cómo funciona?</h4>
+              <h4 className="font-semibold mb-3 text-gray-900">¿Cómo funciona?</h4>
               <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600">
                 <li>Recopila métricas fisiológicas de los sensores (ritmo cardíaco, SpO2, actividad física)</li>
                 <li>Normaliza y procesa los datos para hacerlos comparables</li>
@@ -158,14 +158,14 @@ export function MLModelInfoPage() {
         </div>
 
         {/* Métricas de Efectividad */}
-        <div className="bg-white p-6 rounded-2xl shadow-md">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 bg-green-100 rounded-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-[#18314F]">Métricas de Efectividad</h2>
+            <h2 className="text-xl font-bold text-gray-900">Métricas de Efectividad</h2>
           </div>
           
           <div className="space-y-4">
@@ -197,14 +197,14 @@ export function MLModelInfoPage() {
       </div>
 
       {/* Variables de Entrada */}
-      <div className="bg-white p-6 rounded-2xl shadow-md">
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-purple-100 rounded-lg">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-[#18314F]">Variables de Entrada (Features)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Variables de Entrada (Features)</h2>
         </div>
 
         <p className="text-sm text-gray-600 mb-4">
@@ -229,7 +229,7 @@ export function MLModelInfoPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <p className="font-semibold text-sm text-[#18314F]">{feature.name}</p>
+                <p className="font-semibold text-sm text-gray-900">{feature.name}</p>
                 <p className="text-xs text-gray-600">{feature.desc}</p>
               </div>
             </div>
@@ -238,14 +238,14 @@ export function MLModelInfoPage() {
       </div>
 
       {/* Niveles de Fatiga */}
-      <div className="bg-white p-6 rounded-2xl shadow-md">
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-indigo-100 rounded-lg">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-[#18314F]">Clasificación de Niveles de Fatiga</h2>
+          <h2 className="text-xl font-bold text-gray-900">Clasificación de Niveles de Fatiga</h2>
         </div>
 
         <p className="text-sm text-gray-600 mb-4">
@@ -282,8 +282,8 @@ export function MLModelInfoPage() {
       </div>
 
       {/* Proceso de Predicción */}
-      <div className="bg-white p-6 rounded-2xl shadow-md">
-        <h2 className="text-xl font-bold text-[#18314F] mb-4">Proceso de Predicción en Tiempo Real</h2>
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Proceso de Predicción en Tiempo Real</h2>
         
         <div className="space-y-3">
           {[
@@ -329,7 +329,7 @@ export function MLModelInfoPage() {
                 {item.step}
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-[#18314F]">{item.title}</h3>
+                <h3 className="font-semibold text-gray-900">{item.title}</h3>
                 <p className="text-sm text-gray-600 mt-1">{item.desc}</p>
               </div>
             </div>
@@ -338,8 +338,8 @@ export function MLModelInfoPage() {
       </div>
 
       {/* Ventajas del Sistema */}
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-2xl shadow-md border border-blue-100">
-        <h2 className="text-xl font-bold text-[#18314F] mb-6">Ventajas del Sistema de ML</h2>
+      <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-lg shadow-sm border border-gray-200 border border-blue-100">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Ventajas del Sistema de ML</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Alta Precisión */}
@@ -348,7 +348,7 @@ export function MLModelInfoPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div>
-              <h3 className="font-semibold text-[#18314F]">Alta Precisión</h3>
+              <h3 className="font-semibold text-gray-900">Alta Precisión</h3>
               <p className="text-sm text-gray-600 mt-1">92.6% de efectividad en identificación de patrones de fatiga</p>
             </div>
           </div>
@@ -359,7 +359,7 @@ export function MLModelInfoPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
             <div>
-              <h3 className="font-semibold text-[#18314F]">Tiempo Real</h3>
+              <h3 className="font-semibold text-gray-900">Tiempo Real</h3>
               <p className="text-sm text-gray-600 mt-1">Predicciones instantáneas cada minuto</p>
             </div>
           </div>
@@ -370,7 +370,7 @@ export function MLModelInfoPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             <div>
-              <h3 className="font-semibold text-[#18314F]">Aprendizaje Continuo</h3>
+              <h3 className="font-semibold text-gray-900">Aprendizaje Continuo</h3>
               <p className="text-sm text-gray-600 mt-1">Se puede reentrenar con nuevos datos para mejorar</p>
             </div>
           </div>
@@ -381,7 +381,7 @@ export function MLModelInfoPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
             <div>
-              <h3 className="font-semibold text-[#18314F]">Prevención Proactiva</h3>
+              <h3 className="font-semibold text-gray-900">Prevención Proactiva</h3>
               <p className="text-sm text-gray-600 mt-1">Detecta patrones antes de que se vuelvan críticos</p>
             </div>
           </div>
@@ -392,7 +392,7 @@ export function MLModelInfoPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             <div>
-              <h3 className="font-semibold text-[#18314F]">Multi-Variable</h3>
+              <h3 className="font-semibold text-gray-900">Multi-Variable</h3>
               <p className="text-sm text-gray-600 mt-1">Analiza 10 métricas simultáneamente</p>
             </div>
           </div>
@@ -403,7 +403,7 @@ export function MLModelInfoPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
             <div>
-              <h3 className="font-semibold text-[#18314F]">No Supervisado</h3>
+              <h3 className="font-semibold text-gray-900">No Supervisado</h3>
               <p className="text-sm text-gray-600 mt-1">Descubre patrones automáticamente sin etiquetas previas</p>
             </div>
           </div>
@@ -430,3 +430,4 @@ export function MLModelInfoPage() {
     </div>
   );
 }
+

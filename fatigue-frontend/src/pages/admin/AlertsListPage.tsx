@@ -289,7 +289,7 @@ export function AlertsListPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-[#18314F]">Alertas de Fatiga</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Alertas de Fatiga</h1>
           <p className="text-gray-600 mt-1">Gestión y monitoreo de alertas del sistema</p>
         </div>
       </div>
@@ -301,7 +301,7 @@ export function AlertsListPage() {
             setSeverityFilter('critical');
             setStatusFilter('');
           }}
-          className={`bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all ${
+          className={`bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-lg transition-all ${
             severityFilter === 'critical' ? 'ring-2 ring-red-500' : ''
           }`}
         >
@@ -324,7 +324,7 @@ export function AlertsListPage() {
             setSeverityFilter('');
             setStatusFilter('pending');
           }}
-          className={`bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all ${
+          className={`bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-lg transition-all ${
             statusFilter === 'pending' && !severityFilter ? 'ring-2 ring-yellow-500' : ''
           }`}
         >
@@ -347,7 +347,7 @@ export function AlertsListPage() {
             setSeverityFilter('');
             setStatusFilter('acknowledged');
           }}
-          className={`bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all ${
+          className={`bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-lg transition-all ${
             statusFilter === 'acknowledged' && !severityFilter ? 'ring-2 ring-blue-500' : ''
           }`}
         >
@@ -370,7 +370,7 @@ export function AlertsListPage() {
             setSeverityFilter('');
             setStatusFilter('resolved');
           }}
-          className={`bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all ${
+          className={`bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-lg transition-all ${
             statusFilter === 'resolved' && !severityFilter ? 'ring-2 ring-green-500' : ''
           }`}
         >
@@ -390,9 +390,9 @@ export function AlertsListPage() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white p-6 rounded-2xl shadow-md">
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
         <div className="flex items-center gap-3 mb-4">
-          <h3 className="font-semibold text-[#18314F]">Filtros Activos</h3>
+          <h3 className="font-semibold text-gray-900">Filtros Activos</h3>
           {(severityFilter || statusFilter || dateFilter || searchTerm) && (
             <button
               onClick={() => {
@@ -491,7 +491,7 @@ export function AlertsListPage() {
       </div>
 
       {/* Alerts List */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {isLoading ? (
           <div className="p-12 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#18314F] mx-auto"></div>
@@ -708,3 +708,4 @@ export function AlertsListPage() {
     </div>
   );
 }
+
