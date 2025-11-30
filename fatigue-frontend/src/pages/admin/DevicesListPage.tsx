@@ -233,7 +233,7 @@ export function DevicesListPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-[#18314F]">Dispositivos</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Dispositivos</h1>
           <p className="text-gray-600 mt-1">Gestión de dispositivos de monitoreo</p>
         </div>
         <button 
@@ -260,21 +260,21 @@ export function DevicesListPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-md">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm font-medium">Total Dispositivos</p>
-              <p className="text-3xl font-bold text-[#18314F] mt-2">{devices.length}</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">{devices.length}</p>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-md">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm font-medium">Activos</p>
@@ -290,7 +290,7 @@ export function DevicesListPage() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-md">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm font-medium">Inactivos</p>
@@ -308,7 +308,7 @@ export function DevicesListPage() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white p-6 rounded-2xl shadow-md">
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
         <div className="flex flex-col md:flex-row gap-4">
           <SearchBar
             value={searchTerm}
@@ -325,7 +325,7 @@ export function DevicesListPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <Table
           data={filteredDevices}
           columns={columns}
@@ -440,7 +440,7 @@ export function DevicesListPage() {
         {selectedDevice && (
           <p className="text-gray-700">
             ¿Estás seguro de que deseas eliminar el dispositivo{' '}
-            <strong className="text-[#18314F]">{selectedDevice.device_identifier}</strong>? Esta acción no se puede deshacer.
+            <strong className="text-gray-900">{selectedDevice.device_identifier}</strong>? Esta acción no se puede deshacer.
           </p>
         )}
       </Modal>
@@ -498,3 +498,4 @@ export function DevicesListPage() {
     </div>
   );
 }
+

@@ -151,25 +151,16 @@ export function MachineLearningDashboard() {
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-blue-600 rounded-lg shadow-md">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          </div>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Machine Learning - Análisis de Fatiga Laboral
-            </h1>
-            <p className="text-gray-600 text-base leading-relaxed">
-              Sistema de detección predictiva de fatiga mediante análisis de métricas biométricas con algoritmos de clustering no supervisado
-            </p>
-          </div>
-        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Machine Learning - Análisis de Fatiga Laboral
+        </h1>
+        <p className="text-gray-600 text-base leading-relaxed">
+          Sistema de detección predictiva de fatiga mediante análisis de métricas biométricas con algoritmos de clustering no supervisado
+        </p>
       </div>
 
       {/* Información del Algoritmo */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6 border border-gray-200">
+      <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
         <div className="flex items-center gap-3 mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -228,7 +219,7 @@ export function MachineLearningDashboard() {
       {/* Grid Principal */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Card 1: Modelo Actual */}
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-gray-900">Información del Modelo</h2>
             {modelInfo?.model_exists && (
@@ -316,7 +307,7 @@ export function MachineLearningDashboard() {
         </div>
 
         {/* Card 2: Estadísticas */}
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Estadísticas de Predicción</h2>
 
           {statistics && (
@@ -409,7 +400,7 @@ export function MachineLearningDashboard() {
         </div>
 
         {/* Card 3: Re-entrenamiento */}
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Re-entrenamiento del Modelo</h2>
 
           {retrainingStatus && (
@@ -506,7 +497,7 @@ export function MachineLearningDashboard() {
 
       {/* Features del Modelo */}
       {modelInfo?.ml_service.features && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6 border border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
           <h2 className="text-lg font-bold text-gray-900 mb-4">
             Características del Modelo ({modelInfo.ml_service.features_count} Features)
           </h2>
@@ -525,7 +516,7 @@ export function MachineLearningDashboard() {
       )}
 
       {/* Visualizaciones del Modelo */}
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 mb-6">
+      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 mb-6">
         <h2 className="text-lg font-bold text-gray-900 mb-4">Análisis Visual del Modelo</h2>
 
         {/* Tabs */}
@@ -597,7 +588,7 @@ export function MachineLearningDashboard() {
       </div>
 
       {/* Historial de Predicciones */}
-      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
         <h2 className="text-lg font-bold text-gray-900 mb-4">Historial de Predicciones</h2>
 
         {predictionHistory && predictionHistory.predictions.length > 0 ? (

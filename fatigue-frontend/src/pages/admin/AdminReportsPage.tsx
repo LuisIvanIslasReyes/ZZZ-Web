@@ -122,13 +122,13 @@ export function AdminReportsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-[#18314F]">Reportes</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Reportes</h1>
         <p className="text-gray-600 mt-1">Análisis y exportación de datos del sistema</p>
       </div>
 
       {/* Report Configuration */}
-      <div className="bg-white p-6 rounded-2xl shadow-md">
-        <h2 className="text-xl font-bold text-[#18314F] mb-6">Configuración del Reporte</h2>
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Configuración del Reporte</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Tipo de Reporte */}
@@ -231,7 +231,7 @@ export function AdminReportsPage() {
           <button
             onClick={selectedReport === 'executive' ? handleExportExecutive : handleExportEmployee}
             disabled={isLoading || (selectedReport === 'employee' && !selectedEmployeeId)}
-            className="px-6 py-3 text-[#18314F] bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-3 text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -244,27 +244,27 @@ export function AdminReportsPage() {
       {/* Executive Summary */}
       {selectedReport === 'executive' && executiveSummary && (
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-[#18314F]">Resumen Ejecutivo</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Resumen Ejecutivo</h2>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Total Empleados</p>
-                  <p className="text-3xl font-bold text-[#18314F] mt-2">
+                  <p className="text-3xl font-bold text-gray-900 mt-2">
                     {executiveSummary.total_employees}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <svg className="w-6 h-6 text-[#18314F]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-6 h-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Dispositivos Activos</p>
@@ -280,7 +280,7 @@ export function AdminReportsPage() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Total Alertas</p>
@@ -296,7 +296,7 @@ export function AdminReportsPage() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Alertas Críticas</p>
@@ -315,7 +315,7 @@ export function AdminReportsPage() {
 
           {/* Additional Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Fatiga Promedio</h3>
               <div className="flex items-center gap-4">
                 <div className="flex-1">
@@ -332,13 +332,13 @@ export function AdminReportsPage() {
                     />
                   </div>
                 </div>
-                <span className="text-2xl font-bold text-[#18314F]">
+                <span className="text-2xl font-bold text-gray-900">
                   {executiveSummary.avg_fatigue.toFixed(1)}
                 </span>
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Empleados Alto Riesgo</h3>
               <p className="text-4xl font-bold text-red-600">
                 {executiveSummary.high_risk_employees}
@@ -348,7 +348,7 @@ export function AdminReportsPage() {
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Recomendaciones Aplicadas</h3>
               <p className="text-4xl font-bold text-green-600">
                 {executiveSummary.recommendations_applied}
@@ -361,7 +361,7 @@ export function AdminReportsPage() {
 
           {/* Top Concerns */}
           {executiveSummary.top_concerns && executiveSummary.top_concerns.length > 0 && (
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Principales Preocupaciones</h3>
               <ul className="space-y-2">
                 {executiveSummary.top_concerns.map((concern, index) => (
@@ -381,27 +381,27 @@ export function AdminReportsPage() {
       {/* Employee Report */}
       {selectedReport === 'employee' && employeeReport && (
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-[#18314F]">
+          <h2 className="text-2xl font-bold text-gray-900">
             Reporte de {employeeReport.employee.first_name} {employeeReport.employee.last_name}
           </h2>
 
           {/* Metrics Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-600 mb-2">Fatiga Promedio</h3>
-              <p className="text-3xl font-bold text-[#18314F]">
+              <p className="text-3xl font-bold text-gray-900">
                 {employeeReport.metrics_stats.avg_fatigue.toFixed(1)}
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-600 mb-2">SpO2 Promedio</h3>
               <p className="text-3xl font-bold text-blue-600">
                 {employeeReport.metrics_stats.avg_spo2.toFixed(1)}%
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-600 mb-2">FC Promedio</h3>
               <p className="text-3xl font-bold text-purple-600">
                 {employeeReport.metrics_stats.avg_hr.toFixed(0)} bpm
@@ -411,12 +411,12 @@ export function AdminReportsPage() {
 
           {/* Alerts and Recommendations */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Resumen de Alertas</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Total:</span>
-                  <span className="font-bold text-[#18314F]">{employeeReport.alerts_stats.total}</span>
+                  <span className="font-bold text-gray-900">{employeeReport.alerts_stats.total}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Críticas:</span>
@@ -433,12 +433,12 @@ export function AdminReportsPage() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Recomendaciones</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Total:</span>
-                  <span className="font-bold text-[#18314F]">{employeeReport.recommendations_stats.total}</span>
+                  <span className="font-bold text-gray-900">{employeeReport.recommendations_stats.total}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Aplicadas:</span>
@@ -460,3 +460,4 @@ export function AdminReportsPage() {
     </div>
   );
 }
+

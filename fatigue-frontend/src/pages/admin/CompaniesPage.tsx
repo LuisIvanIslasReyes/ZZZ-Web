@@ -147,8 +147,8 @@ export default function CompaniesPage() {
       <div className="mb-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-[#18314F] mb-1">Empresas Clientes</h1>
-            <p className="text-lg text-[#18314F]/70">Gestión de empresas que contratan el servicio</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-1">Empresas Clientes</h1>
+            <p className="text-gray-600">Gestión de empresas que contratan el servicio</p>
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
@@ -166,7 +166,7 @@ export default function CompaniesPage() {
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Total Empresas */}
-          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600 text-base font-medium">Total Empresas</span>
               <span className="bg-blue-100 rounded-full p-2">
@@ -175,11 +175,11 @@ export default function CompaniesPage() {
                 </svg>
               </span>
             </div>
-            <span className="text-4xl font-bold text-[#18314F]">{stats.total_companies}</span>
+            <span className="text-4xl font-bold text-gray-900">{stats.total_companies}</span>
           </div>
 
           {/* Activas */}
-          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600 text-base font-medium">Activas</span>
               <span className="bg-green-100 rounded-full p-2">
@@ -188,11 +188,11 @@ export default function CompaniesPage() {
                 </svg>
               </span>
             </div>
-            <span className="text-4xl font-bold text-[#18314F]">{stats.active_companies}</span>
+            <span className="text-4xl font-bold text-gray-900">{stats.active_companies}</span>
           </div>
 
           {/* Empresas con Supervisor Activo */}
-          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600 text-base font-medium">Empresas con Supervisor</span>
               <span className="bg-purple-100 rounded-full p-2">
@@ -201,12 +201,12 @@ export default function CompaniesPage() {
                 </svg>
               </span>
             </div>
-            <span className="text-4xl font-bold text-[#18314F]">{stats.total_supervisors}</span>
+            <span className="text-4xl font-bold text-gray-900">{stats.total_supervisors}</span>
             <span className="text-xs text-gray-500 mt-1">1 supervisor = 1 empresa</span>
           </div>
 
           {/* Total Empleados */}
-          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600 text-base font-medium">Total Empleados</span>
               <span className="bg-orange-100 rounded-full p-2">
@@ -215,14 +215,14 @@ export default function CompaniesPage() {
                 </svg>
               </span>
             </div>
-            <span className="text-4xl font-bold text-[#18314F]">{stats.total_employees}</span>
+            <span className="text-4xl font-bold text-gray-900">{stats.total_employees}</span>
           </div>
         </div>
       )}
 
       {/* Companies List */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
-        <h2 className="text-2xl font-bold text-[#18314F] mb-6">Lista de Empresas</h2>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Lista de Empresas</h2>
         
         {companies.length === 0 ? (
           <div className="text-center py-12">
@@ -263,7 +263,7 @@ export default function CompaniesPage() {
                           </svg>
                         </span>
                         <div>
-                          <div className="font-bold text-[#18314F]">{company.name}</div>
+                          <div className="font-bold text-gray-900">{company.name}</div>
                           <div className="text-sm text-gray-500">ID: {company.id}</div>
                         </div>
                       </div>

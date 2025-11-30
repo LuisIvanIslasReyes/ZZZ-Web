@@ -193,8 +193,8 @@ export default function SimulatorsPage() {
       <div className="mb-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-[#18314F] mb-1">Gestión de Simuladores</h1>
-            <p className="text-lg text-[#18314F]/70">Control de simuladores ESP32 en tiempo real</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-1">Gestión de Simuladores</h1>
+            <p className="text-gray-600">Control de simuladores ESP32 en tiempo real</p>
           </div>
           <div className="flex gap-3">
             <button
@@ -249,7 +249,7 @@ export default function SimulatorsPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {/* Simuladores Totales */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-base font-medium">Total Simuladores</span>
             <span className="bg-blue-100 rounded-full p-2">
@@ -258,7 +258,7 @@ export default function SimulatorsPage() {
               </svg>
             </span>
           </div>
-          <span className="text-4xl font-bold text-[#18314F]">
+          <span className="text-4xl font-bold text-gray-900">
             {Array.isArray(sessions) ? sessions.filter(s => s.status === 'running').length : 0}
             <span className="text-xl text-gray-400">/{Array.isArray(sessions) ? sessions.length : 0}</span>
           </span>
@@ -266,7 +266,7 @@ export default function SimulatorsPage() {
         </div>
 
         {/* Empleados Disponibles */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-base font-medium">Empleados Disponibles</span>
             <span className="bg-green-100 rounded-full p-2">
@@ -275,14 +275,14 @@ export default function SimulatorsPage() {
               </svg>
             </span>
           </div>
-          <span className="text-4xl font-bold text-[#18314F]">
+          <span className="text-4xl font-bold text-gray-900">
             {employees.filter((e) => !e.has_active_simulator).length}
           </span>
           <span className="text-sm text-gray-500 mt-1">Sin simulador activo</span>
         </div>
 
         {/* Mensajes Totales */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-base font-medium">Mensajes Totales</span>
             <span className="bg-purple-100 rounded-full p-2">
@@ -291,14 +291,14 @@ export default function SimulatorsPage() {
               </svg>
             </span>
           </div>
-          <span className="text-4xl font-bold text-[#18314F]">
+          <span className="text-4xl font-bold text-gray-900">
             {Array.isArray(sessions) ? sessions.reduce((sum, s) => sum + (s.live_stats?.messages_sent || s.messages_sent), 0) : 0}
           </span>
           <span className="text-sm text-gray-500 mt-1">Datos MQTT enviados</span>
         </div>
 
         {/* Alertas Generadas */}
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-base font-medium">Análisis ML</span>
             <span className="bg-orange-100 rounded-full p-2">
@@ -307,15 +307,15 @@ export default function SimulatorsPage() {
               </svg>
             </span>
           </div>
-          <span className="text-4xl font-bold text-[#18314F]">Activo</span>
+          <span className="text-4xl font-bold text-gray-900">Activo</span>
           <span className="text-sm text-gray-500 mt-1">Cada 2 minutos</span>
         </div>
       </div>
 
       {/* All Sessions */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-[#18314F]">Todos los Simuladores</h2>
+          <h2 className="text-xl font-bold text-gray-900">Todos los Simuladores</h2>
           <div className="flex gap-2">
             <span className="badge badge-success badge-lg">
               {Array.isArray(sessions) ? sessions.filter(s => s.status === 'running').length : 0} Activos
@@ -438,7 +438,7 @@ function SimulatorCard({
             </svg>
           </span>
           <div>
-            <h3 className="font-bold text-lg text-[#18314F]">{session.device_id}</h3>
+            <h3 className="font-bold text-lg text-gray-900">{session.device_id}</h3>
             <p className="text-sm text-gray-600">{session.employee_name}</p>
           </div>
         </div>
@@ -1101,7 +1101,7 @@ function ConfigSimulatorModal({
           <div className="form-control">
             <label className="label">
               <span className="label-text font-semibold text-gray-700">
-                Nivel de Fatiga: <span className="text-[#18314F]">{config.fatigue_level}%</span>
+                Nivel de Fatiga: <span className="text-gray-900">{config.fatigue_level}%</span>
               </span>
             </label>
             <input
