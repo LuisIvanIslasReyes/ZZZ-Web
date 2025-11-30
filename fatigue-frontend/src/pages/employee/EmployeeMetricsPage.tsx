@@ -9,7 +9,7 @@ export function EmployeeMetricsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-4xl font-bold text-[#18314F] mb-1">My Metrics</h1>
+        <h1 className="text-4xl font-bold text-[#18314F] mb-1">Mis Métricas</h1>
         <p className="text-lg text-[#18314F]/70">Análisis detallado de mis indicadores de salud</p>
       </div>
 

@@ -22,3 +22,5 @@ export { default as notificationService } from './notification.service';
 export { default as meService } from './me.service';
 export { default as api } from './api';
 export { employeeExportService } from './employeeExport.service';
+export { symptomService } from './symptom.service';
+export { breakService } from './break.service';

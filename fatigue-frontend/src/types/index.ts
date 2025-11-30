@@ -108,3 +108,15 @@ export type {
   TimeSeriesDataPoint,
   ChartData
 } from './api.types';
+
+// Break types (Scheduled Breaks)
+export type {
+  ScheduledBreak,
+  CreateBreakPayload,
+  ReviewBreakPayload,
+  UpdateBreakStatusPayload,
+  BreakType,
+  BreakStatus,
+  BreakDuration
+} from './break.types';
+export { BREAK_TYPES, BREAK_DURATIONS, BREAK_STATUSES } from './break.types';

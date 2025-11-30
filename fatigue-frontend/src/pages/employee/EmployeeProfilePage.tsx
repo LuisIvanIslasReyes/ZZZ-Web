@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts';
 import { authService, meService, employeeExportService, employeeProfileService, deviceService, recommendationService } from '../../services';
-import { Modal, HelpCenterModal } from '../../components/common';
+import { Modal, HelpCenterModal, ReportSymptomModal } from '../../components/common';
 import { EditProfileModal } from '../../components/forms/EditProfileModal';
 import toast from 'react-hot-toast';
 import type { User } from '../../types/user.types';
@@ -22,6 +22,8 @@ export function EmployeeProfilePage() {
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   const [isHelpCenterModalOpen, setIsHelpCenterModalOpen] = useState(false);
+  const [isDeleteAvatarModalOpen, setIsDeleteAvatarModalOpen] = useState(false);
+  const [isReportSymptomModalOpen, setIsReportSymptomModalOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -200,19 +202,17 @@ export function EmployeeProfilePage() {
   };
 
   const handleReportSymptom = () => {
-    toast.info('Funcionalidad de reportar síntoma próximamente');
+    setIsReportSymptomModalOpen(true);
   };
 
   const handleDeleteAvatar = async () => {
     if (!user?.avatar_url) return;
-    
-    if (!window.confirm('¿Estás seguro de que quieres eliminar tu foto de perfil?')) {
-      return;
-    }
 
     try {
       setIsLoading(true);
+      setIsDeleteAvatarModalOpen(false);
       await employeeProfileService.deleteAvatar();
+      setImageError(false);
       await loadUserData();
       await refreshUser();
       toast.success('Foto eliminada exitosamente');
@@ -289,7 +289,7 @@ export function EmployeeProfilePage() {
               {user?.avatar_url && (
                 <button 
                   className="bg-white hover:bg-red-50 text-red-600 font-medium py-2 px-6 rounded-xl border-2 border-red-300 transition-colors"
-                  onClick={handleDeleteAvatar}
+                  onClick={() => setIsDeleteAvatarModalOpen(true)}
                   disabled={isLoading}
                 >
                   Eliminar Foto
@@ -655,6 +655,41 @@ export function EmployeeProfilePage() {
         isOpen={isHelpCenterModalOpen} 
         onClose={() => setIsHelpCenterModalOpen(false)} 
       />
+
+      {/* Report Symptom Modal */}
+      <ReportSymptomModal
+        isOpen={isReportSymptomModalOpen}
+        onClose={() => setIsReportSymptomModalOpen(false)}
+      />
+
+      {/* Delete Avatar Confirmation Modal */}
+      <Modal
+        isOpen={isDeleteAvatarModalOpen}
+        onClose={() => setIsDeleteAvatarModalOpen(false)}
+        title="Eliminar foto"
+        size="sm"
+        footer={
+          <>
+            <button
+              onClick={() => setIsDeleteAvatarModalOpen(false)}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-medium transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleDeleteAvatar}
+              disabled={isLoading}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
+            >
+              {isLoading ? 'Eliminando...' : 'Confirmar'}
+            </button>
+          </>
+        }
+      >
+        <p className="text-gray-700">
+          ¿Estás seguro de eliminar tu foto de perfil actual?
+        </p>
+      </Modal>
     </div>
   );
 }

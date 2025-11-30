@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { dashboardService } from '../../services';
-import { LoadingSpinner, HelpCenterModal } from '../../components/common';
+import { LoadingSpinner, HelpCenterModal, ReportSymptomModal, ScheduleBreakModal } from '../../components/common';
 import { TeamFatigueTrendChart, HealthStatusChart, HourlyActivityChart } from '../../components/charts';
 import { useAuth } from '../../contexts';
 import type { DashboardStats } from '../../types';
@@ -16,6 +16,8 @@ export function EmployeeDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isHelpCenterModalOpen, setIsHelpCenterModalOpen] = useState(false);
+  const [isReportSymptomModalOpen, setIsReportSymptomModalOpen] = useState(false);
+  const [isScheduleBreakModalOpen, setIsScheduleBreakModalOpen] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -328,13 +330,19 @@ export function EmployeeDashboardPage() {
               </svg>
               Ver Mi Historial
             </button>
-            <button className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-4 rounded-xl border-2 border-[#18314F] transition-colors text-sm flex items-center justify-center gap-2">
+            <button 
+              onClick={() => setIsScheduleBreakModalOpen(true)}
+              className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-4 rounded-xl border-2 border-[#18314F] transition-colors text-sm flex items-center justify-center gap-2"
+            >
               <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Programar Descanso
             </button>
-            <button className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-4 rounded-xl border-2 border-[#18314F] transition-colors text-sm flex items-center justify-center gap-2">
+            <button 
+              onClick={() => setIsReportSymptomModalOpen(true)}
+              className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-4 rounded-xl border-2 border-[#18314F] transition-colors text-sm flex items-center justify-center gap-2"
+            >
               <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
               </svg>
@@ -357,6 +365,18 @@ export function EmployeeDashboardPage() {
       <HelpCenterModal 
         isOpen={isHelpCenterModalOpen} 
         onClose={() => setIsHelpCenterModalOpen(false)} 
+      />
+
+      {/* Report Symptom Modal */}
+      <ReportSymptomModal
+        isOpen={isReportSymptomModalOpen}
+        onClose={() => setIsReportSymptomModalOpen(false)}
+      />
+
+      {/* Schedule Break Modal */}
+      <ScheduleBreakModal
+        isOpen={isScheduleBreakModalOpen}
+        onClose={() => setIsScheduleBreakModalOpen(false)}
       />
     </div>
   );
