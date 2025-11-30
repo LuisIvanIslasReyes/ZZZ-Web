@@ -24,7 +24,8 @@ import {
   SupervisorTeamOverviewPage,
   SupervisorTeamAlertsPage,
   SupervisorTeamReportsPage,
-  SupervisorDevicesPage
+  SupervisorDevicesPage,
+  BreaksManagementPage
 } from '../pages/supervisor';
 import { 
   EmployeeDashboardPage,
@@ -32,7 +33,8 @@ import {
   EmployeeRecommendationsPage,
   EmployeeProfilePage,
   EmployeeAlertsPage,
-  EmployeeDeviceMonitorPage
+  EmployeeDeviceMonitorPage,
+  MyBreaksPage
 } from '../pages/employee';
 
 // Pages - Placeholder components (crearemos después)
@@ -125,6 +127,10 @@ export const router = createBrowserRouter([
         path: 'reports',
         element: <SupervisorTeamReportsPage />,
       },
+      {
+        path: 'breaks',
+        element: <BreaksManagementPage />,
+      },
     ],
   },
   {
@@ -158,6 +164,10 @@ export const router = createBrowserRouter([
       {
         path: 'device-monitor',
         element: <EmployeeDeviceMonitorPage />,
+      },
+      {
+        path: 'breaks',
+        element: <MyBreaksPage />,
       },
     ],
   },
