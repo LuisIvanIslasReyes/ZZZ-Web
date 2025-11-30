@@ -59,7 +59,7 @@ export function LoginPage() {
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L19 6V11C19 16.52 15.36 20.74 12 21C8.64 20.74 5 16.52 5 11V6L12 3Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </span>
             <div>
-              <h1 className="text-3xl font-bold leading-tight">ZZZ Admin</h1>
+              <h1 className="text-3xl font-bold leading-tight">ZZZ</h1>
               <p className="text-base text-white/80">Zero to Zero-Fatigue Zone</p>
             </div>
           </div>
@@ -105,20 +105,6 @@ export function LoginPage() {
                 <p className="font-semibold">Reportes Detallados</p>
                 <p className="text-sm text-white/70">Análisis y estadísticas avanzadas</p>
               </div>
-            </div>
-          </div>
-          <div className="flex gap-12 mt-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">60+</p>
-              <p className="text-sm text-white/70">Empleados</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold">24/7</p>
-              <p className="text-sm text-white/70">Monitoreo</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold">99.8%</p>
-              <p className="text-sm text-white/70">Uptime</p>
             </div>
           </div>
         </div>
