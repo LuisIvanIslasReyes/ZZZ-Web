@@ -24,7 +24,7 @@ export function MyBreaksPage() {
       setIsLoading(true);
       const data = await breakService.getMyBreaks();
       setBreaks(data);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error loading breaks:', error);
       toast.error('Error al cargar descansos');
     } finally {
@@ -39,26 +39,16 @@ export function MyBreaksPage() {
       await breakService.cancelBreak(breakId);
       toast.success('Descanso cancelado');
       loadBreaks();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error canceling break:', error);
-      toast.error(error.response?.data?.error || 'Error al cancelar descanso');
+      const err = error as { response?: { data?: { error?: string } } };
+      toast.error(err.response?.data?.error || 'Error al cancelar descanso');
     }
   };
 
   const handleBreakScheduled = () => {
     setIsScheduleModalOpen(false);
     loadBreaks();
-  };
-
-  const getStatusBadge = (status: BreakStatus) => {
-    const badges = {
-      pending: 'badge-warning',
-      approved: 'badge-success',
-      rejected: 'badge-error',
-      completed: 'badge-info',
-      cancelled: 'badge-ghost',
-    };
-    return badges[status] || 'badge-ghost';
   };
 
   const getStatusIcon = (status: BreakStatus) => {
@@ -150,12 +140,12 @@ export function MyBreaksPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mis Descansos Programados</h1>
-          <p className="text-gray-600 mt-1">Gestiona tus descansos y solicitudes</p>
+          <h1 className="text-4xl font-bold text-[#18314F] mb-2">Mis Descansos</h1>
+          <p className="text-lg text-[#18314F]/70">Gestiona tus descansos y consulta tu historial</p>
         </div>
         <button
           onClick={() => setIsScheduleModalOpen(true)}
-          className="btn btn-primary"
+          className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-medium transition-colors flex items-center gap-2 shadow-md"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -165,70 +155,133 @@ export function MyBreaksPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="stat bg-base-100 shadow-lg rounded-lg">
-          <div className="stat-title">Total</div>
-          <div className="stat-value text-primary">{stats.total}</div>
-          <div className="stat-desc">Descansos totales</div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">Total</p>
+              <p className="text-4xl font-bold text-blue-600">{stats.total}</p>
+              <p className="text-xs text-gray-500 mt-1">Descansos registrados</p>
+            </div>
+            <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+          </div>
         </div>
-        <div className="stat bg-base-100 shadow-lg rounded-lg">
-          <div className="stat-title">Pendientes</div>
-          <div className="stat-value text-warning">{stats.pending}</div>
-          <div className="stat-desc">Esperando aprobación</div>
-        </div>
-        <div className="stat bg-base-100 shadow-lg rounded-lg">
-          <div className="stat-title">Aprobados</div>
-          <div className="stat-value text-success">{stats.approved}</div>
-          <div className="stat-desc">Listos para usar</div>
-        </div>
-        <div className="stat bg-base-100 shadow-lg rounded-lg">
-          <div className="stat-title">Rechazados</div>
-          <div className="stat-value text-error">{stats.rejected}</div>
-          <div className="stat-desc">No autorizados</div>
-        </div>
-      </div>
 
-      {/* Filters */}
-      <div className="card bg-base-100 shadow-lg">
-        <div className="card-body">
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setFilterStatus('all')}
-              className={`btn btn-sm ${filterStatus === 'all' ? 'btn-primary' : 'btn-ghost'}`}
-            >
-              Todos ({breaks.length})
-            </button>
-            <button
-              onClick={() => setFilterStatus('pending')}
-              className={`btn btn-sm ${filterStatus === 'pending' ? 'btn-warning' : 'btn-ghost'}`}
-            >
-              Pendientes ({stats.pending})
-            </button>
-            <button
-              onClick={() => setFilterStatus('approved')}
-              className={`btn btn-sm ${filterStatus === 'approved' ? 'btn-success' : 'btn-ghost'}`}
-            >
-              Aprobados ({stats.approved})
-            </button>
-            <button
-              onClick={() => setFilterStatus('rejected')}
-              className={`btn btn-sm ${filterStatus === 'rejected' ? 'btn-error' : 'btn-ghost'}`}
-            >
-              Rechazados ({stats.rejected})
-            </button>
+        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-yellow-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">Pendientes</p>
+              <p className="text-4xl font-bold text-yellow-600">{stats.pending}</p>
+              <p className="text-xs text-gray-500 mt-1">Esperando aprobación</p>
+            </div>
+            <div className="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-green-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">Aprobados</p>
+              <p className="text-4xl font-bold text-green-600">{stats.approved}</p>
+              <p className="text-xs text-gray-500 mt-1">Listos para usar</p>
+            </div>
+            <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-red-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">Rechazados</p>
+              <p className="text-4xl font-bold text-red-600">{stats.rejected}</p>
+              <p className="text-xs text-gray-500 mt-1">No autorizados</p>
+            </div>
+            <div className="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Filters */}
+      <div className="bg-white rounded-2xl shadow-md p-4">
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setFilterStatus('all')}
+            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+              filterStatus === 'all'
+                ? 'bg-[#18314F] text-white shadow-md'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Todos ({breaks.length})
+          </button>
+          <button
+            onClick={() => setFilterStatus('pending')}
+            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+              filterStatus === 'pending'
+                ? 'bg-yellow-500 text-white shadow-md'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Pendientes ({stats.pending})
+          </button>
+          <button
+            onClick={() => setFilterStatus('approved')}
+            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+              filterStatus === 'approved'
+                ? 'bg-green-500 text-white shadow-md'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Aprobados ({stats.approved})
+          </button>
+          <button
+            onClick={() => setFilterStatus('rejected')}
+            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+              filterStatus === 'rejected'
+                ? 'bg-red-500 text-white shadow-md'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Rechazados ({stats.rejected})
+          </button>
+          <button
+            onClick={() => setFilterStatus('completed')}
+            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
+              filterStatus === 'completed'
+                ? 'bg-blue-500 text-white shadow-md'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Historial
+          </button>
+        </div>
+      </div>
+
       {/* Breaks List */}
-      <div className="card bg-base-100 shadow-lg">
-        <div className="card-body">
+      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+        <div className="p-6">
           {filteredBreaks.length === 0 ? (
-            <div className="text-center py-12">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="text-center py-16">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No hay descansos</h3>
+              <h3 className="text-2xl font-semibold text-[#18314F] mb-2">No hay descansos</h3>
               <p className="text-gray-600 mb-4">
                 {filterStatus === 'all' 
                   ? 'Aún no has programado ningún descanso'
@@ -237,7 +290,7 @@ export function MyBreaksPage() {
               {filterStatus === 'all' && (
                 <button
                   onClick={() => setIsScheduleModalOpen(true)}
-                  className="btn btn-primary"
+                  className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-medium transition-colors shadow-md"
                 >
                   Programar mi primer descanso
                 </button>
@@ -245,58 +298,74 @@ export function MyBreaksPage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="table table-zebra w-full">
+              <table className="w-full">
                 <thead>
-                  <tr>
-                    <th>Tipo</th>
-                    <th>Fecha y Hora</th>
-                    <th>Duración</th>
-                    <th>Estado</th>
-                    <th>Motivo</th>
-                    <th>Acciones</th>
+                  <tr className="border-b-2 border-gray-200">
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Tipo</th>
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Fecha y Hora</th>
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Duración</th>
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Estado</th>
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Motivo</th>
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredBreaks.map((breakItem) => (
-                    <tr key={breakItem.id}>
-                      <td>
-                        <div className="flex items-center gap-2">
-                          {getBreakTypeIcon(breakItem.break_type)}
-                          <span className="font-medium">{breakItem.break_type_display}</span>
+                    <tr key={breakItem.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <span className="text-gray-600">{getBreakTypeIcon(breakItem.break_type)}</span>
+                          <span className="font-medium text-gray-700">{breakItem.break_type_display}</span>
                         </div>
                       </td>
-                      <td>
+                      <td className="py-4 px-4">
                         <div>
-                          <div className="font-medium">{breakItem.scheduled_date}</div>
-                          <div className="text-sm text-gray-600">{breakItem.scheduled_time}</div>
+                          <div className="font-medium text-[#18314F]">{breakItem.scheduled_date}</div>
+                          <div className="text-sm text-gray-500">{breakItem.scheduled_time}</div>
                         </div>
                       </td>
-                      <td>
-                        <span className="badge badge-outline">{breakItem.duration_display}</span>
+                      <td className="py-4 px-4">
+                        <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                          {breakItem.duration_display}
+                        </span>
                       </td>
-                      <td>
+                      <td className="py-4 px-4">
                         <div className="flex items-center gap-2">
-                          {getStatusIcon(breakItem.status)}
-                          <span className={`badge ${getStatusBadge(breakItem.status)}`}>
+                          <span className={`text-sm ${
+                            breakItem.status === 'approved' ? 'text-green-600' :
+                            breakItem.status === 'rejected' ? 'text-red-600' :
+                            breakItem.status === 'completed' ? 'text-blue-600' :
+                            breakItem.status === 'cancelled' ? 'text-gray-600' :
+                            'text-yellow-600'
+                          }`}>
+                            {getStatusIcon(breakItem.status)}
+                          </span>
+                          <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                            breakItem.status === 'approved' ? 'bg-green-100 text-green-700' :
+                            breakItem.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                            breakItem.status === 'completed' ? 'bg-blue-100 text-blue-700' :
+                            breakItem.status === 'cancelled' ? 'bg-gray-100 text-gray-700' :
+                            'bg-yellow-100 text-yellow-700'
+                          }`}>
                             {breakItem.status_display}
                           </span>
                         </div>
                       </td>
-                      <td>
+                      <td className="py-4 px-4">
                         <div className="max-w-xs">
-                          <p className="text-sm truncate">{breakItem.reason || '—'}</p>
+                          <p className="text-sm text-gray-600">{breakItem.reason || '—'}</p>
                           {breakItem.reviewer_notes && (
-                            <p className="text-xs text-gray-500 italic mt-1">
-                              Nota: {breakItem.reviewer_notes}
+                            <p className="text-xs text-gray-500 italic mt-1 bg-gray-50 p-2 rounded">
+                              <strong>Nota del supervisor:</strong> {breakItem.reviewer_notes}
                             </p>
                           )}
                         </div>
                       </td>
-                      <td>
+                      <td className="py-4 px-4">
                         {breakItem.status === 'pending' && (
                           <button
                             onClick={() => handleCancelBreak(breakItem.id)}
-                            className="btn btn-sm btn-error btn-outline"
+                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -304,10 +373,20 @@ export function MyBreaksPage() {
                             Cancelar
                           </button>
                         )}
-                        {breakItem.status === 'approved' && (
-                          <span className="text-sm text-gray-500">
-                            Aprobado por {breakItem.reviewed_by_name}
-                          </span>
+                        {breakItem.status === 'approved' && breakItem.reviewed_by_name && (
+                          <div className="text-sm">
+                            <p className="text-gray-500">Aprobado por</p>
+                            <p className="font-medium text-[#18314F]">{breakItem.reviewed_by_name}</p>
+                          </div>
+                        )}
+                        {breakItem.status === 'rejected' && breakItem.reviewed_by_name && (
+                          <div className="text-sm">
+                            <p className="text-gray-500">Rechazado por</p>
+                            <p className="font-medium text-[#18314F]">{breakItem.reviewed_by_name}</p>
+                          </div>
+                        )}
+                        {(breakItem.status === 'completed' || breakItem.status === 'cancelled') && (
+                          <span className="text-sm text-gray-400">—</span>
                         )}
                       </td>
                     </tr>

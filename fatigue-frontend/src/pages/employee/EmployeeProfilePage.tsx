@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts';
 import { authService, meService, employeeExportService, employeeProfileService, deviceService, recommendationService } from '../../services';
-import { Modal, HelpCenterModal, ReportSymptomModal } from '../../components/common';
+import { Modal } from '../../components/common';
 import { EditProfileModal } from '../../components/forms/EditProfileModal';
 import toast from 'react-hot-toast';
 import type { User } from '../../types/user.types';
@@ -21,9 +21,7 @@ export function EmployeeProfilePage() {
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
-  const [isHelpCenterModalOpen, setIsHelpCenterModalOpen] = useState(false);
   const [isDeleteAvatarModalOpen, setIsDeleteAvatarModalOpen] = useState(false);
-  const [isReportSymptomModalOpen, setIsReportSymptomModalOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -33,7 +31,6 @@ export function EmployeeProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [device, setDevice] = useState<Device | null>(null);
   const [recommendations, setRecommendations] = useState<RoutineRecommendation[]>([]);
-  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Guardar cambios del perfil (real, PATCH a /auth/me/)
@@ -193,18 +190,6 @@ export function EmployeeProfilePage() {
     }
   };
 
-  const handleViewHistory = () => {
-    navigate('/employee/metrics');
-  };
-
-  const handleScheduleBreak = () => {
-    toast.info('Funcionalidad de programar descanso próximamente');
-  };
-
-  const handleReportSymptom = () => {
-    setIsReportSymptomModalOpen(true);
-  };
-
   const handleDeleteAvatar = async () => {
     if (!user?.avatar_url) return;
 
@@ -224,9 +209,6 @@ export function EmployeeProfilePage() {
     }
   };
 
-  const handleHelpCenter = () => {
-    setIsHelpCenterModalOpen(true);
-  };
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -461,49 +443,6 @@ export function EmployeeProfilePage() {
         )}
       </div>
 
-      {/* Acciones Rápidas */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
-        <h3 className="text-xl font-semibold text-[#18314F] mb-6">Acciones Rápidas</h3>
-        <div className="space-y-3">
-          <button
-            onClick={handleViewHistory}
-            className="w-full bg-[#18314F] hover:bg-[#18314F]/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Ver Mi Historial
-          </button>
-          <button
-            onClick={handleScheduleBreak}
-            className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm border-2 border-gray-200 flex items-center justify-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Programar Descanso
-          </button>
-          <button
-            onClick={handleReportSymptom}
-            className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm border-2 border-gray-200 flex items-center justify-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Reportar Síntoma
-          </button>
-          <button
-            onClick={handleHelpCenter}
-            className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-semibold py-3 px-6 rounded-xl transition-colors shadow-sm border-2 border-gray-200 flex items-center justify-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Centro de Ayuda
-          </button>
-        </div>
-      </div>
-
       {/* Actions de Cuenta */}
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h3 className="text-xl font-semibold text-[#18314F] mb-6">Configuración de Cuenta</h3>
@@ -649,18 +588,6 @@ export function EmployeeProfilePage() {
           </div>
         </div>
       </Modal>
-
-      {/* Help Center Modal */}
-      <HelpCenterModal 
-        isOpen={isHelpCenterModalOpen} 
-        onClose={() => setIsHelpCenterModalOpen(false)} 
-      />
-
-      {/* Report Symptom Modal */}
-      <ReportSymptomModal
-        isOpen={isReportSymptomModalOpen}
-        onClose={() => setIsReportSymptomModalOpen(false)}
-      />
 
       {/* Delete Avatar Confirmation Modal */}
       <Modal

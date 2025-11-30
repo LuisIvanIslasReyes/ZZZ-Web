@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts';
+import { ScheduleBreakModal } from '../components/common';
 
 interface NavItem {
   name: string;
@@ -87,12 +88,6 @@ const navigationItems: NavItem[] = [
     roles: ['employee'] 
   },
   { 
-    name: 'Mis Métricas', 
-    path: '/employee/metrics', 
-    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>, 
-    roles: ['employee'] 
-  },
-  { 
     name: 'Alertas', 
     path: '/employee/alerts', 
     icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>, 
@@ -130,6 +125,7 @@ export function MainLayout() {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
+  const [isScheduleBreakModalOpen, setIsScheduleBreakModalOpen] = useState(false);
 
   const filteredNavItems = navigationItems.filter(
     (item) => !item.roles || item.roles.includes(user?.role || '')
@@ -309,18 +305,7 @@ export function MainLayout() {
                   <ul className="mt-2 space-y-1 pl-4">
                     <li>
                       <button
-                        onClick={() => navigate('/employee/profile?tab=history')}
-                        className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-blue-100 hover:bg-white/10 hover:text-white transition-colors"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        Ver Mi Historial
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        onClick={() => navigate('/employee/breaks')}
+                        onClick={() => setIsScheduleBreakModalOpen(true)}
                         className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-blue-100 hover:bg-white/10 hover:text-white transition-colors"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -341,15 +326,21 @@ export function MainLayout() {
                       </button>
                     </li>
                     <li>
-                      <button
-                        onClick={() => navigate('/employee/recommendations?show=help')}
-                        className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-blue-100 hover:bg-white/10 hover:text-white transition-colors"
+                      <NavLink
+                        to="/employee/help"
+                        className={({ isActive }) => `
+                          flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-colors
+                          ${isActive 
+                            ? 'bg-white/20 text-white font-semibold' 
+                            : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                          }
+                        `}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         Centro de Ayuda
-                      </button>
+                      </NavLink>
                     </li>
                   </ul>
                 )}
@@ -389,6 +380,14 @@ export function MainLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Schedule Break Modal - Solo para empleados */}
+      {user?.role === 'employee' && (
+        <ScheduleBreakModal
+          isOpen={isScheduleBreakModalOpen}
+          onClose={() => setIsScheduleBreakModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

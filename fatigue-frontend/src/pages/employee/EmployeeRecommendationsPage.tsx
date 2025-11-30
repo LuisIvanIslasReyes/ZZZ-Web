@@ -15,24 +15,25 @@ export function EmployeeRecommendationsPage() {
   const [filter, setFilter] = useState<'all' | 'pending'>('pending');
 
   useEffect(() => {
+    const loadRecommendations = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await recommendationService.getMyRecommendations(
+          filter === 'pending' ? true : undefined
+        );
+        setRecommendations(data);
+      } catch (err) {
+        console.error('Error loading recommendations:', err);
+        const error = err as { response?: { data?: { detail?: string } } };
+        setError(error.response?.data?.detail || 'Error al cargar las recomendaciones');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadRecommendations();
   }, [filter]);
-
-  const loadRecommendations = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await recommendationService.getMyRecommendations(
-        filter === 'pending' ? true : undefined
-      );
-      setRecommendations(data);
-    } catch (err: any) {
-      console.error('Error loading recommendations:', err);
-      setError(err.response?.data?.detail || 'Error al cargar las recomendaciones');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
@@ -69,10 +70,10 @@ export function EmployeeRecommendationsPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-4xl font-bold text-[#18314F] mb-1">My Recommendations</h1>
+        <h1 className="text-4xl font-bold text-[#18314F] mb-2">Mis Recomendaciones</h1>
         <p className="text-lg text-[#18314F]/70">Recomendaciones personalizadas para mejorar tu bienestar</p>
       </div>
 
@@ -81,9 +82,9 @@ export function EmployeeRecommendationsPage() {
         <div className="flex gap-2">
           <button
             onClick={() => setFilter('pending')}
-            className={`px-6 py-2 rounded-xl font-medium transition-all ${
+            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
               filter === 'pending'
-                ? 'bg-[#18314F] text-white'
+                ? 'bg-[#18314F] text-white shadow-md'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
@@ -91,9 +92,9 @@ export function EmployeeRecommendationsPage() {
           </button>
           <button
             onClick={() => setFilter('all')}
-            className={`px-6 py-2 rounded-xl font-medium transition-all ${
+            className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
               filter === 'all'
-                ? 'bg-[#18314F] text-white'
+                ? 'bg-[#18314F] text-white shadow-md'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >

@@ -9,7 +9,7 @@ import { breakService } from '../../services/break.service';
 import { LoadingSpinner } from '../../components/common';
 import type { ScheduledBreak } from '../../types/break.types';
 
-type TabType = 'pending' | 'today' | 'upcoming';
+type TabType = 'pending' | 'today' | 'upcoming' | 'history';
 
 export function BreaksManagementPage() {
   const [activeTab, setActiveTab] = useState<TabType>('pending');
@@ -38,6 +38,17 @@ export function BreaksManagementPage() {
         case 'upcoming':
           data = await breakService.getUpcomingBreaks();
           break;
+        case 'history': {
+          // Cargar todos los descansos y filtrar aprobados/rechazados/completados
+          const allBreaks = await breakService.getMyBreaks();
+          data = allBreaks.filter(b => 
+            b.status === 'approved' || 
+            b.status === 'rejected' || 
+            b.status === 'completed' ||
+            b.status === 'cancelled'
+          );
+          break;
+        }
       }
       
       setBreaks(data);
@@ -124,143 +135,198 @@ export function BreaksManagementPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Gestión de Descansos</h1>
-        <p className="text-gray-600 mt-1">Revisa y aprueba las solicitudes de descanso de tu equipo</p>
+      <div className="mb-6">
+        <h1 className="text-4xl font-bold text-[#18314F] mb-2">Gestión de Descansos</h1>
+        <p className="text-lg text-[#18314F]/70">Revisa y aprueba las solicitudes de descanso de tu equipo</p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="stat bg-base-100 shadow-lg rounded-lg">
-          <div className="stat-title">Pendientes de Aprobación</div>
-          <div className="stat-value text-warning">{stats.pending}</div>
-          <div className="stat-desc">Requieren tu atención</div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-yellow-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">Pendientes de Aprobación</p>
+              <p className="text-4xl font-bold text-yellow-600">{stats.pending}</p>
+              <p className="text-xs text-gray-500 mt-1">Requieren tu atención</p>
+            </div>
+            <div className="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
         </div>
-        <div className="stat bg-base-100 shadow-lg rounded-lg">
-          <div className="stat-title">Aprobados</div>
-          <div className="stat-value text-success">{stats.approved}</div>
-          <div className="stat-desc">En periodo actual</div>
+        
+        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-green-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">Aprobados</p>
+              <p className="text-4xl font-bold text-green-600">{stats.approved}</p>
+              <p className="text-xs text-gray-500 mt-1">En periodo actual</p>
+            </div>
+            <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
         </div>
-        <div className="stat bg-base-100 shadow-lg rounded-lg">
-          <div className="stat-title">Total</div>
-          <div className="stat-value text-primary">{stats.total}</div>
-          <div className="stat-desc">Descansos en vista</div>
+        
+        <div className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">Total</p>
+              <p className="text-4xl font-bold text-blue-600">{stats.total}</p>
+              <p className="text-xs text-gray-500 mt-1">Descansos en vista</p>
+            </div>
+            <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="tabs tabs-boxed bg-base-100 shadow-lg p-2">
+      <div className="bg-white rounded-2xl shadow-md p-2 inline-flex gap-2">
         <button
           onClick={() => setActiveTab('pending')}
-          className={`tab ${activeTab === 'pending' ? 'tab-active' : ''}`}
+          className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+            activeTab === 'pending'
+              ? 'bg-[#18314F] text-white shadow-md'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           Pendientes ({stats.pending})
         </button>
         <button
           onClick={() => setActiveTab('today')}
-          className={`tab ${activeTab === 'today' ? 'tab-active' : ''}`}
+          className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+            activeTab === 'today'
+              ? 'bg-[#18314F] text-white shadow-md'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
           Hoy
         </button>
         <button
           onClick={() => setActiveTab('upcoming')}
-          className={`tab ${activeTab === 'upcoming' ? 'tab-active' : ''}`}
+          className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+            activeTab === 'upcoming'
+              ? 'bg-[#18314F] text-white shadow-md'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
           Próximos (7 días)
         </button>
+        <button
+          onClick={() => setActiveTab('history')}
+          className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+            activeTab === 'history'
+              ? 'bg-[#18314F] text-white shadow-md'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Historial
+        </button>
       </div>
 
       {/* Breaks Table */}
-      <div className="card bg-base-100 shadow-lg">
-        <div className="card-body">
+      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+        <div className="p-6">
           {breaks.length === 0 ? (
-            <div className="text-center py-12">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="text-center py-16">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No hay descansos</h3>
+              <h3 className="text-2xl font-semibold text-[#18314F] mb-2">No hay descansos</h3>
               <p className="text-gray-600">
                 {activeTab === 'pending' && 'No hay solicitudes pendientes de aprobación'}
                 {activeTab === 'today' && 'No hay descansos programados para hoy'}
                 {activeTab === 'upcoming' && 'No hay descansos programados en los próximos 7 días'}
+                {activeTab === 'history' && 'No hay descansos en el historial'}
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="table table-zebra w-full">
+              <table className="w-full">
                 <thead>
-                  <tr>
-                    <th>Empleado</th>
-                    <th>Tipo</th>
-                    <th>Fecha y Hora</th>
-                    <th>Duración</th>
-                    <th>Motivo</th>
-                    {activeTab === 'pending' && <th>Acciones</th>}
-                    {activeTab !== 'pending' && <th>Estado</th>}
+                  <tr className="border-b-2 border-gray-200">
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Empleado</th>
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Tipo</th>
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Fecha y Hora</th>
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Duración</th>
+                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Motivo</th>
+                    {activeTab === 'pending' && <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Acciones</th>}
+                    {activeTab !== 'pending' && <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Estado</th>}
                   </tr>
                 </thead>
                 <tbody>
                   {breaks.map((breakItem) => (
                     <>
-                      <tr key={breakItem.id}>
-                        <td>
+                      <tr key={breakItem.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                        <td className="py-4 px-4">
                           <div>
-                            <div className="font-medium">{breakItem.employee_name}</div>
-                            <div className="text-sm text-gray-600">ID: {breakItem.employee}</div>
+                            <div className="font-medium text-[#18314F]">{breakItem.employee_name}</div>
+                            <div className="text-sm text-gray-500">ID: {breakItem.employee}</div>
                           </div>
                         </td>
-                        <td>
+                        <td className="py-4 px-4">
                           <div className="flex items-center gap-2">
-                            {getBreakTypeIcon(breakItem.break_type)}
-                            <span className="font-medium">{breakItem.break_type_display}</span>
+                            <span className="text-gray-600">{getBreakTypeIcon(breakItem.break_type)}</span>
+                            <span className="font-medium text-gray-700">{breakItem.break_type_display}</span>
                           </div>
                         </td>
-                        <td>
+                        <td className="py-4 px-4">
                           <div>
-                            <div className="font-medium">{breakItem.scheduled_date}</div>
-                            <div className="text-sm text-gray-600">{breakItem.scheduled_time}</div>
+                            <div className="font-medium text-[#18314F]">{breakItem.scheduled_date}</div>
+                            <div className="text-sm text-gray-500">{breakItem.scheduled_time}</div>
                           </div>
                         </td>
-                        <td>
-                          <span className="badge badge-outline">{breakItem.duration_display}</span>
+                        <td className="py-4 px-4">
+                          <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                            {breakItem.duration_display}
+                          </span>
                         </td>
-                        <td>
+                        <td className="py-4 px-4">
                           <div className="max-w-xs">
-                            <p className="text-sm">{breakItem.reason || '—'}</p>
+                            <p className="text-sm text-gray-600">{breakItem.reason || '—'}</p>
                           </div>
                         </td>
                         {activeTab === 'pending' && (
-                          <td>
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => setReviewingBreakId(breakItem.id)}
-                                className="btn btn-sm btn-info btn-outline"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                Revisar
-                              </button>
-                            </div>
+                          <td className="py-4 px-4">
+                            <button
+                              onClick={() => setReviewingBreakId(breakItem.id)}
+                              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              Revisar
+                            </button>
                           </td>
                         )}
                         {activeTab !== 'pending' && (
-                          <td>
-                            <span className={`badge ${
-                              breakItem.status === 'approved' ? 'badge-success' :
-                              breakItem.status === 'rejected' ? 'badge-error' :
-                              breakItem.status === 'completed' ? 'badge-info' :
-                              'badge-ghost'
+                          <td className="py-4 px-4">
+                            <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                              breakItem.status === 'approved' ? 'bg-green-100 text-green-700' :
+                              breakItem.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                              breakItem.status === 'completed' ? 'bg-blue-100 text-blue-700' :
+                              'bg-gray-100 text-gray-700'
                             }`}>
                               {breakItem.status_display}
                             </span>
@@ -270,25 +336,25 @@ export function BreaksManagementPage() {
                       {/* Review Form */}
                       {reviewingBreakId === breakItem.id && (
                         <tr>
-                          <td colSpan={6}>
-                            <div className="bg-base-200 p-4 rounded-lg">
-                              <h4 className="font-semibold mb-3">Revisar Solicitud</h4>
-                              <div className="form-control mb-4">
-                                <label className="label">
-                                  <span className="label-text">Notas de revisión (opcional)</span>
+                          <td colSpan={6} className="py-0">
+                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 mx-4 my-3 rounded-xl border border-blue-100">
+                              <h4 className="font-bold text-[#18314F] mb-4 text-lg">Revisar Solicitud</h4>
+                              <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  Notas de revisión (opcional)
                                 </label>
                                 <textarea
-                                  className="textarea textarea-bordered"
+                                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                                   placeholder="Agrega comentarios sobre tu decisión..."
                                   value={reviewNotes}
                                   onChange={(e) => setReviewNotes(e.target.value)}
                                   rows={3}
                                 />
                               </div>
-                              <div className="flex gap-2">
+                              <div className="flex gap-3">
                                 <button
                                   onClick={() => handleReview(breakItem.id, 'approved')}
-                                  className="btn btn-success"
+                                  className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors flex items-center gap-2 shadow-md"
                                 >
                                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -297,7 +363,7 @@ export function BreaksManagementPage() {
                                 </button>
                                 <button
                                   onClick={() => handleReview(breakItem.id, 'rejected')}
-                                  className="btn btn-error"
+                                  className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium transition-colors flex items-center gap-2 shadow-md"
                                 >
                                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -309,7 +375,7 @@ export function BreaksManagementPage() {
                                     setReviewingBreakId(null);
                                     setReviewNotes('');
                                   }}
-                                  className="btn btn-ghost"
+                                  className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-medium transition-colors"
                                 >
                                   Cancelar
                                 </button>

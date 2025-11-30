@@ -29,12 +29,12 @@ import {
 } from '../pages/supervisor';
 import { 
   EmployeeDashboardPage,
-  EmployeeMetricsPage,
   EmployeeRecommendationsPage,
   EmployeeProfilePage,
   EmployeeAlertsPage,
   EmployeeDeviceMonitorPage,
-  MyBreaksPage
+  MyBreaksPage,
+  HelpCenterPage
 } from '../pages/employee';
 
 // Pages - Placeholder components (crearemos después)
@@ -146,10 +146,6 @@ export const router = createBrowserRouter([
         element: <EmployeeDashboardPage />,
       },
       {
-        path: 'metrics',
-        element: <EmployeeMetricsPage />,
-      },
-      {
         path: 'alerts',
         element: <EmployeeAlertsPage />,
       },
@@ -168,6 +164,10 @@ export const router = createBrowserRouter([
       {
         path: 'breaks',
         element: <MyBreaksPage />,
+      },
+      {
+        path: 'help',
+        element: <HelpCenterPage />,
       },
     ],
   },
