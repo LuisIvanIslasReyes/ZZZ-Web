@@ -81,6 +81,22 @@ export const breakService = {
     const response = await api.get<ScheduledBreak[]>(`${BASE_URL}/upcoming/`);
     return response.data;
   },
+
+  /**
+   * Ver historial de descansos aprobados
+   */
+  async getApprovedBreaks(): Promise<ScheduledBreak[]> {
+    const response = await api.get<ScheduledBreak[]>(`${BASE_URL}/?status=approved`);
+    return response.data;
+  },
+
+  /**
+   * Ver historial de descansos rechazados
+   */
+  async getRejectedBreaks(): Promise<ScheduledBreak[]> {
+    const response = await api.get<ScheduledBreak[]>(`${BASE_URL}/?status=rejected`);
+    return response.data;
+  },
 };
 
 export default breakService;
