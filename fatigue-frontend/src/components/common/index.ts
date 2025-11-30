@@ -12,5 +12,7 @@ export { ToastProvider } from './ToastProvider';
 export { ErrorBoundary } from './ErrorBoundary';
 export { SendNotificationModal } from './SendNotificationModal';
 export { HelpCenterModal } from './HelpCenterModal';
+export { ReportSymptomModal } from './ReportSymptomModal';
+export { ScheduleBreakModal } from './ScheduleBreakModal';
 
 export type { Column, TableAction } from './Table';
