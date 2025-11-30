@@ -14,5 +14,6 @@ export { SendNotificationModal } from './SendNotificationModal';
 export { HelpCenterModal } from './HelpCenterModal';
 export { ReportSymptomModal } from './ReportSymptomModal';
 export { ScheduleBreakModal } from './ScheduleBreakModal';
+export { MedicalAlertModal } from './MedicalAlertModal';
 
 export type { Column, TableAction } from './Table';

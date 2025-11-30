@@ -53,11 +53,14 @@ export function TeamSymptomsPage() {
 
     try {
       setIsSubmitting(true);
+      
+      // Revisar el síntoma - El backend automáticamente crea una alerta para el empleado
       await symptomService.reviewSymptom(selectedSymptom.id, {
         status: reviewStatus,
         reviewer_notes: reviewNotes
       });
-      toast.success('Síntoma revisado exitosamente');
+      
+      toast.success('Síntoma revisado exitosamente. El empleado ha sido notificado.');
       setIsReviewModalOpen(false);
       loadSymptoms();
       

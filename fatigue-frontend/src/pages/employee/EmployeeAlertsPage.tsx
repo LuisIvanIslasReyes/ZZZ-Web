@@ -64,6 +64,8 @@ export function EmployeeAlertsPage() {
         return '🫁 Oxigenación Baja';
       case 'high_hr':
         return '❤️ Ritmo Cardíaco Elevado';
+      case 'symptom_reviewed':
+        return '✅ Síntoma Revisado por Supervisor';
       case 'symptom_severe':
         return '🩺 Síntoma Severo Detectado';
       case 'symptom_moderate':

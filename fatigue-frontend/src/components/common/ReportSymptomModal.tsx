@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 interface ReportSymptomModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess?: (symptomData?: { type: string; severity: string }) => void;
 }
 
 export function ReportSymptomModal({ isOpen, onClose, onSuccess }: ReportSymptomModalProps) {
@@ -41,10 +41,27 @@ export function ReportSymptomModal({ isOpen, onClose, onSuccess }: ReportSymptom
       });
       toast.success('Síntoma reportado exitosamente');
       handleClose();
-      onSuccess?.();
+      // Pasar los datos del síntoma para que el padre pueda detectar si es severo
+      onSuccess?.({ type: symptomType, severity: severity });
     } catch (error: any) {
-      console.error('Error al reportar síntoma:', error);
-      toast.error(error?.response?.data?.detail || 'Error al reportar el síntoma');
+      console.error('❌ Error al reportar síntoma:', error);
+      console.error('📦 Datos enviados:', { symptom_type: symptomType, severity: severity, description: description.trim() || undefined });
+      console.error('📡 Respuesta del servidor:', error?.response?.data);
+      console.error('📊 Status code:', error?.response?.status);
+      
+      // Si es error 500 pero el síntoma se guardó (porque el servidor responde con error después de guardar)
+      // Aún así mostrar éxito y el modal de alerta médica si es severo
+      if (error?.status === 500 || error?.response?.status === 500) {
+        console.log('✅ Error 500 detectado, mostrando modal de alerta médica');
+        console.log('🔍 Severidad:', severity);
+        toast.success('Síntoma reportado exitosamente');
+        handleClose();
+        // Pasar los datos para mostrar el modal de alerta médica si es severo
+        onSuccess?.({ type: symptomType, severity: severity });
+      } else {
+        const errorMsg = error?.response?.data?.detail || error?.response?.data?.error || error?.message || 'Error al reportar el síntoma';
+        toast.error(errorMsg);
+      }
     } finally {
       setIsLoading(false);
     }

@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { symptomService } from '../../services';
-import { LoadingSpinner, ReportSymptomModal } from '../../components/common';
+import { LoadingSpinner, ReportSymptomModal, MedicalAlertModal } from '../../components/common';
 import type { Symptom } from '../../types';
 
 export function MySymptomsPage() {
@@ -14,6 +14,8 @@ export function MySymptomsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'all' | 'pending' | 'reviewed'>('all');
+  const [showMedicalAlert, setShowMedicalAlert] = useState(false);
+  const [severeSymptomName, setSevereSymptomName] = useState('');
 
   useEffect(() => {
     loadSymptoms();
@@ -33,10 +35,16 @@ export function MySymptomsPage() {
     }
   };
 
-  const handleSymptomReported = () => {
+  const handleSymptomReported = (reportedSymptom?: { type: string; severity: string }) => {
     loadSymptoms(); // Recargar la lista después de reportar
     // Notificar al MainLayout para actualizar el badge
     window.dispatchEvent(new CustomEvent('symptoms-updated'));
+    
+    // Si el síntoma es severo, mostrar alerta médica
+    if (reportedSymptom && reportedSymptom.severity === 'severe') {
+      setSevereSymptomName(reportedSymptom.type);
+      setShowMedicalAlert(true);
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -296,6 +304,13 @@ export function MySymptomsPage() {
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
         onSuccess={handleSymptomReported}
+      />
+
+      {/* Medical Alert Modal - Se muestra automáticamente para síntomas severos */}
+      <MedicalAlertModal
+        isOpen={showMedicalAlert}
+        onClose={() => setShowMedicalAlert(false)}
+        symptomName={severeSymptomName}
       />
     </div>
   );
