@@ -298,7 +298,6 @@ export function MyBreaksPage() {
                     <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Duración</th>
                     <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Estado</th>
                     <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Motivo</th>
-                    <th className="text-left py-4 px-4 font-semibold text-[#18314F]">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>

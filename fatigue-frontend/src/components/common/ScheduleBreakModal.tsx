@@ -17,15 +17,15 @@ interface ScheduleBreakModalProps {
 }
 
 export function ScheduleBreakModal({ isOpen, onClose, onSuccess }: ScheduleBreakModalProps) {
+  // Obtener fecha actual
+  const today = new Date().toISOString().split('T')[0];
+  
   const [breakType, setBreakType] = useState<BreakType>('rest');
-  const [scheduledDate, setScheduledDate] = useState('');
+  const [scheduledDate] = useState(today); // Fecha fija al día actual
   const [scheduledTime, setScheduledTime] = useState('');
   const [duration, setDuration] = useState<BreakDuration>(30);
   const [reason, setReason] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Obtener fecha mínima (hoy)
-  const today = new Date().toISOString().split('T')[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +58,6 @@ export function ScheduleBreakModal({ isOpen, onClose, onSuccess }: ScheduleBreak
 
   const handleClose = () => {
     setBreakType('rest');
-    setScheduledDate('');
     setScheduledTime('');
     setDuration(30);
     setReason('');
@@ -152,10 +151,8 @@ export function ScheduleBreakModal({ isOpen, onClose, onSuccess }: ScheduleBreak
             <input
               type="date"
               value={scheduledDate}
-              onChange={(e) => setScheduledDate(e.target.value)}
-              min={today}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] transition-all"
-              required
+              readOnly
+              className="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 bg-gray-100 text-gray-600 cursor-not-allowed"
             />
           </div>
           <div>
@@ -166,7 +163,7 @@ export function ScheduleBreakModal({ isOpen, onClose, onSuccess }: ScheduleBreak
               type="time"
               value={scheduledTime}
               onChange={(e) => setScheduledTime(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] transition-all"
+              className="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 transition-all"
               required
             />
           </div>
@@ -210,11 +207,11 @@ export function ScheduleBreakModal({ isOpen, onClose, onSuccess }: ScheduleBreak
         </div>
 
         {/* Nota informativa */}
-        <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl">
-          <svg className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="currentColor">
+        <div className="flex items-start gap-3 p-4 bg-[#18314F]/5 border border-[#18314F]/20 rounded-lg">
+          <svg className="w-5 h-5 text-[#18314F] flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 11V17H13V11H11ZM11 7V9H13V7H11Z"/>
           </svg>
-          <p className="text-sm text-blue-700">
+          <p className="text-sm text-[#18314F]">
             Tu solicitud será revisada por tu supervisor. Recibirás una notificación cuando sea aprobada o rechazada.
           </p>
         </div>
