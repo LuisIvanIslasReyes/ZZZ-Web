@@ -29,6 +29,23 @@ export interface SymptomReport extends SymptomReportData {
   created_at: string;
 }
 
+export type SymptomStatus = 'pending' | 'reviewed' | 'dismissed';
+
+export interface Symptom {
+  id: number;
+  employee: number;
+  symptom_type: SymptomType;
+  symptom_type_display?: string;
+  severity: 'low' | 'medium' | 'high';
+  description?: string;
+  status?: SymptomStatus; // Opcional porque el backend puede no devolverlo
+  is_reviewed?: boolean; // Campo del backend
+  reported_at: string;
+  reviewed_at?: string;
+  reviewer?: number;
+  reviewer_notes?: string;
+}
+
 // Labels en español para mostrar en la UI
 export const SYMPTOM_TYPE_LABELS: Record<SymptomType, string> = {
   fatigue: 'Fatiga / Cansancio',

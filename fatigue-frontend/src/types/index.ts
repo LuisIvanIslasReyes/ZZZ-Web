@@ -131,3 +131,14 @@ export type {
   MLRetrainingRequest,
   MLRetrainingResponse
 } from './ml.types';
+
+// Symptom types
+export type {
+  SymptomReport,
+  SymptomReportData,
+  Symptom,
+  SymptomType,
+  SymptomSeverity,
+  SymptomStatus
+} from './symptom.types';
+export { SYMPTOM_TYPE_LABELS, SYMPTOM_SEVERITY_LABELS, SYMPTOM_TYPES, SYMPTOM_SEVERITIES } from './symptom.types';

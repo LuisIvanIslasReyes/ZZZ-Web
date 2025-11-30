@@ -3,19 +3,21 @@
  * Layout principal con sidebar y header para usuarios autenticados - Diseño ZZZ Admin
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts';
-import { ScheduleBreakModal } from '../components/common';
+import { symptomService } from '../services';
 
 interface NavItem {
   name: string;
   path: string;
   icon: React.ReactElement;
   roles?: string[];
+  badge?: 'red' | 'yellow' | 'green';
+  badgeCount?: number;
 }
 
-const navigationItems: NavItem[] = [
+const getNavigationItems = (pendingSymptomsCount: number, recentlyReviewedCount: number): NavItem[] => [
   // Admin routes - Solo gestión de empresas
   { 
     name: 'Empresas', 
@@ -68,16 +70,18 @@ const navigationItems: NavItem[] = [
     roles: ['supervisor'] 
   },
   { 
-    name: 'Reportes', 
-    path: '/supervisor/reports', 
-    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>, 
-    roles: ['supervisor'] 
-  },
-  { 
     name: 'Descansos', 
     path: '/supervisor/breaks', 
     icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, 
     roles: ['supervisor'] 
+  },
+  { 
+    name: 'Síntomas del Equipo', 
+    path: '/supervisor/symptoms', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>, 
+    roles: ['supervisor'],
+    badge: pendingSymptomsCount > 0 ? 'red' : undefined,
+    badgeCount: pendingSymptomsCount
   },
   
   // Employee routes
@@ -117,6 +121,14 @@ const navigationItems: NavItem[] = [
     icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, 
     roles: ['employee'] 
   },
+  { 
+    name: 'Mis Síntomas', 
+    path: '/employee/symptoms', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>, 
+    roles: ['employee'],
+    badge: recentlyReviewedCount > 0 ? 'yellow' : undefined,
+    badgeCount: recentlyReviewedCount
+  },
 ];
 
 
@@ -125,8 +137,117 @@ export function MainLayout() {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
-  const [isScheduleBreakModalOpen, setIsScheduleBreakModalOpen] = useState(false);
+  const [pendingSymptomsCount, setPendingSymptomsCount] = useState(0);
+  const [recentlyReviewedCount, setRecentlyReviewedCount] = useState(0);
 
+  // Fetch pending symptoms count for supervisors (optimized endpoint)
+  const fetchPendingSymptoms = async () => {
+    try {
+      const data = await symptomService.getPendingCount();
+      setPendingSymptomsCount(data.count);
+    } catch (error) {
+      console.error('Error fetching pending symptoms:', error);
+      setPendingSymptomsCount(0);
+    }
+  };
+
+  // Fetch recently reviewed symptoms count for employees
+  const fetchRecentlyReviewed = async () => {
+    try {
+      const data = await symptomService.getRecentlyReviewed();
+      setRecentlyReviewedCount(data.count);
+    } catch (error) {
+      console.error('Error fetching recently reviewed symptoms:', error);
+      setRecentlyReviewedCount(0);
+    }
+  };
+
+  // Load pending symptoms count on mount and set up polling
+  useEffect(() => {
+    let isMounted = true;
+    
+    const loadAndPoll = async () => {
+      if (user?.role === 'supervisor' && isMounted) {
+        await fetchPendingSymptoms();
+      }
+    };
+    
+    if (user?.role === 'supervisor') {
+      loadAndPoll();
+      
+      // Poll every 30 seconds
+      const interval = setInterval(loadAndPoll, 30000);
+      
+      return () => {
+        isMounted = false;
+        clearInterval(interval);
+      };
+    }
+  }, [user]);
+
+  // Refresh when tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user?.role === 'supervisor') {
+        fetchPendingSymptoms();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [user]);
+
+  // Load recently reviewed symptoms for employees
+  useEffect(() => {
+    let isMounted = true;
+    
+    const loadAndPoll = async () => {
+      if (user?.role === 'employee' && isMounted) {
+        await fetchRecentlyReviewed();
+      }
+    };
+    
+    if (user?.role === 'employee') {
+      loadAndPoll();
+      
+      // Poll every 60 seconds (less frequent than supervisor)
+      const interval = setInterval(loadAndPoll, 60000);
+      
+      return () => {
+        isMounted = false;
+        clearInterval(interval);
+      };
+    }
+  }, [user]);
+
+  // Listen for symptoms updates
+  useEffect(() => {
+    const handleSymptomsUpdated = () => {
+      if (user?.role === 'supervisor') {
+        fetchPendingSymptoms();
+      }
+      if (user?.role === 'employee') {
+        fetchRecentlyReviewed();
+      }
+    };
+    
+    // Listen for direct count updates (fallback calculation from frontend)
+    const handleCountUpdated = (event: Event) => {
+      const customEvent = event as CustomEvent<{ count: number }>;
+      if (user?.role === 'supervisor' && customEvent.detail?.count !== undefined) {
+        setPendingSymptomsCount(customEvent.detail.count);
+      }
+    };
+    
+    window.addEventListener('symptoms-updated', handleSymptomsUpdated);
+    window.addEventListener('symptoms-count-updated', handleCountUpdated);
+    return () => {
+      window.removeEventListener('symptoms-updated', handleSymptomsUpdated);
+      window.removeEventListener('symptoms-count-updated', handleCountUpdated);
+    };
+  }, [user]);
+
+  const navigationItems = getNavigationItems(pendingSymptomsCount, recentlyReviewedCount);
   const filteredNavItems = navigationItems.filter(
     (item) => !item.roles || item.roles.includes(user?.role || '')
   );
@@ -251,7 +372,7 @@ export function MainLayout() {
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg transition-all ${
+                    `flex items-center gap-3 rounded-lg transition-all relative ${
                       isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'
                     } ${
                       isActive 
@@ -263,6 +384,21 @@ export function MainLayout() {
                 >
                   <span className="flex-shrink-0">{item.icon}</span>
                   {isSidebarOpen && <span className="font-medium">{item.name}</span>}
+                  {item.badge && (
+                    <span className="absolute top-2 right-2 flex items-center justify-center">
+                      <span className={`
+                        w-3 h-3 rounded-full 
+                        ${item.badge === 'red' ? 'bg-red-500 animate-pulse' : ''}
+                        ${item.badge === 'yellow' ? 'bg-yellow-500' : ''}
+                        ${item.badge === 'green' ? 'bg-green-500' : ''}
+                      `} />
+                      {item.badgeCount && item.badgeCount > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
+                          {item.badgeCount}
+                        </span>
+                      )}
+                    </span>
+                  )}
                 </NavLink>
               </li>
             ))}
@@ -304,26 +440,38 @@ export function MainLayout() {
                 {isActionsOpen && isSidebarOpen && (
                   <ul className="mt-2 space-y-1 pl-4">
                     <li>
-                      <button
-                        onClick={() => setIsScheduleBreakModalOpen(true)}
-                        className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-blue-100 hover:bg-white/10 hover:text-white transition-colors"
+                      <NavLink
+                        to="/employee/breaks"
+                        className={({ isActive }) => `
+                          flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-colors
+                          ${isActive 
+                            ? 'bg-white/20 text-white font-semibold' 
+                            : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                          }
+                        `}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         Programar Descanso
-                      </button>
+                      </NavLink>
                     </li>
                     <li>
-                      <button
-                        onClick={() => navigate('/employee/alerts?action=report')}
-                        className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-blue-100 hover:bg-white/10 hover:text-white transition-colors"
+                      <NavLink
+                        to="/employee/symptoms"
+                        className={({ isActive }) => `
+                          flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition-colors
+                          ${isActive 
+                            ? 'bg-white/20 text-white font-semibold' 
+                            : 'text-blue-100 hover:bg-white/10 hover:text-white'
+                          }
+                        `}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         Reportar Síntoma
-                      </button>
+                      </NavLink>
                     </li>
                     <li>
                       <NavLink
@@ -380,14 +528,6 @@ export function MainLayout() {
           <Outlet />
         </main>
       </div>
-
-      {/* Schedule Break Modal - Solo para empleados */}
-      {user?.role === 'employee' && (
-        <ScheduleBreakModal
-          isOpen={isScheduleBreakModalOpen}
-          onClose={() => setIsScheduleBreakModalOpen(false)}
-        />
-      )}
     </div>
   );
 }

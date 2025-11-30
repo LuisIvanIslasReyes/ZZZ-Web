@@ -25,7 +25,8 @@ import {
   SupervisorTeamAlertsPage,
   SupervisorTeamReportsPage,
   SupervisorDevicesPage,
-  BreaksManagementPage
+  BreaksManagementPage,
+  TeamSymptomsPage
 } from '../pages/supervisor';
 import { 
   EmployeeDashboardPage,
@@ -34,6 +35,7 @@ import {
   EmployeeAlertsPage,
   EmployeeDeviceMonitorPage,
   MyBreaksPage,
+  MySymptomsPage,
   HelpCenterPage
 } from '../pages/employee';
 
@@ -131,6 +133,10 @@ export const router = createBrowserRouter([
         path: 'breaks',
         element: <BreaksManagementPage />,
       },
+      {
+        path: 'symptoms',
+        element: <TeamSymptomsPage />,
+      },
     ],
   },
   {
@@ -164,6 +170,10 @@ export const router = createBrowserRouter([
       {
         path: 'breaks',
         element: <MyBreaksPage />,
+      },
+      {
+        path: 'symptoms',
+        element: <MySymptomsPage />,
       },
       {
         path: 'help',

@@ -8,14 +8,19 @@ import api from './api';
 interface NotificationData {
   title: string;
   message: string;
-  severity?: 'info' | 'warning' | 'critical';
-  employee_ids?: number[];
+  priority?: 'low' | 'medium' | 'high';
 }
 
 interface NotificationResponse {
-  success: boolean;
   message: string;
-  notifications_sent: number;
+  title: string;
+  priority: string;
+  employees_notified: number;
+  alerts: Array<{
+    employee_id: number;
+    employee_name: string;
+    alert_id: number;
+  }>;
 }
 
 class NotificationService {
@@ -25,17 +30,28 @@ class NotificationService {
    */
   async sendTeamNotification(data: NotificationData): Promise<NotificationResponse> {
     try {
-      const response = await api.post<NotificationResponse>('/alerts/send_team_notification', data);
+      // Preparar datos - asegurar que priority tenga un valor
+      const payload = {
+        title: data.title,
+        message: data.message,
+        priority: data.priority || 'medium'
+      };
+
+      const response = await api.post<NotificationResponse>('/alerts/send-team-notification/', payload);
       return response.data;
     } catch (error: any) {
       console.error('Error sending notification:', error);
+      console.error('Error response:', error.response?.data);
       
       // Manejar errores específicos
       if (error.response?.status === 400) {
-        const errorMsg = error.response?.data?.error || 'Datos inválidos';
+        const errorMsg = error.response?.data?.error || error.response?.data?.message || 'Datos inválidos';
         throw new Error(errorMsg);
       } else if (error.response?.status === 401 || error.response?.status === 403) {
         throw new Error('No tienes permisos para enviar notificaciones');
+      } else if (error.response?.status === 500) {
+        const errorMsg = error.response?.data?.error || error.response?.data?.message || 'Error en el servidor';
+        throw new Error(`Error del servidor: ${errorMsg}`);
       } else {
         throw new Error('No se pudo enviar la notificación. Intenta de nuevo.');
       }
@@ -44,18 +60,18 @@ class NotificationService {
 
   /**
    * Enviar notificación a un empleado específico
+   * Nota: Este método está deprecado. El backend solo soporta notificaciones al equipo completo.
    */
   async sendEmployeeNotification(
     employeeId: number,
     title: string,
     message: string,
-    severity: 'info' | 'warning' | 'critical' = 'info'
+    priority: 'low' | 'medium' | 'high' = 'medium'
   ): Promise<NotificationResponse> {
     return this.sendTeamNotification({
       title,
       message,
-      severity,
-      employee_ids: [employeeId]
+      priority
     });
   }
 }

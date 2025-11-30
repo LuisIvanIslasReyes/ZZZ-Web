@@ -49,6 +49,61 @@ export function SupervisorTeamAlertsPage() {
     setIsWorkflowModalOpen(true);
   };
 
+  const getSeverityLabel = (severity: string) => {
+    switch (severity) {
+      case 'critical':
+        return 'Crítico';
+      case 'high':
+        return 'Alto';
+      case 'medium':
+      case 'moderate':
+        return 'Moderado';
+      case 'low':
+        return 'Bajo';
+      default:
+        return 'Desconocido';
+    }
+  };
+
+  const getAlertTypeLabel = (alertType: string) => {
+    switch (alertType) {
+      case 'notification':
+        return '📢 Notificación';
+      case 'fatigue_low':
+        return '📊 Fatiga Baja';
+      case 'fatigue_medium':
+      case 'fatigue_moderate':
+        return '⚠️ Fatiga Moderada';
+      case 'fatigue_high':
+        return '🔴 Fatiga Alta';
+      case 'fatigue_critical':
+        return '🚨 Fatiga Crítica';
+      case 'combined_fatigue_hr':
+        return '🔴 Fatiga y Ritmo Cardíaco Combinados';
+      case 'heart_rate_very_high':
+      case 'high_hr':
+        return '❤️ Ritmo Cardíaco Muy Alto';
+      case 'symptom_severe':
+        return '🩺 Síntoma Severo';
+      case 'symptom_moderate':
+        return '🩺 Síntoma Moderado';
+      case 'symptom_mild':
+        return '🩺 Síntoma Leve';
+      case 'device_disconnected':
+        return '📱 Dispositivo Desconectado';
+      case 'device_battery_low':
+        return '🔋 Batería Baja';
+      case 'break_required':
+        return '☕ Descanso Requerido';
+      case 'overtime_alert':
+        return '⏰ Alerta de Horas Extras';
+      case 'low_spo2':
+        return '🫁 Oxigenación Baja';
+      default:
+        return alertType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+  };
+
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'critical':
@@ -56,9 +111,12 @@ export function SupervisorTeamAlertsPage() {
       case 'high':
         return 'bg-orange-100 text-orange-800 border-orange-300';
       case 'medium':
+      case 'moderate':
         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      default:
+      case 'low':
         return 'bg-blue-100 text-blue-800 border-blue-300';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   };
 
@@ -283,12 +341,11 @@ export function SupervisorTeamAlertsPage() {
                   <div className="flex items-center gap-3 mb-2">
                     {getSeverityIcon(alert.severity)}
                     <h3 className="text-lg font-semibold text-[#18314F]">
-                      {alert.alert_type === 'notification' ? '📢 Notificación' : 
-                       alert.alert_type === 'fatigue_medium' ? '⚠️ Fatiga Moderada' :
-                       alert.alert_type === 'fatigue_high' ? '🔴 Fatiga Alta' :
-                       alert.alert_type === 'fatigue_critical' ? '🚨 Fatiga Crítica' :
-                       alert.alert_type}
+                      {getAlertTypeLabel(alert.alert_type || 'unknown')}
                     </h3>
+                    <span className={`px-3 py-1 ${getSeverityColor(alert.severity)} rounded-full text-xs font-semibold border`}>
+                      {getSeverityLabel(alert.severity)}
+                    </span>
                     {getStatusBadge(alert)}
                     {alert.alert_type === 'notification' && (
                       <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold">

@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { alertService } from '../../services';
 import { LoadingSpinner } from '../../components/common';
 import { AlertWorkflowModal } from '../../components/alerts';
-import type { FatigueAlert } from '../../types';
+import type { FatigueAlert, AlertStatus } from '../../types';
 
 export function EmployeeAlertsPage() {
   const [alerts, setAlerts] = useState<FatigueAlert[]>([]);
@@ -31,7 +31,7 @@ export function EmployeeAlertsPage() {
       // Mapear campos del backend a formato del frontend
       const mappedAlerts = data.map(alert => ({
         ...alert,
-        status: alert.is_resolved ? 'resolved' : 'pending',
+        status: (alert.is_resolved ? 'resolved' : 'pending') as AlertStatus,
         fatigue_score: alert.fatigue_index || alert.fatigue_score || 0
       }));
       
@@ -44,9 +44,43 @@ export function EmployeeAlertsPage() {
     }
   };
 
-  const handleManageAlert = (alert: FatigueAlert) => {
-    setSelectedAlert(alert);
-    setIsWorkflowModalOpen(true);
+  const getAlertTypeLabel = (alertType: string) => {
+    switch (alertType) {
+      case 'notification':
+        return '📢 Notificación de tu Supervisor';
+      case 'high_fatigue':
+      case 'fatigue_high':
+        return '⚠️ Nivel Alto de Fatiga';
+      case 'fatigue_critical':
+        return '🚨 Fatiga Crítica';
+      case 'fatigue_medium':
+      case 'fatigue_moderate':
+        return '⚠️ Fatiga Moderada';
+      case 'combined_fatigue_hr':
+        return '🔴 Fatiga y Ritmo Cardíaco Combinados';
+      case 'heart_rate_very_high':
+        return '❤️ Ritmo Cardíaco Muy Alto';
+      case 'low_spo2':
+        return '🫁 Oxigenación Baja';
+      case 'high_hr':
+        return '❤️ Ritmo Cardíaco Elevado';
+      case 'symptom_severe':
+        return '🩺 Síntoma Severo Detectado';
+      case 'symptom_moderate':
+        return '🩺 Síntoma Moderado';
+      case 'symptom_mild':
+        return '🩺 Síntoma Leve';
+      case 'device_disconnected':
+        return '📱 Dispositivo Desconectado';
+      case 'device_battery_low':
+        return '🔋 Batería Baja del Dispositivo';
+      case 'break_required':
+        return '☕ Es Hora de un Descanso';
+      case 'overtime_alert':
+        return '⏰ Exceso de Horas de Trabajo';
+      default:
+        return alertType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
   };
 
   const getSeverityIcon = (severity: string) => {
@@ -233,41 +267,73 @@ export function EmployeeAlertsPage() {
             return (
               <div 
                 key={alert.id} 
-                className={`bg-white rounded-2xl shadow-md p-6 border-l-4 transition-all hover:shadow-lg ${
-                  isNotification ? 'border-purple-500 bg-gradient-to-r from-purple-50 to-white' :
-                  alert.severity === 'critical' || alert.severity === 'high' ? 'border-red-500' :
-                  alert.severity === 'medium' ? 'border-yellow-500' : 'border-blue-500'
+                className={`rounded-2xl shadow-lg p-6 border-l-8 transition-all hover:shadow-xl ${
+                  isNotification 
+                    ? 'border-indigo-600 bg-gradient-to-r from-indigo-50 via-purple-50 to-white shadow-indigo-200/50' 
+                    : alert.severity === 'critical' || alert.severity === 'high' 
+                    ? 'border-red-500 bg-white' 
+                    : alert.severity === 'medium' 
+                    ? 'border-yellow-500 bg-white' 
+                    : 'border-blue-500 bg-white'
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
+                    {isNotification && (
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-full shadow-md">
+                          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                          <span className="font-bold text-sm">Mensaje de tu Supervisor</span>
+                        </div>
+                        {alert.title && (
+                          <span className="px-3 py-1 bg-indigo-100 text-indigo-900 rounded-full text-xs font-semibold">
+                            {alert.title}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
-                      {getSeverityIcon(alert.severity)}
-                      <h3 className="text-xl font-semibold text-[#18314F]">
-                        {isNotification ? '📢 Notificación de tu Supervisor' : 
-                         alert.alert_type === 'high_fatigue' ? '⚠️ Nivel Alto de Fatiga' :
-                         alert.alert_type === 'low_spo2' ? '🫁 Oxigenación Baja' :
-                         alert.alert_type === 'high_hr' ? '❤️ Ritmo Cardíaco Elevado' :
-                         alert.alert_type}
+                      {!isNotification && getSeverityIcon(alert.severity)}
+                      <h3 className={`text-xl font-semibold ${isNotification ? 'text-indigo-900' : 'text-[#18314F]'}`}>
+                        {getAlertTypeLabel(alert.alert_type || 'unknown')}
                       </h3>
-                      {getStatusBadge(alert.status)}
-                      {isNotification && (
-                        <span className="px-3 py-1 bg-purple-200 text-purple-900 rounded-full text-xs font-semibold">
-                          Mensaje del Equipo
-                        </span>
-                      )}
+                      {getStatusBadge(alert.status || 'pending')}
                     </div>
                     
-                    <p className="text-gray-700 mb-4 text-base leading-relaxed whitespace-pre-line">
-                      {alert.message}
-                    </p>
+                    {isNotification ? (
+                      <div className="bg-white rounded-xl p-4 border-2 border-indigo-200 shadow-sm mb-4">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#4F46E5">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-indigo-900 font-medium text-base leading-relaxed whitespace-pre-line">
+                              {alert.message}
+                            </p>
+                            {alert.supervisor_name && (
+                              <p className="text-indigo-600 text-sm mt-2 font-medium">
+                                — {alert.supervisor_name}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-gray-700 mb-4 text-base leading-relaxed whitespace-pre-line">
+                        {alert.message}
+                      </p>
+                    )}
                     
                     <div className="flex items-center gap-6 text-sm text-gray-500">
                       <div className="flex items-center gap-2">
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>{new Date(alert.created_at).toLocaleString('es-ES', {
+                        <span>{new Date(alert.created_at || new Date()).toLocaleString('es-ES', {
                           day: 'numeric',
                           month: 'long',
                           year: 'numeric',
@@ -275,7 +341,7 @@ export function EmployeeAlertsPage() {
                           minute: '2-digit'
                         })}</span>
                       </div>
-                      {!isNotification && alert.fatigue_score > 0 && (
+                      {!isNotification && alert.fatigue_score && alert.fatigue_score > 0 && (
                         <div className="flex items-center gap-2">
                           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />

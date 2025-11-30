@@ -34,10 +34,12 @@ export interface FatigueAlert {
   severity_display?: string; // Display name para severidad
   status?: AlertStatus; // Campo derivado en frontend
   is_acknowledged?: boolean; // Si fue reconocida/vista
-  acknowledged_at?: string;
-  acknowledged_by?: number;
+  acknowledged_by?: number; // ID del usuario que reconoció
+  acknowledged_at?: string; // Fecha de reconocimiento
   is_resolved: boolean; // Campo real del backend
+  resolved_at?: string; // Fecha de resolución
   message: string;
+  title?: string; // Título de la alerta (usado en notificaciones del supervisor)
   alert_type?: string; // Tipo de alerta (high_fatigue, critical_fatigue, etc)
   fatigue_index?: number; // Índice de fatiga del backend
   fatigue_score?: number; // Para compatibilidad
@@ -45,9 +47,6 @@ export interface FatigueAlert {
   temperature?: number;
   spo2?: number; // Saturación de oxígeno
   recommendations?: string; // Recomendaciones
-  acknowledged_by?: number; // ID del usuario que reconoció
-  acknowledged_at?: string;
-  resolved_at?: string;
   timestamp?: string; // Timestamp del backend
   created_at?: string;
   updated_at?: string;

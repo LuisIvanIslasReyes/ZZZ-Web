@@ -38,26 +38,30 @@ export function SupervisorDashboardPage() {
     }
   };
 
-  const handleGenerateReport = async () => {
+  const handleGenerateReport = async (format: 'csv' | 'excel' | 'pdf' = 'csv') => {
     try {
       setIsGeneratingReport(true);
-      toast.loading('Generando reporte semanal...');
+      const formatLabel = format === 'csv' ? 'CSV' : format === 'excel' ? 'Excel' : 'PDF';
+      toast.loading(`Generando reporte en ${formatLabel}...`);
       
       // Generar reporte de los últimos 7 días
-      const blob = await reportService.exportTeamReport({ days: 7 });
+      const blob = await reportService.exportTeamReport({ days: 7, format });
+      
+      // Extensión del archivo
+      const extension = format === 'csv' ? 'csv' : format === 'excel' ? 'xlsx' : 'pdf';
       
       // Crear URL temporal y descargar
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `reporte-equipo-${new Date().toISOString().split('T')[0]}.csv`;
+      link.download = `reporte-equipo-${new Date().toISOString().split('T')[0]}.${extension}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
       
       toast.dismiss();
-      toast.success('Reporte descargado exitosamente');
+      toast.success(`Reporte ${formatLabel} descargado exitosamente`);
     } catch (error) {
       console.error('Error generating report:', error);
       toast.dismiss();
@@ -70,21 +74,26 @@ export function SupervisorDashboardPage() {
   const handleSendNotification = async (data: {
     title: string;
     message: string;
-    severity: 'info' | 'warning' | 'critical';
+    priority: 'low' | 'medium' | 'high';
   }) => {
     try {
       setIsSendingNotification(true);
+      console.log('📤 Enviando notificación:', data);
+      
       const response = await notificationService.sendTeamNotification(data);
       
-      const successMessage = response.notifications_sent === 1 
+      console.log('✅ Respuesta exitosa:', response);
+      
+      const successMessage = response.employees_notified === 1 
         ? 'Notificación enviada a 1 empleado' 
-        : `Notificación enviada a ${response.notifications_sent} empleados`;
+        : `Notificación enviada a ${response.employees_notified} empleados`;
       
       toast.success(successMessage);
       setIsNotificationModalOpen(false);
-    } catch (error: any) {
-      console.error('Error sending notification:', error);
-      toast.error(error.message || 'Error al enviar la notificación');
+    } catch (error: unknown) {
+      console.error('❌ Error completo:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Error al enviar la notificación';
+      toast.error(errorMessage);
     } finally {
       setIsSendingNotification(false);
     }
@@ -132,6 +141,32 @@ export function SupervisorDashboardPage() {
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Acción Destacada: Enviar Notificación */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-6 mb-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
+              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white mb-1">Comunicación con el Equipo</h3>
+              <p className="text-white/90 text-sm">Envía notificaciones importantes a tus empleados</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsNotificationModalOpen(true)}
+            className="bg-white text-indigo-600 hover:bg-indigo-50 px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Enviar Notificación al Equipo
+          </button>
         </div>
       </div>
 
@@ -269,12 +304,12 @@ export function SupervisorDashboardPage() {
 
       {/* Acciones Rápidas */}
       <div className="bg-white rounded-2xl shadow-md border border-gray-200 px-8 py-6">
-        <h2 className="text-xl font-semibold text-[#18314F] mb-6">Acciones Rápidas</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <h2 className="text-xl font-semibold text-[#18314F] mb-6">Exportar Reportes</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <button 
-            onClick={handleGenerateReport}
+            onClick={() => handleGenerateReport('csv')}
             disabled={isGeneratingReport}
-            className="flex items-center justify-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isGeneratingReport ? (
               <>
@@ -287,17 +322,54 @@ export function SupervisorDashboardPage() {
             ) : (
               <>
                 <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                Generar Reporte Semanal
+                📊 Exportar CSV
               </>
             )}
           </button>
           <button 
-            onClick={() => setIsNotificationModalOpen(true)}
-            className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-6 rounded-xl border-2 border-[#18314F] transition-colors"
+            onClick={() => handleGenerateReport('excel')}
+            disabled={isGeneratingReport}
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-            Enviar Notificación al Equipo
+            {isGeneratingReport ? (
+              <>
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Generando...
+              </>
+            ) : (
+              <>
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                📈 Exportar Excel
+              </>
+            )}
           </button>
+          <button 
+            onClick={() => handleGenerateReport('pdf')}
+            disabled={isGeneratingReport}
+            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isGeneratingReport ? (
+              <>
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Generando...
+              </>
+            ) : (
+              <>
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                📄 Exportar PDF
+              </>
+            )}
+          </button>
+        </div>
+
+        <h3 className="text-lg font-semibold text-[#18314F] mb-4 mt-6">Otras Acciones</h3>
+        <div className="grid grid-cols-1 gap-4">
           <button 
             onClick={handleViewTeamDetails}
             className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-6 rounded-xl border-2 border-[#18314F] transition-colors"

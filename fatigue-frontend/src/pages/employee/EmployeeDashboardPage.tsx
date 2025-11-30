@@ -5,17 +5,20 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { dashboardService, recommendationService } from '../../services';
-import { LoadingSpinner } from '../../components/common';
+import { LoadingSpinner, ReportSymptomModal } from '../../components/common';
 import { TeamFatigueTrendChart, HealthStatusChart, HourlyActivityChart } from '../../components/charts';
 import { useAuth } from '../../contexts';
 import type { DashboardStats, RoutineRecommendation } from '../../types';
 
 export function EmployeeDashboardPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recommendations, setRecommendations] = useState<RoutineRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isReportSymptomModalOpen, setIsReportSymptomModalOpen] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -286,6 +289,46 @@ export function EmployeeDashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Acciones Rápidas */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 px-8 py-6">
+        <h2 className="text-xl font-semibold text-[#18314F] mb-6">Acciones Rápidas</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button 
+            onClick={() => setIsReportSymptomModalOpen(true)}
+            className="flex items-center justify-center gap-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+          >
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Reportar Síntoma
+          </button>
+          <button 
+            onClick={() => navigate('/employee/recommendations')}
+            className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-6 rounded-xl border-2 border-[#18314F] transition-colors"
+          >
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            Ver Recomendaciones
+          </button>
+          <button 
+            onClick={() => navigate('/employee/breaks')}
+            className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-6 rounded-xl border-2 border-[#18314F] transition-colors"
+          >
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Programar Descanso
+          </button>
+        </div>
+      </div>
+
+      {/* Report Symptom Modal */}
+      <ReportSymptomModal
+        isOpen={isReportSymptomModalOpen}
+        onClose={() => setIsReportSymptomModalOpen(false)}
+      />
     </div>
   );
 }

@@ -9,4 +9,5 @@ export { EmployeeProfilePage } from './EmployeeProfilePage';
 export { EmployeeAlertsPage } from './EmployeeAlertsPage';
 export { EmployeeDeviceMonitorPage } from './EmployeeDeviceMonitorPage';
 export { MyBreaksPage } from './MyBreaksPage';
+export { MySymptomsPage } from './MySymptomsPage';
 export { HelpCenterPage } from './HelpCenterPage';

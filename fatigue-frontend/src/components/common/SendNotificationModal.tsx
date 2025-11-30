@@ -11,7 +11,7 @@ interface SendNotificationModalProps {
   onSend: (data: {
     title: string;
     message: string;
-    severity: 'info' | 'warning' | 'critical';
+    priority: 'low' | 'medium' | 'high';
   }) => Promise<void>;
   isLoading?: boolean;
 }
@@ -24,7 +24,7 @@ export function SendNotificationModal({
 }: SendNotificationModalProps) {
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
-  const [severity, setSeverity] = useState<'info' | 'warning' | 'critical'>('info');
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
 
   useEffect(() => {
     if (isOpen) {
@@ -42,18 +42,18 @@ export function SendNotificationModal({
     
     if (!title.trim() || !message.trim()) return;
 
-    await onSend({ title, message, severity });
+    await onSend({ title, message, priority });
     
     setTitle('');
     setMessage('');
-    setSeverity('info');
+    setPriority('medium');
   };
 
   const handleClose = () => {
     if (!isLoading) {
       setTitle('');
       setMessage('');
-      setSeverity('info');
+      setPriority('medium');
       onClose();
     }
   };
@@ -123,27 +123,27 @@ export function SendNotificationModal({
             </div>
 
             <div>
-              <label htmlFor="notification-severity" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="notification-priority" className="block text-sm font-medium text-gray-700 mb-2">
                 Prioridad
               </label>
               <select
-                id="notification-severity"
-                value={severity}
-                onChange={(e) => setSeverity(e.target.value as 'info' | 'warning' | 'critical')}
+                id="notification-priority"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
                 disabled={isLoading}
                 className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#18314F] focus:border-transparent disabled:opacity-50"
               >
-                <option value="info">Información</option>
-                <option value="warning">Advertencia</option>
-                <option value="critical">Crítico</option>
+                <option value="low">🟢 Baja - Información</option>
+                <option value="medium">🟡 Media - Recordatorio</option>
+                <option value="high">🔴 Alta - Urgente</option>
               </select>
             </div>
 
             <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
               <p className="text-xs font-semibold text-gray-600 mb-2">Vista previa:</p>
               <div className={`p-3 rounded-lg ${
-                severity === 'critical' ? 'bg-red-100 border border-red-200' :
-                severity === 'warning' ? 'bg-yellow-100 border border-yellow-200' :
+                priority === 'high' ? 'bg-red-100 border border-red-200' :
+                priority === 'medium' ? 'bg-yellow-100 border border-yellow-200' :
                 'bg-blue-100 border border-blue-200'
               }`}>
                 <p className="font-semibold text-sm text-gray-900">{title || 'Título de la notificación'}</p>

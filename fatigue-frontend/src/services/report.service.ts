@@ -74,17 +74,20 @@ class ReportService {
   }
 
   /**
-   * Exportar reporte de equipo en CSV
+   * Exportar reporte de equipo en múltiples formatos
    */
   async exportTeamReport(params?: {
     days?: number;
     start_date?: string;
     end_date?: string;
+    format?: 'csv' | 'excel' | 'pdf';
   }): Promise<Blob> {
-    const response = await api.get(`${this.BASE_PATH}/team_report`, {
+    const response = await api.get(`${this.BASE_PATH}/team_report/`, {
       params: {
-        format: 'csv',
-        ...params
+        format: params?.format || 'csv',
+        days: params?.days,
+        start_date: params?.start_date,
+        end_date: params?.end_date
       },
       responseType: 'blob'
     });
