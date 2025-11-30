@@ -7,7 +7,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { dashboardService, recommendationService } from '../../services';
-import { LoadingSpinner, ReportSymptomModal } from '../../components/common';
+import { LoadingSpinner, ReportSymptomModal, ScheduleBreakModal } from '../../components/common';
 import { TeamFatigueTrendChart, HealthStatusChart, HourlyActivityChart } from '../../components/charts';
 import { useAuth } from '../../contexts';
 import type { DashboardStats, RoutineRecommendation } from '../../types';
@@ -19,6 +19,7 @@ export function EmployeeDashboardPage() {
   const [recommendations, setRecommendations] = useState<RoutineRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isReportSymptomModalOpen, setIsReportSymptomModalOpen] = useState(false);
+  const [isScheduleBreakModalOpen, setIsScheduleBreakModalOpen] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -301,7 +302,7 @@ export function EmployeeDashboardPage() {
             Ver Recomendaciones
           </button>
           <button 
-            onClick={() => navigate('/employee/breaks')}
+            onClick={() => setIsScheduleBreakModalOpen(true)}
             className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-[#18314F] font-semibold py-3 px-6 rounded-lg border-2 border-[#18314F] transition-colors"
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -316,6 +317,11 @@ export function EmployeeDashboardPage() {
       <ReportSymptomModal
         isOpen={isReportSymptomModalOpen}
         onClose={() => setIsReportSymptomModalOpen(false)}
+      />
+      <ScheduleBreakModal
+        isOpen={isScheduleBreakModalOpen}
+        onClose={() => setIsScheduleBreakModalOpen(false)}
+        onSuccess={() => setIsScheduleBreakModalOpen(false)}
       />
     </div>
   );

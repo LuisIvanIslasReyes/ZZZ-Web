@@ -111,12 +111,6 @@ const getNavigationItems = (pendingSymptomsCount: number, recentlyReviewedCount:
     roles: ['employee'] 
   },
   { 
-    name: 'Mi Perfil', 
-    path: '/employee/profile', 
-    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>, 
-    roles: ['employee'] 
-  },
-  { 
     name: 'Mis Descansos', 
     path: '/employee/breaks', 
     icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, 
@@ -129,6 +123,18 @@ const getNavigationItems = (pendingSymptomsCount: number, recentlyReviewedCount:
     roles: ['employee'],
     badge: recentlyReviewedCount > 0 ? 'yellow' : undefined,
     badgeCount: recentlyReviewedCount
+  },
+  { 
+    name: 'Mi Perfil', 
+    path: '/employee/profile', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>, 
+    roles: ['employee'] 
+  },
+  { 
+    name: 'Centro de Ayuda', 
+    path: '/employee/help', 
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, 
+    roles: ['employee'] 
   },
 ];
 
@@ -403,36 +409,8 @@ export function MainLayout() {
           </ul>
         </nav>
 
-        {/* Bottom Section */}
-        <div className={`absolute bottom-0 left-0 right-0 bg-[#0f1729] ${isSidebarOpen ? 'px-4' : 'px-3'}`}>
-          {/* Centro de Ayuda - Solo para empleados, ARRIBA de la línea */}
-          {user?.role === 'employee' && (
-            <div className="pb-3">
-              <NavLink
-                to="/employee/help"
-                className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg transition-all ${
-                    isSidebarOpen ? 'px-4 py-3' : 'px-3 py-3 justify-center'
-                  } ${
-                    isActive 
-                      ? 'bg-primary text-white shadow-lg' 
-                      : 'text-blue-100 hover:bg-white/10 hover:text-white'
-                  }`
-                }
-                title={!isSidebarOpen ? 'Centro de Ayuda' : undefined}
-              >
-                <span className="flex-shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </span>
-                {isSidebarOpen && <span className="font-medium">Centro de Ayuda</span>}
-              </NavLink>
-            </div>
-          )}
-          
-          {/* Línea divisoria y Cerrar Sesión */}
-          <div className="border-t border-white/10 py-4">
+        {/* Bottom Section - Solo Cerrar Sesión */}
+        <div className={`absolute bottom-0 left-0 right-0 border-t border-white/10 ${isSidebarOpen ? 'px-4' : 'px-3'} py-4`}>
             <button
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors border-none text-white font-medium focus:outline-none focus:ring-2 focus:ring-red-400/40 focus:ring-offset-0
                 ${isSidebarOpen ? 'justify-start' : 'justify-center'}
@@ -448,7 +426,6 @@ export function MainLayout() {
               </span>
               {isSidebarOpen && <span className="ml-2">Cerrar Sesión</span>}
             </button>
-          </div>
         </div>
       </div>
 

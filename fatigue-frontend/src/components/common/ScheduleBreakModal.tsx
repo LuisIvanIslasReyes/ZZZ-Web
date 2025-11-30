@@ -21,7 +21,7 @@ export function ScheduleBreakModal({ isOpen, onClose, onSuccess }: ScheduleBreak
   const today = new Date().toISOString().split('T')[0];
   
   const [breakType, setBreakType] = useState<BreakType>('rest');
-  const [scheduledDate] = useState(today); // Fecha fija al día actual
+  const [scheduledDate, setScheduledDate] = useState(today); // Editable
   const [scheduledTime, setScheduledTime] = useState('');
   const [duration, setDuration] = useState<BreakDuration>(30);
   const [reason, setReason] = useState('');
@@ -151,8 +151,9 @@ export function ScheduleBreakModal({ isOpen, onClose, onSuccess }: ScheduleBreak
             <input
               type="date"
               value={scheduledDate}
-              readOnly
-              className="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 bg-gray-100 text-gray-600 cursor-not-allowed"
+              onChange={(e) => setScheduledDate(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-lg border-2 border-gray-200 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20 transition-all"
+              required
             />
           </div>
           <div>
