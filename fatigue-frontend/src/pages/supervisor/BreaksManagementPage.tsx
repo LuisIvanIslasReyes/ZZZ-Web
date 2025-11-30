@@ -3,7 +3,7 @@
  * Página para supervisores: ver y aprobar/rechazar descansos
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { breakService } from '../../services/break.service';
 import { LoadingSpinner } from '../../components/common';
@@ -39,14 +39,28 @@ export function BreaksManagementPage() {
           data = await breakService.getUpcomingBreaks();
           break;
         case 'history': {
-          // Cargar todos los descansos y filtrar aprobados/rechazados/completados
-          const allBreaks = await breakService.getMyBreaks();
-          data = allBreaks.filter(b => 
-            b.status === 'approved' || 
-            b.status === 'rejected' || 
-            b.status === 'completed' ||
-            b.status === 'cancelled'
-          );
+          // Cargar historial de aprobados y rechazados
+          const [approvedResponse, rejectedResponse] = await Promise.all([
+            breakService.getApprovedBreaks(),
+            breakService.getRejectedBreaks()
+          ]);
+          
+          // Manejar respuestas que pueden ser arrays o objetos con results
+          const approved = Array.isArray(approvedResponse) 
+            ? approvedResponse 
+            : (approvedResponse as { results?: ScheduledBreak[] }).results || [];
+          const rejected = Array.isArray(rejectedResponse) 
+            ? rejectedResponse 
+            : (rejectedResponse as { results?: ScheduledBreak[] }).results || [];
+          
+          data = [...approved, ...rejected];
+          
+          // Ordenar por fecha de revisión descendente (más recientes primero)
+          data.sort((a, b) => {
+            const dateA = a.reviewed_at ? new Date(a.reviewed_at).getTime() : 0;
+            const dateB = b.reviewed_at ? new Date(b.reviewed_at).getTime() : 0;
+            return dateB - dateA;
+          });
           break;
         }
       }
@@ -276,8 +290,8 @@ export function BreaksManagementPage() {
                 </thead>
                 <tbody>
                   {breaks.map((breakItem) => (
-                    <>
-                      <tr key={breakItem.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <React.Fragment key={breakItem.id}>
+                      <tr className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                         <td className="py-4 px-4">
                           <div>
                             <div className="font-medium text-[#18314F]">{breakItem.employee_name}</div>
@@ -384,7 +398,7 @@ export function BreaksManagementPage() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
