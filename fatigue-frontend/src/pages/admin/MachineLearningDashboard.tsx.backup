@@ -1,0 +1,587 @@
+/**
+ * Machine Learning Dashboard - Análisis Técnico
+ * Dashboard completo con información detallada del modelo ML
+ */
+
+import { useState, useEffect, useCallback } from 'react';
+import { mlService } from '../../services';
+import type {
+  MLModelInfo,
+  MLStatistics,
+  MLRetrainingStatus,
+  MLPredictionHistory,
+} from '../../types';
+import { LoadingSpinner } from '../../components/common';
+
+export function MachineLearningDashboard() {
+  const [modelInfo, setModelInfo] = useState<MLModelInfo | null>(null);
+  const [statistics, setStatistics] = useState<MLStatistics | null>(null);
+  const [retrainingStatus, setRetrainingStatus] = useState<MLRetrainingStatus | null>(null);
+  const [predictionHistory, setPredictionHistory] = useState<MLPredictionHistory | null>(null);
+  
+  const [loading, setLoading] = useState(true);
+  const [retraining, setRetraining] = useState(false);
+  const [activeTab, setActiveTab] = useState<'clustering' | 'features'>('clustering');
+  const [error, setError] = useState<string | null>(null);
+
+  // Cargar todos los datos
+  const loadData = useCallback(async () => {
+    try {
+      setError(null);
+      const [model, stats, retraining, history] = await Promise.all([
+        mlService.getModelInfo(),
+        mlService.getStatistics(),
+        mlService.getRetrainingStatus(),
+        mlService.getPredictionHistory(50),
+      ]);
+
+      setModelInfo(model);
+      setStatistics(stats);
+      setRetrainingStatus(retraining);
+      setPredictionHistory(history);
+    } catch (err) {
+      console.error('Error cargando datos ML:', err);
+      setError('Error al cargar los datos del modelo');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadData();
+
+    // Auto-refresh
+    const interval1 = setInterval(() => {
+      mlService.getModelInfo().then(setModelInfo);
+    }, 30000); // 30s
+
+    const interval2 = setInterval(() => {
+      mlService.getStatistics().then(setStatistics);
+    }, 60000); // 60s
+
+    return () => {
+      clearInterval(interval1);
+      clearInterval(interval2);
+    };
+  }, [loadData]);
+
+  // Manejar re-entrenamiento
+  const handleRetrain = async () => {
+    if (!window.confirm('¿Iniciar re-entrenamiento del modelo? (Tiempo estimado: 1-2 minutos)')) {
+      return;
+    }
+
+    try {
+      setRetraining(true);
+      await mlService.startRetraining();
+
+      // Polling hasta que cambie la fecha de entrenamiento
+      const lastDate = modelInfo?.training.date;
+      const pollInterval = setInterval(async () => {
+        const newData = await mlService.getModelInfo();
+
+        if (newData.training.date !== lastDate) {
+          clearInterval(pollInterval);
+          setRetraining(false);
+          setModelInfo(newData);
+          alert('✅ Modelo re-entrenado exitosamente');
+          loadData(); // Recargar todo
+        }
+      }, 10000); // Cada 10 segundos
+
+      // Timeout de seguridad (5 minutos)
+      setTimeout(() => {
+        clearInterval(pollInterval);
+        setRetraining(false);
+      }, 300000);
+    } catch (err) {
+      console.error('Error re-entrenando:', err);
+      alert('❌ Error al iniciar re-entrenamiento');
+      setRetraining(false);
+    }
+  };
+
+  // Utilidades
+  const getFatigueColor = (fatigue: number): string => {
+    if (fatigue < 55) return 'text-green-600 bg-green-50 border-green-200';
+    if (fatigue < 65) return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+    return 'text-red-600 bg-red-50 border-red-200';
+  };
+
+  const getFatigueIcon = (fatigue: number): string => {
+    if (fatigue < 55) return '🟢';
+    if (fatigue < 65) return '🟡';
+    return '🔴';
+  };
+
+  const getScoreQuality = (score: number): { text: string; color: string; icon: string } => {
+    if (score >= 0.8) return { text: 'Excelente', color: 'text-green-600', icon: '🟢' };
+    if (score >= 0.6) return { text: 'Bueno', color: 'text-yellow-600', icon: '🟡' };
+    return { text: 'Mejorable', color: 'text-red-600', icon: '🔴' };
+  };
+
+  const formatDate = (dateStr: string): string => {
+    return new Date(dateStr).toLocaleString('es-ES', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const formatNumber = (num: number): string => {
+    return num.toLocaleString('es-ES');
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{error}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-blue-600 rounded-lg shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Machine Learning - Análisis de Fatiga Laboral
+            </h1>
+            <p className="text-gray-600 text-base leading-relaxed">
+              Sistema de detección predictiva de fatiga mediante análisis de métricas biométricas con algoritmos de clustering no supervisado
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Grid Principal */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        {/* Card 1: Modelo Actual */}
+        <div className="lg:col-span-1 bg-white rounded-2xl shadow-xl p-6 border border-gray-100 hover:shadow-2xl transition-all duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+              <span className="text-2xl">📊</span> Modelo Actual
+            </h2>
+            {modelInfo?.model_exists && (
+              <span className="badge badge-success badge-lg">Activo</span>
+            )}
+          </div>
+
+          {modelInfo?.model_exists ? (
+            <div className="space-y-4">
+              {/* Tipo de Modelo */}
+              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-xl">
+                <p className="text-sm text-gray-600 mb-1">Tipo de Modelo</p>
+                <p className="text-2xl font-bold text-indigo-600">
+                  {modelInfo.ml_service.type}
+                </p>
+              </div>
+
+              {/* Características */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-blue-50 p-3 rounded-xl text-center">
+                  <p className="text-xs text-gray-600 mb-1">Características</p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {modelInfo.ml_service.features_count}
+                  </p>
+                </div>
+                <div className="bg-green-50 p-3 rounded-xl text-center">
+                  <p className="text-xs text-gray-600 mb-1">Muestras</p>
+                  <p className="text-xl font-bold text-green-600">
+                    {formatNumber(modelInfo.training.samples)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Métricas de Calidad */}
+              <div className="bg-gray-50 p-4 rounded-xl">
+                <p className="text-sm font-semibold text-gray-700 mb-3">Métricas de Calidad</p>
+                <div className="space-y-2">
+                  {modelInfo.quality_metrics.accuracy !== undefined && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Accuracy:</span>
+                      <span className={`font-bold ${getScoreQuality(modelInfo.quality_metrics.accuracy).color}`}>
+                        {getScoreQuality(modelInfo.quality_metrics.accuracy).icon} {(modelInfo.quality_metrics.accuracy * 100).toFixed(2)}%
+                      </span>
+                    </div>
+                  )}
+                  {modelInfo.quality_metrics.precision !== undefined && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Precisión:</span>
+                      <span className="font-bold text-blue-600">
+                        {(modelInfo.quality_metrics.precision * 100).toFixed(2)}%
+                      </span>
+                    </div>
+                  )}
+                  {modelInfo.quality_metrics.recall !== undefined && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Recall:</span>
+                      <span className="font-bold text-purple-600">
+                        {(modelInfo.quality_metrics.recall * 100).toFixed(2)}%
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Tamaño del Modelo */}
+              <div className="text-center text-xs text-gray-500">
+                Tamaño: {modelInfo.model_size_mb.toFixed(2)} MB
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="text-6xl mb-4">⚠️</div>
+              <p className="text-gray-600 font-semibold">Modelo no entrenado</p>
+              <p className="text-sm text-gray-500 mt-2">
+                Inicia el entrenamiento para comenzar
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Card 2: Estadísticas */}
+        <div className="lg:col-span-1 bg-white rounded-2xl shadow-xl p-6 border border-gray-100 hover:shadow-2xl transition-all duration-300">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span className="text-2xl">📈</span> Estadísticas
+          </h2>
+
+          {statistics && (
+            <div className="space-y-4">
+              {/* Predicciones */}
+              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl">
+                <p className="text-sm text-gray-600 mb-2">Total Predicciones</p>
+                <p className="text-3xl font-bold text-blue-600">
+                  {formatNumber(statistics.predictions.total)}
+                </p>
+                <div className="flex items-center gap-2 mt-2 text-sm">
+                  <span className="text-gray-600">Últimas 24h:</span>
+                  <span className="font-bold text-cyan-600">
+                    {formatNumber(statistics.predictions.last_24h)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Promedio de Fatiga */}
+              <div className={`p-4 rounded-xl border-2 ${getFatigueColor(statistics.predictions.average_fatigue)}`}>
+                <p className="text-sm font-semibold mb-2">Promedio de Fatiga</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">
+                    {getFatigueIcon(statistics.predictions.average_fatigue)}
+                  </span>
+                  <span className="text-3xl font-bold">
+                    {statistics.predictions.average_fatigue.toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Distribución */}
+              <div className="bg-gray-50 p-4 rounded-xl">
+                <p className="text-sm font-semibold text-gray-700 mb-3">
+                  Distribución por Nivel
+                </p>
+                <div className="space-y-2">
+                  {/* Normal */}
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-600">🟢 Normal</span>
+                      <span className="font-bold text-green-600">
+                        {statistics.fatigue_distribution.normal}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-green-500 h-2 rounded-full transition-all duration-500"
+                        style={{
+                          width: `${(statistics.fatigue_distribution.normal / statistics.predictions.total) * 100}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Moderado */}
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-600">🟡 Moderado</span>
+                      <span className="font-bold text-yellow-600">
+                        {statistics.fatigue_distribution.moderate}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-yellow-500 h-2 rounded-full transition-all duration-500"
+                        style={{
+                          width: `${(statistics.fatigue_distribution.moderate / statistics.predictions.total) * 100}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Alto */}
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-600">🔴 Alto</span>
+                      <span className="font-bold text-red-600">
+                        {statistics.fatigue_distribution.high}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-red-500 h-2 rounded-full transition-all duration-500"
+                        style={{
+                          width: `${(statistics.fatigue_distribution.high / statistics.predictions.total) * 100}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Card 3: Re-entrenamiento */}
+        <div className="lg:col-span-1 bg-white rounded-2xl shadow-xl p-6 border border-gray-100 hover:shadow-2xl transition-all duration-300">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span className="text-2xl">🔄</span> Re-entrenamiento
+          </h2>
+
+          {retrainingStatus && (
+            <div className="space-y-4">
+              {/* Estado */}
+              <div className="bg-gray-50 p-4 rounded-xl">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm text-gray-600">Estado:</span>
+                  <span
+                    className={`badge ${
+                      retrainingStatus.status === 'ready'
+                        ? 'badge-success'
+                        : retrainingStatus.status === 'training'
+                        ? 'badge-warning'
+                        : 'badge-error'
+                    }`}
+                  >
+                    {retrainingStatus.status === 'ready' ? '✓ Listo' : 
+                     retrainingStatus.status === 'training' ? '⏳ Entrenando' : '✗ Error'}
+                  </span>
+                </div>
+
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Último:</span>
+                    <span className="font-semibold text-gray-800">
+                      {new Date(retrainingStatus.last_training).toLocaleDateString('es-ES')}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Próximo:</span>
+                    <span className="font-semibold text-gray-800">
+                      {new Date(retrainingStatus.next_scheduled).toLocaleDateString('es-ES')}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Datos Disponibles */}
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl">
+                <p className="text-sm text-gray-600 mb-3">Datos Disponibles</p>
+                <div className="flex items-end gap-2 mb-2">
+                  <span className="text-3xl font-bold text-purple-600">
+                    {formatNumber(retrainingStatus.available_metrics)}
+                  </span>
+                  <span className="text-sm text-gray-600 mb-1">
+                    / {formatNumber(retrainingStatus.min_required)}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div
+                    className={`h-3 rounded-full transition-all duration-500 ${
+                      retrainingStatus.can_retrain ? 'bg-purple-500' : 'bg-gray-400'
+                    }`}
+                    style={{
+                      width: `${Math.min((retrainingStatus.available_metrics / retrainingStatus.min_required) * 100, 100)}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Botón Re-entrenar */}
+              <button
+                onClick={handleRetrain}
+                disabled={!retrainingStatus.can_retrain || retraining}
+                className={`btn btn-block ${
+                  retrainingStatus.can_retrain && !retraining
+                    ? 'btn-primary'
+                    : 'btn-disabled'
+                }`}
+              >
+                {retraining ? (
+                  <>
+                    <span className="loading loading-spinner"></span>
+                    Entrenando...
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Re-entrenar Ahora
+                  </>
+                )}
+              </button>
+
+              {!retrainingStatus.can_retrain && (
+                <p className="text-xs text-center text-gray-500">
+                  Se necesitan más datos para re-entrenar
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Visualizaciones del Modelo */}
+      <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 mb-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <span className="text-2xl">📊</span> Visualizaciones del Modelo
+        </h2>
+
+        {/* Tabs */}
+        <div className="tabs tabs-boxed bg-gray-100 mb-4">
+          <button
+            className={`tab ${activeTab === 'clustering' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('clustering')}
+          >
+            📈 Análisis de Clustering
+          </button>
+          <button
+            className={`tab ${activeTab === 'features' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('features')}
+          >
+            🔬 Feature Engineering
+          </button>
+        </div>
+
+        {/* Contenido */}
+        <div className="bg-gray-50 rounded-xl p-4">
+          {activeTab === 'clustering' ? (
+            <div>
+              <p className="text-sm text-gray-600 mb-4">
+                Análisis completo del modelo de clustering K-Means: Elbow Method, Silhouette Score, PCA, t-SNE y distribuciones.
+              </p>
+              <img
+                src="http://localhost:8000/media/ml_visualizations/clustering_analysis.png"
+                alt="Análisis de clustering K-Means"
+                className="w-full h-auto rounded-lg shadow-md"
+              />
+            </div>
+          ) : (
+            <div>
+              <p className="text-sm text-gray-600 mb-4">
+                Matriz de correlación entre las características biométricas utilizadas en el modelo.
+              </p>
+              <img
+                src="http://localhost:8000/media/ml_visualizations/feature_engineering.png"
+                alt="Análisis de características"
+                className="w-full h-auto rounded-lg shadow-md"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Features List */}
+        {modelInfo?.ml_service.features && (
+          <div className="mt-4 bg-blue-50 p-4 rounded-xl">
+            <p className="text-sm font-semibold text-gray-700 mb-2">
+              Características del Modelo ({modelInfo.ml_service.features_count}):
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {modelInfo.ml_service.features.map((feature, index) => (
+                <span key={index} className="badge badge-primary badge-sm">
+                  {feature}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Historial de Predicciones */}
+      <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <span className="text-2xl">📜</span> Historial de Predicciones
+        </h2>
+
+        {predictionHistory && predictionHistory.predictions.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="table table-zebra w-full">
+              <thead>
+                <tr>
+                  <th>Fecha/Hora</th>
+                  <th>Dispositivo</th>
+                  <th>Empleado</th>
+                  <th>HR Prom.</th>
+                  <th>SpO2 Prom.</th>
+                  <th>Índice Fatiga</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {predictionHistory.predictions.map((prediction) => (
+                  <tr key={prediction.id}>
+                    <td className="text-sm">{formatDate(prediction.timestamp)}</td>
+                    <td className="font-mono text-sm">{prediction.device}</td>
+                    <td className="font-semibold">{prediction.employee}</td>
+                    <td className="text-center">{prediction.hr_avg.toFixed(1)}</td>
+                    <td className="text-center">{prediction.spo2_avg.toFixed(1)}%</td>
+                    <td className="text-center font-bold">
+                      {prediction.fatigue_index.toFixed(1)}%
+                    </td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          prediction.classification === 'normal'
+                            ? 'badge-success'
+                            : prediction.classification === 'moderate'
+                            ? 'badge-warning'
+                            : 'badge-error'
+                        }`}
+                      >
+                        {prediction.classification === 'normal' ? '🟢 Normal' :
+                         prediction.classification === 'moderate' ? '🟡 Moderado' : '🔴 Alto'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            No hay predicciones disponibles
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

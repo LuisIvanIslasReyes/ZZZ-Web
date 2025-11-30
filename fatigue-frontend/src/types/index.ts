@@ -120,3 +120,14 @@ export type {
   BreakDuration
 } from './break.types';
 export { BREAK_TYPES, BREAK_DURATIONS, BREAK_STATUSES } from './break.types';
+
+// ML types
+export type {
+  MLModelInfo,
+  MLStatistics,
+  MLRetrainingStatus,
+  MLPrediction,
+  MLPredictionHistory,
+  MLRetrainingRequest,
+  MLRetrainingResponse
+} from './ml.types';

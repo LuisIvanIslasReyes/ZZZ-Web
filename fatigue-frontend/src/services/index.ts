@@ -24,3 +24,4 @@ export { default as api } from './api';
 export { employeeExportService } from './employeeExport.service';
 export { symptomService } from './symptom.service';
 export { breakService } from './break.service';
+export { default as mlService } from './ml.service';

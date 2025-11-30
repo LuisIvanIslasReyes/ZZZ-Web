@@ -12,4 +12,5 @@ export { AdminReportsPage } from './AdminReportsPage';
 export { SettingsPage } from './SettingsPage';
 export { default as SimulatorsPage } from './SimulatorsPage';
 export { MLModelInfoPage } from './MLModelInfoPage';
+export { MachineLearningDashboard } from './MachineLearningDashboard';
 

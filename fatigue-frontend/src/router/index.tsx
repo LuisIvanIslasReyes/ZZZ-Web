@@ -16,7 +16,8 @@ import {
   AdminReportsPage,
   SettingsPage,
   SimulatorsPage,
-  MLModelInfoPage
+  MLModelInfoPage,
+  MachineLearningDashboard
 } from '../pages/admin';
 import { 
   SupervisorDashboardPage,
@@ -89,6 +90,10 @@ export const router = createBrowserRouter([
       {
         path: 'ml-model',
         element: <MLModelInfoPage />,
+      },
+      {
+        path: 'machine-learning',
+        element: <MachineLearningDashboard />,
       },
     ],
   },
