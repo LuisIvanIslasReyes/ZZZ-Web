@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts';
 import { ScheduleBreakModal } from '../components/common';
+import LogoBlanco from '../assets/logo/LogoBlanco.png';
 
 interface NavItem {
   name: string;
@@ -166,17 +167,15 @@ export function MainLayout() {
     <div className="min-h-screen bg-base-200">
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-[#0f1729] text-white shadow-2xl z-40 transition-all duration-300 ${
+        className={`fixed top-0 left-0 h-full bg-gradient-to-b from-[#18314F] via-[#0f2137] to-[#0a1628] text-white shadow-2xl z-40 transition-all duration-300 ${
           isSidebarOpen ? 'w-72' : 'w-20'
         }`}
       >
         {/* Logo/Title */}
         <div className={`p-5 border-b border-white/10 ${!isSidebarOpen ? 'px-3' : ''}`}>
           <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'}`}>
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/20 flex-shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+              <img src={LogoBlanco} alt="ZZZ" className="h-9 w-auto" />
             </div>
             {isSidebarOpen && (
               <>
