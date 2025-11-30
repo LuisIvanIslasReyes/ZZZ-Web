@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts';
 import { authService, meService, employeeExportService, employeeProfileService, deviceService, recommendationService } from '../../services';
-import { Modal } from '../../components/common';
+import { Modal, HelpCenterModal } from '../../components/common';
 import { EditProfileModal } from '../../components/forms/EditProfileModal';
 import toast from 'react-hot-toast';
 import type { User } from '../../types/user.types';
@@ -21,11 +21,13 @@ export function EmployeeProfilePage() {
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isHelpCenterModalOpen, setIsHelpCenterModalOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmTouched, setConfirmTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [device, setDevice] = useState<Device | null>(null);
   const [recommendations, setRecommendations] = useState<RoutineRecommendation[]>([]);
@@ -157,9 +159,10 @@ export function EmployeeProfilePage() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validar tipo de archivo
-    if (!file.type.startsWith('image/')) {
-      toast.error('Por favor selecciona una imagen válida');
+    // Validar tipo de archivo (JPG, PNG, GIF, WEBP)
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Formato no permitido. Usa JPG, PNG, GIF o WEBP');
       return;
     }
 
@@ -171,17 +174,20 @@ export function EmployeeProfilePage() {
 
     try {
       setIsLoading(true);
-      const formData = new FormData();
-      formData.append('profile_picture', file);
-
-      await employeeProfileService.updateMyProfile(formData as any);
+      setImageError(false); // Resetear error de imagen
+      await employeeProfileService.uploadAvatar(file);
       await loadUserData();
+      await refreshUser();
       toast.success('Foto actualizada exitosamente');
     } catch (error: any) {
       console.error('Error al actualizar foto:', error);
       toast.error(error?.response?.data?.detail || 'Error al actualizar la foto');
     } finally {
       setIsLoading(false);
+      // Limpiar el input para permitir subir la misma imagen de nuevo
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -197,8 +203,29 @@ export function EmployeeProfilePage() {
     toast.info('Funcionalidad de reportar síntoma próximamente');
   };
 
+  const handleDeleteAvatar = async () => {
+    if (!user?.avatar_url) return;
+    
+    if (!window.confirm('¿Estás seguro de que quieres eliminar tu foto de perfil?')) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await employeeProfileService.deleteAvatar();
+      await loadUserData();
+      await refreshUser();
+      toast.success('Foto eliminada exitosamente');
+    } catch (error: any) {
+      console.error('Error al eliminar foto:', error);
+      toast.error(error?.response?.data?.detail || 'Error al eliminar la foto');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleHelpCenter = () => {
-    toast.info('Centro de ayuda próximamente');
+    setIsHelpCenterModalOpen(true);
   };
   return (
     <div className="space-y-8">
@@ -213,8 +240,17 @@ export function EmployeeProfilePage() {
         <div className="flex items-start gap-6">
           <div className="avatar placeholder relative">
             <div className="bg-[#18314F]/10 text-[#18314F] rounded-2xl w-32 h-32 flex items-center justify-center overflow-hidden">
-              {user?.profile_picture ? (
-                <img src={user.profile_picture} alt="Profile" className="w-full h-full object-cover" />
+              {user?.avatar_url && !imageError ? (
+                <img 
+                  src={user.avatar_url} 
+                  alt="Foto de perfil" 
+                  className="w-full h-full object-cover"
+                  onError={() => {
+                    console.error('Error cargando imagen:', user.avatar_url);
+                    setImageError(true);
+                  }}
+                  onLoad={() => setImageError(false)}
+                />
               ) : (
                 <span className="font-bold text-5xl">
                   {user ? `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}` : '--'}
@@ -239,7 +275,7 @@ export function EmployeeProfilePage() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/gif,image/webp"
                 onChange={handlePhotoChange}
                 className="hidden"
               />
@@ -248,8 +284,17 @@ export function EmployeeProfilePage() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading}
               >
-                {isLoading ? 'Subiendo...' : 'Cambiar Foto'}
+                {isLoading ? 'Procesando...' : user?.avatar_url ? 'Cambiar Foto' : 'Subir Foto'}
               </button>
+              {user?.avatar_url && (
+                <button 
+                  className="bg-white hover:bg-red-50 text-red-600 font-medium py-2 px-6 rounded-xl border-2 border-red-300 transition-colors"
+                  onClick={handleDeleteAvatar}
+                  disabled={isLoading}
+                >
+                  Eliminar Foto
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -282,11 +327,23 @@ export function EmployeeProfilePage() {
               <div key={rec.id} className="bg-gray-50 rounded-xl p-4 border-2 border-gray-200">
                 <div className="flex items-start gap-3 mb-3">
                   {rec.priority === 'high' ? (
-                    <div className="text-3xl">😴</div>
+                    <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                      </svg>
+                    </div>
                   ) : rec.recommendation_type === 'break' ? (
-                    <div className="text-3xl">🧘</div>
+                    <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
                   ) : (
-                    <div className="text-3xl">💧</div>
+                    <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <svg className="w-6 h-6 text-sky-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8zm0 18c-3.35 0-6-2.57-6-6.2 0-2.34 1.95-5.44 6-9.14 4.05 3.7 6 6.79 6 9.14 0 3.63-2.65 6.2-6 6.2z"/>
+                      </svg>
+                    </div>
                   )}
                   <div className="flex-1">
                     <h4 className="font-semibold text-[#18314F] mb-1">{rec.title}</h4>
@@ -592,6 +649,12 @@ export function EmployeeProfilePage() {
           </div>
         </div>
       </Modal>
+
+      {/* Help Center Modal */}
+      <HelpCenterModal 
+        isOpen={isHelpCenterModalOpen} 
+        onClose={() => setIsHelpCenterModalOpen(false)} 
+      />
     </div>
   );
 }

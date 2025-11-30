@@ -27,6 +27,8 @@ export interface User {
   department?: string;
   position?: string;
   phone?: string;
+  avatar?: string | null; // Ruta relativa de la imagen
+  avatar_url?: string | null; // URL completa para mostrar
   is_active: boolean;
   created_at: string;
   updated_at: string;

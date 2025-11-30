@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { dashboardService } from '../../services';
-import { LoadingSpinner } from '../../components/common';
+import { LoadingSpinner, HelpCenterModal } from '../../components/common';
 import { TeamFatigueTrendChart, HealthStatusChart, HourlyActivityChart } from '../../components/charts';
 import { useAuth } from '../../contexts';
 import type { DashboardStats } from '../../types';
@@ -15,6 +15,7 @@ export function EmployeeDashboardPage() {
   const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isHelpCenterModalOpen, setIsHelpCenterModalOpen] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -227,7 +228,11 @@ export function EmployeeDashboardPage() {
           {/* Recomendación 1 */}
           <div className="bg-gray-50 rounded-xl p-4">
             <div className="flex items-start gap-3">
-              <div className="text-3xl">💤</div>
+              <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              </div>
               <div className="flex-1">
                 <h3 className="font-bold text-[#18314F] mb-2">Mejorar Descanso</h3>
                 <p className="text-sm text-gray-600 mb-3">
@@ -243,7 +248,11 @@ export function EmployeeDashboardPage() {
           {/* Recomendación 2 */}
           <div className="bg-gray-50 rounded-xl p-4">
             <div className="flex items-start gap-3">
-              <div className="text-3xl">🧘</div>
+              <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
               <div className="flex-1">
                 <h3 className="font-bold text-[#18314F] mb-2">Pausas Activas</h3>
                 <p className="text-sm text-gray-600 mb-3">
@@ -259,7 +268,11 @@ export function EmployeeDashboardPage() {
           {/* Recomendación 3 */}
           <div className="bg-gray-50 rounded-xl p-4">
             <div className="flex items-start gap-3">
-              <div className="text-3xl">💧</div>
+              <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-sky-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8zm0 18c-3.35 0-6-2.57-6-6.2 0-2.34 1.95-5.44 6-9.14 4.05 3.7 6 6.79 6 9.14 0 3.63-2.65 6.2-6 6.2z"/>
+                </svg>
+              </div>
               <div className="flex-1">
                 <h3 className="font-bold text-[#18314F] mb-2">Hidratación</h3>
                 <p className="text-sm text-gray-600 mb-3">
@@ -327,7 +340,10 @@ export function EmployeeDashboardPage() {
               </svg>
               Reportar Síntoma
             </button>
-            <button className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-4 rounded-xl border-2 border-[#18314F] transition-colors text-sm flex items-center justify-center gap-2">
+            <button 
+              onClick={() => setIsHelpCenterModalOpen(true)}
+              className="w-full bg-white hover:bg-gray-50 text-[#18314F] font-medium py-3 px-4 rounded-xl border-2 border-[#18314F] transition-colors text-sm flex items-center justify-center gap-2"
+            >
               <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -336,6 +352,12 @@ export function EmployeeDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Help Center Modal */}
+      <HelpCenterModal 
+        isOpen={isHelpCenterModalOpen} 
+        onClose={() => setIsHelpCenterModalOpen(false)} 
+      />
     </div>
   );
 }

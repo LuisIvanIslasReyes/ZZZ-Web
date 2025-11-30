@@ -25,7 +25,12 @@ export function MLModelInfoPage() {
             
             <div className="space-y-4">
               <div className="bg-red-50 p-4 rounded-xl">
-                <h3 className="font-bold text-red-800 mb-2">🚨 Problema Principal</h3>
+                <h3 className="font-bold text-red-800 mb-2 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  Problema Principal
+                </h3>
                 <p className="text-sm text-gray-700">
                   La <strong>fatiga laboral crónica</strong> es una de las principales causas de accidentes industriales, 
                   disminución de productividad y problemas de salud en trabajadores. Los métodos tradicionales de 
@@ -36,7 +41,9 @@ export function MLModelInfoPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl">⚠️</span>
+                    <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
                     <h4 className="font-semibold text-amber-800">Riesgos de Seguridad</h4>
                   </div>
                   <p className="text-xs text-gray-600">
@@ -46,7 +53,9 @@ export function MLModelInfoPage() {
 
                 <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl">📉</span>
+                    <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                    </svg>
                     <h4 className="font-semibold text-amber-800">Baja Productividad</h4>
                   </div>
                   <p className="text-xs text-gray-600">
@@ -56,7 +65,9 @@ export function MLModelInfoPage() {
 
                 <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl">🏥</span>
+                    <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
                     <h4 className="font-semibold text-amber-800">Salud Deteriorada</h4>
                   </div>
                   <p className="text-xs text-gray-600">
@@ -66,7 +77,10 @@ export function MLModelInfoPage() {
 
                 <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl">👁️</span>
+                    <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
                     <h4 className="font-semibold text-amber-800">Falta de Datos Objetivos</h4>
                   </div>
                   <p className="text-xs text-gray-600">
@@ -76,7 +90,12 @@ export function MLModelInfoPage() {
               </div>
 
               <div className="bg-green-50 p-4 rounded-xl border border-green-200">
-                <h3 className="font-bold text-green-800 mb-2">✅ Nuestra Solución</h3>
+                <h3 className="font-bold text-green-800 mb-2 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Nuestra Solución
+                </h3>
                 <p className="text-sm text-gray-700 mb-2">
                   Un sistema de <strong>monitoreo continuo y predictivo</strong> que utiliza sensores ESP32 y Machine Learning 
                   para detectar patrones de fatiga antes de que se conviertan en problemas críticos, permitiendo:

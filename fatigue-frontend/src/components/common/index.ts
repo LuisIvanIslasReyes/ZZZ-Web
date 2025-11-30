@@ -11,5 +11,6 @@ export { SearchBar } from './SearchBar';
 export { ToastProvider } from './ToastProvider';
 export { ErrorBoundary } from './ErrorBoundary';
 export { SendNotificationModal } from './SendNotificationModal';
+export { HelpCenterModal } from './HelpCenterModal';
 
 export type { Column, TableAction } from './Table';
