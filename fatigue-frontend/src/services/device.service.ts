@@ -26,10 +26,15 @@ class DeviceService {
 
   /**
    * Obtener todos los dispositivos (sin paginación)
+   * IMPORTANTE: Para admin, NO filtra por company - muestra TODOS los dispositivos
+   * incluyendo los que tienen company=null
    */
   async getAllDevices(): Promise<Device[]> {
     const response = await api.get<Device[] | PaginatedResponse<Device>>(`${this.BASE_PATH}/`, {
-      params: { page_size: 1000 } // Obtener muchos resultados
+      params: { 
+        page_size: 1000, // Obtener muchos resultados
+        // NO incluir company en params para obtener todos los dispositivos
+      }
     });
     // Manejar respuesta paginada o array directo
     if (Array.isArray(response.data)) {

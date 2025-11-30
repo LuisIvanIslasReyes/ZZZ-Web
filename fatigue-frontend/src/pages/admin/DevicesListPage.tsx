@@ -78,7 +78,8 @@ export function DevicesListPage() {
       }
       setIsFormModalOpen(false);
       setSelectedDevice(null);
-      loadDevices();
+      // Forzar recarga inmediata de dispositivos
+      await loadDevices();
     } catch (error: any) {
       console.error('Error saving device:', error);
       toast.error(error.response?.data?.detail || 'Error al guardar dispositivo');

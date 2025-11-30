@@ -45,14 +45,17 @@ export default function SimulatorsPage() {
     try {
       setLoading(true);
       const [sessionsData, employeesData] = await Promise.all([
-        simulatorService.getActive(),
+        simulatorService.getAll(), // ✅ Cargar TODOS los simuladores, no solo activos
         simulatorService.getAvailableEmployees(),
       ]);
-      setSessions(sessionsData);
-      setEmployees(employeesData);
+      // Asegurar que sessionsData sea siempre un array
+      setSessions(Array.isArray(sessionsData) ? sessionsData : []);
+      setEmployees(Array.isArray(employeesData) ? employeesData : []);
     } catch (error) {
       console.error('Error cargando datos:', error);
       toast.error('Error al cargar datos de simuladores');
+      setSessions([]);
+      setEmployees([]);
     } finally {
       setLoading(false);
     }
@@ -60,10 +63,12 @@ export default function SimulatorsPage() {
 
   const loadActiveSessions = async () => {
     try {
-      const sessionsData = await simulatorService.getActive();
-      setSessions(sessionsData);
+      const sessionsData = await simulatorService.getAll(); // ✅ Cargar TODOS, no solo activos
+      // Asegurar que sessionsData sea siempre un array
+      setSessions(Array.isArray(sessionsData) ? sessionsData : []);
     } catch (error) {
       console.error('Error refrescando sesiones:', error);
+      setSessions([]);
     }
   };
 
@@ -71,10 +76,18 @@ export default function SimulatorsPage() {
     try {
       await simulatorService.stop(id);
       toast.success('Simulador detenido exitosamente');
-      loadData();
-    } catch (error) {
+      // Refrescar datos inmediatamente
+      await loadData();
+      // Segundo refetch para asegurar sincronización
+      setTimeout(async () => {
+        await loadActiveSessions();
+      }, 500);
+    } catch (error: unknown) {
       console.error('Error deteniendo simulador:', error);
-      toast.error('Error al detener simulador');
+      const errorMessage = (error as any)?.message || 'Error al detener simulador';
+      toast.error(errorMessage);
+      // Refrescar datos incluso si hay error para ver el estado actual
+      await loadData();
     }
   };
 
@@ -91,15 +104,64 @@ export default function SimulatorsPage() {
     }
   };
 
+  const handleRestartSimulator = async (id: number) => {
+    try {
+      await simulatorService.restart(id);
+      toast.success('Simulador reiniciado exitosamente');
+      // Refrescar datos inmediatamente
+      await loadData();
+      // Segundo refetch para asegurar sincronización
+      setTimeout(async () => {
+        await loadActiveSessions();
+      }, 500);
+    } catch (error: unknown) {
+      console.error('Error reiniciando simulador:', error);
+      const errorMessage = (error as any)?.message || 'Error al reiniciar simulador';
+      toast.error(errorMessage);
+      await loadData();
+    }
+  };
+
+  const handleDeleteSimulator = async (id: number) => {
+    if (!confirm('¿Estás seguro de eliminar este simulador? Esta acción no se puede deshacer.')) return;
+
+    try {
+      await simulatorService.delete(id);
+      toast.success('Simulador eliminado exitosamente');
+      await loadData();
+    } catch (error: unknown) {
+      console.error('Error eliminando simulador:', error);
+      const errorMessage = (error as any)?.message || 'Error al eliminar simulador';
+      toast.error(errorMessage);
+    }
+  };
+
   const handleUpdateConfig = async (id: number, config: UpdateSimulatorConfigData) => {
     try {
+      // Actualizar configuración en el backend
       await simulatorService.updateConfig(id, config);
-      toast.success('Configuración actualizada');
-      loadData();
+      
+      // Cerrar modal y mostrar feedback
       setShowConfigModal(false);
+      toast.success('Configuración actualizada exitosamente');
+      
+      // ✅ REFETCH 1: Refrescar datos inmediatamente
+      await loadData();
+      
+      // ✅ REFETCH 2: Segundo refetch después de 500ms para asegurar que el backend procesó todo
+      setTimeout(async () => {
+        await loadActiveSessions();
+      }, 500);
+      
+      // ✅ REFETCH 3: Tercer refetch después de 2 segundos para capturar cambios en métricas
+      setTimeout(async () => {
+        await loadActiveSessions();
+      }, 2000);
     } catch (error) {
       console.error('Error actualizando configuración:', error);
       toast.error('Error al actualizar configuración');
+      // Refrescar para asegurar UI consistente
+      await loadData();
     }
   };
 
@@ -186,18 +248,21 @@ export default function SimulatorsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Simuladores Activos */}
+        {/* Simuladores Totales */}
         <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-base font-medium">Simuladores Activos</span>
+            <span className="text-gray-600 text-base font-medium">Total Simuladores</span>
             <span className="bg-blue-100 rounded-full p-2">
               <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
               </svg>
             </span>
           </div>
-          <span className="text-4xl font-bold text-[#18314F]">{sessions.length}</span>
-          <span className="text-sm text-gray-500 mt-1">En ejecución ahora</span>
+          <span className="text-4xl font-bold text-[#18314F]">
+            {Array.isArray(sessions) ? sessions.filter(s => s.status === 'running').length : 0}
+            <span className="text-xl text-gray-400">/{Array.isArray(sessions) ? sessions.length : 0}</span>
+          </span>
+          <span className="text-sm text-gray-500 mt-1">Activos / Total</span>
         </div>
 
         {/* Empleados Disponibles */}
@@ -227,7 +292,7 @@ export default function SimulatorsPage() {
             </span>
           </div>
           <span className="text-4xl font-bold text-[#18314F]">
-            {sessions.reduce((sum, s) => sum + (s.live_stats?.messages_sent || s.messages_sent), 0)}
+            {Array.isArray(sessions) ? sessions.reduce((sum, s) => sum + (s.live_stats?.messages_sent || s.messages_sent), 0) : 0}
           </span>
           <span className="text-sm text-gray-500 mt-1">Datos MQTT enviados</span>
         </div>
@@ -247,11 +312,21 @@ export default function SimulatorsPage() {
         </div>
       </div>
 
-      {/* Active Sessions */}
+      {/* All Sessions */}
       <div className="bg-white rounded-2xl shadow-md p-6">
-        <h2 className="text-2xl font-bold text-[#18314F] mb-6">Simuladores Activos</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-[#18314F]">Todos los Simuladores</h2>
+          <div className="flex gap-2">
+            <span className="badge badge-success badge-lg">
+              {Array.isArray(sessions) ? sessions.filter(s => s.status === 'running').length : 0} Activos
+            </span>
+            <span className="badge badge-ghost badge-lg">
+              {Array.isArray(sessions) ? sessions.filter(s => s.status === 'stopped').length : 0} Detenidos
+            </span>
+          </div>
+        </div>
 
-        {sessions.length === 0 ? (
+        {!Array.isArray(sessions) || sessions.length === 0 ? (
           <div className="text-center py-12">
             <svg
               className="w-16 h-16 text-gray-300 mx-auto mb-4"
@@ -282,6 +357,8 @@ export default function SimulatorsPage() {
                 key={session.id}
                 session={session}
                 onStop={handleStopSimulator}
+                onRestart={handleRestartSimulator}
+                onDelete={handleDeleteSimulator}
                 onConfig={(s) => {
                   setSelectedSession(s);
                   setShowConfigModal(true);
@@ -325,12 +402,16 @@ export default function SimulatorsPage() {
 function SimulatorCard({
   session,
   onStop,
+  onRestart,
+  onDelete,
   onConfig,
   formatDuration,
   getFatigueColor,
 }: {
   session: SimulatorSession;
   onStop: (id: number) => void;
+  onRestart: (id: number) => void;
+  onDelete: (id: number) => void;
   onConfig: (session: SimulatorSession) => void;
   formatDuration: (seconds: number) => string;
   getFatigueColor: (fatigue: number) => string;
@@ -361,10 +442,22 @@ function SimulatorCard({
             <p className="text-sm text-gray-600">{session.employee_name}</p>
           </div>
         </div>
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 animate-pulse">
-          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-          ACTIVO
-        </span>
+        {session.status === 'running' ? (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 animate-pulse">
+            <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+            ACTIVO
+          </span>
+        ) : session.status === 'stopped' ? (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+            <span className="w-2 h-2 bg-gray-500 rounded-full mr-2"></span>
+            DETENIDO
+          </span>
+        ) : (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+            <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+            ERROR
+          </span>
+        )}
       </div>
 
       {/* Email */}
@@ -408,46 +501,74 @@ function SimulatorCard({
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-2">
+          <button
+            onClick={() => onConfig(session)}
+            disabled={session.status !== 'running'}
+            className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+              session.status === 'running'
+                ? 'bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer'
+                : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            Configurar
+          </button>
+
+          {/* Botón Detener/Reiniciar según estado */}
+          {session.status === 'running' ? (
+            <button
+              onClick={() => onStop(session.id)}
+              className="flex-1 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+              </svg>
+              Detener
+            </button>
+          ) : (
+            <button
+              onClick={() => onRestart(session.id)}
+              disabled={session.status !== 'stopped'}
+              className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                session.status === 'stopped'
+                  ? 'bg-green-100 hover:bg-green-200 text-green-700 cursor-pointer'
+                  : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Reiniciar
+            </button>
+          )}
+        </div>
+
+        {/* Botón Eliminar */}
         <button
-          onClick={() => onConfig(session)}
-          className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+          onClick={() => onDelete(session.id)}
+          className="w-full px-4 py-2 bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-700 border border-gray-200 hover:border-red-200 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
-          Configurar
-        </button>
-        <button
-          onClick={() => onStop(session.id)}
-          className="flex-1 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
-            />
-          </svg>
-          Detener
+          Eliminar Simulador
         </button>
       </div>
     </div>
@@ -549,9 +670,20 @@ function CreateSimulatorModal({
 
     setLoading(true);
     try {
+      // Obtener el supervisor del empleado seleccionado
+      const selectedEmployee = employees.find((e) => e.id === formData.employee);
+      const supervisorId = selectedEmployee?.supervisor;
+
+      if (!supervisorId) {
+        toast.error('El empleado debe tener un supervisor asignado');
+        setLoading(false);
+        return;
+      }
+
       const newDevice = await deviceService.createDevice({
         device_identifier: newDeviceData.device_id,
         employee: formData.employee,
+        supervisor: supervisorId,
         is_active: true,
       });
       
@@ -885,16 +1017,29 @@ function ConfigSimulatorModal({
   onClose: () => void;
   onSave: (config: UpdateSimulatorConfigData) => void;
 }) {
+  // Mapear el activity_mode del backend al formato que acepta el endpoint
+  const mapActivityModeToBackend = (mode: string): 'rest' | 'light' | 'moderate' | 'intense' => {
+    const mapping: Record<string, 'rest' | 'light' | 'moderate' | 'intense'> = {
+      'resting': 'rest',
+      'rest': 'rest',
+      'light': 'light',
+      'moderate': 'moderate',
+      'heavy': 'intense',
+      'intense': 'intense',
+    };
+    return mapping[mode] || 'light';
+  };
+
   const [config, setConfig] = useState<UpdateSimulatorConfigData>({
-    activity_mode: session.activity_mode,
+    activity_mode: mapActivityModeToBackend(session.activity_mode),
     fatigue_level: session.current_fatigue,
   });
 
-  const activityModes: typeof ACTIVITY_MODES = [
-    { value: 'resting', label: 'Reposo', icon: '😴' },
-    { value: 'light', label: 'Actividad Ligera', icon: '🚶' },
-    { value: 'moderate', label: 'Actividad Moderada', icon: '🏃' },
-    { value: 'heavy', label: 'Actividad Intensa', icon: '💪' },
+  const activityModes = [
+    { value: 'rest' as const, label: 'Reposo', icon: '😴' },
+    { value: 'light' as const, label: 'Actividad Ligera', icon: '🚶' },
+    { value: 'moderate' as const, label: 'Actividad Moderada', icon: '🏃' },
+    { value: 'intense' as const, label: 'Actividad Intensa', icon: '💪' },
   ];
 
   return (

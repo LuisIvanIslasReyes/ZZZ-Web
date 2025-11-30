@@ -66,7 +66,7 @@ export interface CreateSimulatorData {
 }
 
 export interface UpdateSimulatorConfigData {
-  activity_mode?: 'resting' | 'light' | 'moderate' | 'heavy';
+  activity_mode?: 'rest' | 'light' | 'moderate' | 'intense';
   fatigue_level?: number;
   fatigue_rate?: number;
 }

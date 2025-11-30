@@ -21,8 +21,14 @@ export const simulatorService = {
    * Listar todas las sesiones de simuladores
    */
   async getAll(): Promise<SimulatorSession[]> {
-    const response = await api.get<SimulatorSession[]>(`${BASE_URL}/`);
-    return response.data;
+    const response = await api.get<SimulatorSession[] | { results: SimulatorSession[] }>(`${BASE_URL}/`);
+    // Manejar respuesta paginada o array directo
+    if (Array.isArray(response.data)) {
+      return response.data;
+    } else if (response.data && 'results' in response.data) {
+      return response.data.results;
+    }
+    return [];
   },
 
   /**
@@ -37,8 +43,14 @@ export const simulatorService = {
    * Listar sesiones activas con estadísticas en tiempo real
    */
   async getActive(): Promise<SimulatorSession[]> {
-    const response = await api.get<SimulatorSession[]>(`${BASE_URL}/active/`);
-    return response.data;
+    const response = await api.get<SimulatorSession[] | { results: SimulatorSession[] }>(`${BASE_URL}/active/`);
+    // Manejar respuesta paginada o array directo
+    if (Array.isArray(response.data)) {
+      return response.data;
+    } else if (response.data && 'results' in response.data) {
+      return response.data.results;
+    }
+    return [];
   },
 
   /**
@@ -53,8 +65,23 @@ export const simulatorService = {
    * Detener un simulador específico
    */
   async stop(id: number): Promise<SimulatorSessionDetail> {
-    const response = await api.post<SimulatorSessionDetail>(`${BASE_URL}/${id}/stop/`);
+    const response = await api.post<SimulatorSessionDetail>(`${BASE_URL}/${id}/stop/`, {});
     return response.data;
+  },
+
+  /**
+   * Reiniciar un simulador detenido
+   */
+  async restart(id: number): Promise<SimulatorSessionDetail> {
+    const response = await api.post<SimulatorSessionDetail>(`${BASE_URL}/${id}/restart/`, {});
+    return response.data;
+  },
+
+  /**
+   * Eliminar un simulador
+   */
+  async delete(id: number): Promise<void> {
+    await api.delete(`${BASE_URL}/${id}/`);
   },
 
   /**
