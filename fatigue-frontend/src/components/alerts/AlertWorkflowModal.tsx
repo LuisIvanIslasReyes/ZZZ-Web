@@ -1,11 +1,10 @@
 /**
  * Alert Workflow Modal Component
  * Modal especializado para gestionar el flujo completo de alertas
- * con transiciones de estado, notas y acciones
+ * con transiciones de estado, notas y acciones - Enterprise UI Design
  */
 
 import { useState } from 'react';
-import { Modal } from '../common';
 import toast from 'react-hot-toast';
 import { alertService } from '../../services';
 import type { FatigueAlert, AlertStatus } from '../../types';
@@ -23,11 +22,10 @@ export function AlertWorkflowModal({
   alert,
   onUpdate,
 }: AlertWorkflowModalProps) {
-  const [actionNote, setActionNote] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedAction, setSelectedAction] = useState<AlertStatus | null>(null);
 
-  if (!alert) return null;
+  if (!isOpen || !alert) return null;
 
   const handleAction = async (action: 'acknowledge' | 'resolve') => {
     try {
@@ -35,15 +33,14 @@ export function AlertWorkflowModal({
       
       if (action === 'acknowledge') {
         await alertService.acknowledgeAlert(alert.id);
-        toast.success('✓ Alerta reconocida exitosamente');
+        toast.success('Alerta reconocida exitosamente');
       } else if (action === 'resolve') {
         await alertService.resolveAlert(alert.id);
-        toast.success('✓ Alerta resuelta exitosamente');
+        toast.success('Alerta resuelta exitosamente');
       }
       
       onUpdate();
       onClose();
-      setActionNote('');
       setSelectedAction(null);
     } catch (error: any) {
       console.error('Error processing alert action:', error);
@@ -57,93 +54,28 @@ export function AlertWorkflowModal({
   const getSeverityInfo = (severity: string) => {
     switch (severity) {
       case 'critical':
-        return {
-          label: 'Crítica',
-          color: 'text-red-600',
-          bgColor: 'bg-red-100',
-          borderColor: 'border-red-300',
-          icon: (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ),
-        };
+        return { label: 'Crítica', color: '#DC2626', bgColor: 'bg-red-50', borderColor: 'border-red-200' };
       case 'high':
-        return {
-          label: 'Alta',
-          color: 'text-orange-600',
-          bgColor: 'bg-orange-100',
-          borderColor: 'border-orange-300',
-          icon: (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          ),
-        };
+        return { label: 'Alta', color: '#F59E0B', bgColor: 'bg-orange-50', borderColor: 'border-orange-200' };
       case 'medium':
-        return {
-          label: 'Media',
-          color: 'text-yellow-600',
-          bgColor: 'bg-yellow-100',
-          borderColor: 'border-yellow-300',
-          icon: (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ),
-        };
+        return { label: 'Media', color: '#EAB308', bgColor: 'bg-yellow-50', borderColor: 'border-yellow-200' };
       default:
-        return {
-          label: 'Baja',
-          color: 'text-blue-600',
-          bgColor: 'bg-blue-100',
-          borderColor: 'border-blue-300',
-          icon: (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ),
-        };
+        return { label: 'Baja', color: '#3B82F6', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' };
     }
   };
 
   const getStatusInfo = (status: string) => {
     switch (status) {
       case 'pending':
-        return {
-          label: 'Pendiente',
-          color: 'text-yellow-700',
-          bgColor: 'bg-yellow-100',
-          icon: '⏳',
-        };
+        return { label: 'Pendiente', color: 'text-yellow-700', bgColor: 'bg-yellow-100' };
       case 'acknowledged':
-        return {
-          label: 'Reconocida',
-          color: 'text-blue-700',
-          bgColor: 'bg-blue-100',
-          icon: '👀',
-        };
+        return { label: 'Reconocida', color: 'text-blue-700', bgColor: 'bg-blue-100' };
       case 'resolved':
-        return {
-          label: 'Resuelta',
-          color: 'text-green-700',
-          bgColor: 'bg-green-100',
-          icon: '✅',
-        };
+        return { label: 'Resuelta', color: 'text-green-700', bgColor: 'bg-green-100' };
       case 'dismissed':
-        return {
-          label: 'Descartada',
-          color: 'text-gray-700',
-          bgColor: 'bg-gray-100',
-          icon: '❌',
-        };
+        return { label: 'Descartada', color: 'text-gray-700', bgColor: 'bg-gray-100' };
       default:
-        return {
-          label: status,
-          color: 'text-gray-700',
-          bgColor: 'bg-gray-100',
-          icon: '•',
-        };
+        return { label: status, color: 'text-gray-700', bgColor: 'bg-gray-100' };
     }
   };
 
@@ -154,35 +86,22 @@ export function AlertWorkflowModal({
   const availableActions = (() => {
     const actions = [];
     
-    // Si no está reconocida, permitir reconocer
     if (!alert.is_acknowledged && !alert.is_resolved) {
       actions.push({
         key: 'acknowledge',
         label: 'Reconocer Alerta',
         description: 'Marcar como vista y en seguimiento',
-        icon: (
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-          </svg>
-        ),
-        color: 'bg-blue-500 hover:bg-blue-600',
+        color: '#3B82F6',
         nextStatus: 'acknowledged',
       });
     }
     
-    // Permitir resolver si no está resuelta (puede estar reconocida o no)
     if (!alert.is_resolved) {
       actions.push({
         key: 'resolve',
         label: 'Resolver Alerta',
         description: 'Marcar como resuelta - problema atendido',
-        icon: (
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        ),
-        color: 'bg-green-500 hover:bg-green-600',
+        color: '#22C55E',
         nextStatus: 'resolved',
       });
     }
@@ -190,261 +109,246 @@ export function AlertWorkflowModal({
     return actions;
   })();
 
+  // Formatear el score de fatiga
+  const formatFatigueScore = (score: number) => {
+    return Number(score).toFixed(1);
+  };
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => {
-        if (!isProcessing) {
-          onClose();
-          setActionNote('');
-          setSelectedAction(null);
-        }
-      }}
-      title={`Gestión de Alerta #${alert.id}`}
-      size="lg"
-    >
-      <div className="space-y-6">
-        {/* Alert Header with Severity */}
-        <div className={`${severityInfo.bgColor} ${severityInfo.borderColor} border-2 rounded-xl p-6`}>
-          <div className="flex items-start gap-4">
-            <div className={`${severityInfo.color} p-3 rounded-full ${severityInfo.bgColor}`}>
-              {severityInfo.icon}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h3 className={`text-xl font-bold ${severityInfo.color}`}>
-                  Alerta de Severidad {severityInfo.label}
-                </h3>
-                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${statusInfo.bgColor} ${statusInfo.color}`}>
-                  {statusInfo.icon} {statusInfo.label}
-                </span>
-              </div>
-              <p className="text-gray-700 text-lg font-medium mb-3">{alert.message}</p>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <span>📅 {new Date(alert.created_at).toLocaleString('es-ES')}</span>
-                {alert.acknowledged_at && (
-                  <span>👁️ Reconocida: {new Date(alert.acknowledged_at).toLocaleString('es-ES')}</span>
-                )}
-                {alert.resolved_at && (
-                  <span>✅ Resuelta: {new Date(alert.resolved_at).toLocaleString('es-ES')}</span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Employee & Metrics Info */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-xs text-gray-500 mb-1">Empleado</div>
-            <div className="text-lg font-bold text-[#18314F]">
-              {alert.employee_name || `#${alert.employee}`}
-            </div>
-          </div>
-          
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-xs text-gray-500 mb-1">Score de Fatiga</div>
-            <div className="flex items-center gap-2">
-              <div className="text-2xl font-bold text-red-600">{alert.fatigue_score}</div>
-              <div className="text-sm text-gray-500">/100</div>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div 
-                className={`h-2 rounded-full ${
-                  alert.fatigue_score >= 80 ? 'bg-red-500' :
-                  alert.fatigue_score >= 60 ? 'bg-orange-500' :
-                  alert.fatigue_score >= 40 ? 'bg-yellow-500' : 'bg-green-500'
-                }`}
-                style={{ width: `${alert.fatigue_score}%` }}
-              />
-            </div>
-          </div>
-
-          {alert.heart_rate && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-xs text-gray-500 mb-1">Frecuencia Cardíaca</div>
-              <div className="text-2xl font-bold text-red-500">
-                {alert.heart_rate}
-              </div>
-              <div className="text-xs text-gray-500">bpm</div>
-            </div>
-          )}
-
-          {alert.spo2 && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-xs text-gray-500 mb-1">Saturación SpO2</div>
-              <div className="text-2xl font-bold text-blue-500">
-                {alert.spo2}%
-              </div>
-            </div>
-          )}
-
-          {alert.temperature && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-xs text-gray-500 mb-1">Temperatura</div>
-              <div className="text-2xl font-bold text-orange-500">
-                {alert.temperature}°C
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Recommendations */}
-        {alert.recommendations && (
-          <div className="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4">
-            <div className="flex gap-3">
-              <svg className="w-6 h-6 text-blue-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div>
-                <h4 className="font-semibold text-blue-900 mb-1">Recomendaciones del Sistema</h4>
-                <p className="text-sm text-blue-800">{alert.recommendations}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Workflow Section - Only show if there are available actions */}
-        {availableActions.length > 0 && (
-          <>
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-bold text-[#18314F] mb-4 flex items-center gap-2">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="bg-[#18314F] text-white px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Gestión de Alerta #{alert.id}</h2>
+                <p className="text-white/70 text-sm">Revisa y gestiona esta alerta</p>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-white/70 hover:text-white transition-colors"
+              disabled={isProcessing}
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 overflow-y-auto flex-1 space-y-5">
+          {/* Alert Info Card */}
+          <div className={`${severityInfo.bgColor} ${severityInfo.borderColor} border rounded-xl p-5`}>
+            <div className="flex items-start gap-4">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: `${severityInfo.color}20` }}
+              >
+                <svg className="w-5 h-5" style={{ color: severityInfo.color }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-3 flex-wrap mb-2">
+                  <h3 className="text-lg font-bold" style={{ color: severityInfo.color }}>
+                    Alerta de Severidad {severityInfo.label}
+                  </h3>
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${statusInfo.bgColor} ${statusInfo.color}`}>
+                    {statusInfo.label}
+                  </span>
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed">{alert.message}</p>
+                <div className="flex items-center gap-2 mt-3 text-xs text-gray-500">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>{new Date(alert.created_at).toLocaleString('es-ES')}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Employee & Metrics */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 rounded-xl p-4">
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Empleado</div>
+              <div className="text-lg font-bold text-[#18314F]">
+                {alert.employee_name || `ID: ${alert.employee}`}
+              </div>
+            </div>
+            
+            <div className="bg-gray-50 rounded-xl p-4">
+              <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">Score de Fatiga</div>
+              <div className="flex items-baseline gap-1">
+                <span 
+                  className="text-2xl font-bold"
+                  style={{ 
+                    color: alert.fatigue_score >= 70 ? '#DC2626' : 
+                           alert.fatigue_score >= 50 ? '#F59E0B' : '#22C55E' 
+                  }}
+                >
+                  {formatFatigueScore(alert.fatigue_score)}
+                </span>
+                <span className="text-sm text-gray-400">/100</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                <div 
+                  className="h-1.5 rounded-full transition-all"
+                  style={{ 
+                    width: `${Math.min(alert.fatigue_score, 100)}%`,
+                    backgroundColor: alert.fatigue_score >= 70 ? '#DC2626' : 
+                                     alert.fatigue_score >= 50 ? '#F59E0B' : '#22C55E'
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Metrics */}
+          {(alert.heart_rate || alert.spo2 || alert.temperature) && (
+            <div className="grid grid-cols-3 gap-3">
+              {alert.heart_rate && (
+                <div className="bg-red-50 rounded-xl p-3 text-center">
+                  <svg className="w-5 h-5 mx-auto text-red-500 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                  <div className="text-xl font-bold text-red-600">{alert.heart_rate}</div>
+                  <div className="text-xs text-gray-500">bpm</div>
+                </div>
+              )}
+              {alert.spo2 && (
+                <div className="bg-blue-50 rounded-xl p-3 text-center">
+                  <svg className="w-5 h-5 mx-auto text-blue-500 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                  </svg>
+                  <div className="text-xl font-bold text-blue-600">{alert.spo2}%</div>
+                  <div className="text-xs text-gray-500">SpO2</div>
+                </div>
+              )}
+              {alert.temperature && (
+                <div className="bg-orange-50 rounded-xl p-3 text-center">
+                  <svg className="w-5 h-5 mx-auto text-orange-500 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <div className="text-xl font-bold text-orange-600">{alert.temperature}°C</div>
+                  <div className="text-xs text-gray-500">Temp.</div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Workflow Actions */}
+          {availableActions.length > 0 && (
+            <div className="pt-4 border-t border-gray-200">
+              <h3 className="text-sm font-semibold text-[#18314F] mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 Flujo de Gestión - Selecciona una Acción
               </h3>
 
-              {/* Visual Workflow */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-2 gap-3">
                 {availableActions.map((action) => (
                   <button
                     key={action.key}
                     onClick={() => setSelectedAction(action.nextStatus as AlertStatus)}
                     className={`
-                      relative p-5 rounded-xl border-2 transition-all text-left
+                      p-4 rounded-xl border-2 transition-all text-left
                       ${selectedAction === action.nextStatus 
-                        ? 'border-[#18314F] bg-blue-50 shadow-lg scale-105' 
-                        : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                        ? 'border-[#18314F] bg-[#18314F]/5 shadow-md' 
+                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                       }
                     `}
                     disabled={isProcessing}
                   >
-                    <div className="flex items-start gap-4">
-                      <div className={`${action.color} text-white p-3 rounded-lg transition-transform ${
-                        selectedAction === action.nextStatus ? 'scale-110' : ''
-                      }`}>
-                        {action.icon}
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-bold text-[#18314F] mb-1">{action.label}</h4>
-                        <p className="text-sm text-gray-600">{action.description}</p>
-                        {selectedAction === action.nextStatus && (
-                          <div className="mt-2 text-xs font-semibold text-blue-600 flex items-center gap-1">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            Acción Seleccionada
-                          </div>
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className="w-10 h-10 rounded-lg flex items-center justify-center text-white flex-shrink-0"
+                        style={{ backgroundColor: action.color }}
+                      >
+                        {action.key === 'acknowledge' ? (
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
                         )}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-[#18314F] text-sm">{action.label}</h4>
+                        <p className="text-xs text-gray-500">{action.description}</p>
                       </div>
                     </div>
                   </button>
                 ))}
               </div>
-
-              {/* Action Note */}
-              {selectedAction && (
-                <div className="bg-gray-50 rounded-xl p-4 border-2 border-dashed border-gray-300">
-                  <label className="block mb-2">
-                    <span className="text-sm font-semibold text-gray-700">
-                      Notas adicionales (Opcional)
-                    </span>
-                    <span className="text-xs text-gray-500 ml-2">
-                      Documenta la acción tomada o cualquier observación relevante
-                    </span>
-                  </label>
-                  <textarea
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-transparent resize-none"
-                    placeholder="Ej: Se contactó al empleado y se recomendó tomar un descanso de 15 minutos..."
-                    value={actionNote}
-                    onChange={(e) => setActionNote(e.target.value)}
-                    rows={3}
-                    disabled={isProcessing}
-                  />
-                </div>
-              )}
             </div>
+          )}
 
-            {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t">
-              <button
-                onClick={() => {
-                  onClose();
-                  setActionNote('');
-                  setSelectedAction(null);
-                }}
-                className="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
-                disabled={isProcessing}
-              >
-                Cancelar
-              </button>
-              
-              {selectedAction && (
-                <button
-                  onClick={() => {
-                    const action = availableActions.find(a => a.nextStatus === selectedAction);
-                    if (action) {
-                      handleAction(action.key as 'acknowledge' | 'resolve');
-                    }
-                  }}
-                  className={`
-                    px-8 py-2.5 text-white rounded-lg font-semibold transition-all
-                    flex items-center gap-2 shadow-lg hover:shadow-xl
-                    ${isProcessing 
-                      ? 'bg-gray-400 cursor-not-allowed' 
-                      : availableActions.find(a => a.nextStatus === selectedAction)?.color || 'bg-blue-500 hover:bg-blue-600'
-                    }
-                  `}
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                      </svg>
-                      Procesando...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Confirmar Acción
-                    </>
-                  )}
-                </button>
-              )}
+          {/* No actions message */}
+          {availableActions.length === 0 && (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-5 text-center">
+              <svg className="w-12 h-12 text-green-500 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="font-semibold text-green-800 mb-1">Alerta procesada</h3>
+              <p className="text-sm text-green-600">No hay acciones adicionales disponibles.</p>
             </div>
-          </>
-        )}
+          )}
+        </div>
 
-        {/* No actions available message */}
-        {availableActions.length === 0 && (
-          <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-6 text-center">
-            <svg className="w-16 h-16 text-green-500 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h3 className="text-lg font-bold text-green-900 mb-2">
-              Esta alerta ya ha sido procesada
-            </h3>
-            <p className="text-sm text-green-700">
-              No hay acciones adicionales disponibles para esta alerta.
-            </p>
-          </div>
-        )}
+        {/* Footer */}
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-100 transition-colors"
+            disabled={isProcessing}
+          >
+            Cancelar
+          </button>
+          
+          {selectedAction && (
+            <button
+              onClick={() => {
+                const action = availableActions.find(a => a.nextStatus === selectedAction);
+                if (action) {
+                  handleAction(action.key as 'acknowledge' | 'resolve');
+                }
+              }}
+              className="px-5 py-2.5 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
+              disabled={isProcessing}
+            >
+              {isProcessing ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Procesando...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Confirmar Acción
+                </>
+              )}
+            </button>
+          )}
+        </div>
       </div>
-    </Modal>
+    </div>
   );
 }

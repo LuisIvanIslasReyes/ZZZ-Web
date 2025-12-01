@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts';
-import { symptomService } from '../services';
+import { symptomService, alertService } from '../services';
 import LogoBlanco from '../assets/logo/LogoBlanco.png';
 
 interface NavItem {
@@ -18,7 +18,7 @@ interface NavItem {
   badgeCount?: number;
 }
 
-const getNavigationItems = (pendingSymptomsCount: number, recentlyReviewedCount: number): NavItem[] => [
+const getNavigationItems = (pendingSymptomsCount: number, recentlyReviewedCount: number, pendingAlertsCount: number): NavItem[] => [
   // Admin routes - Solo gestión de empresas
   { 
     name: 'Empresas', 
@@ -68,7 +68,9 @@ const getNavigationItems = (pendingSymptomsCount: number, recentlyReviewedCount:
     name: 'Alertas', 
     path: '/supervisor/alerts', 
     icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>, 
-    roles: ['supervisor'] 
+    roles: ['supervisor'],
+    badge: pendingAlertsCount > 0 ? 'red' : undefined,
+    badgeCount: pendingAlertsCount
   },
   { 
     name: 'Descansos', 
@@ -145,6 +147,7 @@ export function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [pendingSymptomsCount, setPendingSymptomsCount] = useState(0);
   const [recentlyReviewedCount, setRecentlyReviewedCount] = useState(0);
+  const [pendingAlertsCount, setPendingAlertsCount] = useState(0);
 
   // Fetch pending symptoms count for supervisors (optimized endpoint)
   const fetchPendingSymptoms = async () => {
@@ -154,6 +157,17 @@ export function MainLayout() {
     } catch (error) {
       console.error('Error fetching pending symptoms:', error);
       setPendingSymptomsCount(0);
+    }
+  };
+
+  // Fetch pending alerts count for supervisors
+  const fetchPendingAlerts = async () => {
+    try {
+      const count = await alertService.getPendingAlertsCount();
+      setPendingAlertsCount(count);
+    } catch (error) {
+      console.error('Error fetching pending alerts:', error);
+      setPendingAlertsCount(0);
     }
   };
 
@@ -175,6 +189,7 @@ export function MainLayout() {
     const loadAndPoll = async () => {
       if (user?.role === 'supervisor' && isMounted) {
         await fetchPendingSymptoms();
+        await fetchPendingAlerts();
       }
     };
     
@@ -253,7 +268,7 @@ export function MainLayout() {
     };
   }, [user]);
 
-  const navigationItems = getNavigationItems(pendingSymptomsCount, recentlyReviewedCount);
+  const navigationItems = getNavigationItems(pendingSymptomsCount, recentlyReviewedCount, pendingAlertsCount);
   const filteredNavItems = navigationItems.filter(
     (item) => !item.roles || item.roles.includes(user?.role || '')
   );

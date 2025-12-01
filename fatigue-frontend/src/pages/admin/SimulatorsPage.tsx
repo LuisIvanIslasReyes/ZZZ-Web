@@ -528,7 +528,7 @@ function SimulatorCard({
           {session.status === 'running' ? (
             <button
               onClick={() => onStop(session.id)}
-              className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-2 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1029,88 +1029,113 @@ function ConfigSimulatorModal({
   });
 
   const activityModes = [
-    { value: 'rest' as const, label: 'Reposo', icon: '😴' },
-    { value: 'light' as const, label: 'Actividad Ligera', icon: '🚶' },
-    { value: 'moderate' as const, label: 'Actividad Moderada', icon: '🏃' },
-    { value: 'intense' as const, label: 'Actividad Intensa', icon: '💪' },
+    { value: 'rest' as const, label: 'Reposo' },
+    { value: 'light' as const, label: 'Actividad Ligera' },
+    { value: 'moderate' as const, label: 'Actividad Moderada' },
+    { value: 'intense' as const, label: 'Actividad Intensa' },
   ];
 
+  // Obtener color del slider según nivel de fatiga
+  const getFatigueColor = (level: number) => {
+    if (level <= 30) return '#22C55E'; // Verde
+    if (level <= 60) return '#F59E0B'; // Amarillo/Naranja
+    return '#EF4444'; // Rojo
+  };
+
   return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      title={`Configurar Simulador: ${session.device_id}`}
-      size="md"
-      footer={
-        <>
-          <button
-            onClick={onClose}
-            className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-semibold transition-colors"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={() => onSave(config)}
-            className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            Guardar Cambios
-          </button>
-        </>
-      }
-    >
-      <div className="space-y-5">
-          {/* Activity Mode */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold text-gray-700">Modo de Actividad</span>
-            </label>
-            <select
-              className="select select-bordered w-full bg-white border-gray-300 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
-              value={config.activity_mode}
-              onChange={(e) =>
-                setConfig({
-                  ...config,
-                  activity_mode: e.target.value as any,
-                })
-              }
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+        {/* Header */}
+        <div className="bg-[#18314F] text-white px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Configurar Simulador</h2>
+                <p className="text-white/70 text-sm">{session.device_id}</p>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-white/70 hover:text-white transition-colors"
             >
-              {activityModes.map((mode) => (
-                <option key={mode.value} value={mode.value}>
-                  {mode.icon} {mode.label}
-                </option>
-              ))}
-            </select>
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-6">
+          {/* Activity Mode */}
+          <div>
+            <label className="block text-sm font-semibold text-[#18314F] mb-2">
+              Modo de Actividad
+            </label>
+            <div className="relative">
+              <select
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 font-medium appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] transition-all"
+                value={config.activity_mode}
+                onChange={(e) =>
+                  setConfig({
+                    ...config,
+                    activity_mode: e.target.value as any,
+                  })
+                }
+              >
+                {activityModes.map((mode) => (
+                  <option key={mode.value} value={mode.value}>
+                    {mode.label}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           {/* Fatigue Level */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold text-gray-700">
-                Nivel de Fatiga: <span className="text-gray-900">{config.fatigue_level}%</span>
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-semibold text-[#18314F]">
+                Nivel de Fatiga
+              </label>
+              <span 
+                className="text-lg font-bold"
+                style={{ color: getFatigueColor(config.fatigue_level ?? 0) }}
+              >
+                {config.fatigue_level?.toFixed(1)}%
               </span>
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={config.fatigue_level}
-              onChange={(e) =>
-                setConfig({
-                  ...config,
-                  fatigue_level: Number(e.target.value),
-                })
-              }
-              className="range range-primary"
-            />
-            <div className="w-full flex justify-between text-xs px-2 mt-2 text-gray-500">
+            </div>
+            <div className="relative">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="0.1"
+                value={config.fatigue_level}
+                onChange={(e) =>
+                  setConfig({
+                    ...config,
+                    fatigue_level: Number(e.target.value),
+                  })
+                }
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, ${getFatigueColor(config.fatigue_level ?? 0)} 0%, ${getFatigueColor(config.fatigue_level ?? 0)} ${config.fatigue_level}%, #E5E7EB ${config.fatigue_level}%, #E5E7EB 100%)`
+                }}
+              />
+            </div>
+            <div className="flex justify-between text-xs text-gray-500 mt-2">
               <span>0% (Descansado)</span>
               <span>50% (Normal)</span>
               <span>100% (Crítico)</span>
@@ -1118,18 +1143,17 @@ function ConfigSimulatorModal({
           </div>
 
           {/* Fatigue Rate */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold text-gray-700">
-                Tasa de Incremento (opcional)
-              </span>
+          <div>
+            <label className="block text-sm font-semibold text-[#18314F] mb-2">
+              Tasa de Incremento
+              <span className="text-gray-400 font-normal ml-1">(opcional)</span>
             </label>
             <input
               type="number"
               step="0.1"
               min="0"
               max="10"
-              className="input input-bordered w-full bg-white border-gray-300 focus:border-[#18314F] focus:ring-2 focus:ring-[#18314F]/20"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-[#18314F]/20 focus:border-[#18314F] transition-all"
               value={config.fatigue_rate || ''}
               onChange={(e) =>
                 setConfig({
@@ -1139,13 +1163,31 @@ function ConfigSimulatorModal({
               }
               placeholder="0.5"
             />
-            <label className="label">
-              <span className="label-text-alt text-gray-500">
-                Incremento de fatiga por minuto
-              </span>
-            </label>
+            <p className="text-xs text-gray-500 mt-1.5">
+              Incremento de fatiga por minuto
+            </p>
           </div>
         </div>
-      </Modal>
+
+        {/* Footer */}
+        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-100 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={() => onSave(config)}
+            className="px-5 py-2.5 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-medium transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
