@@ -116,9 +116,9 @@ export function DeviceFormModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-[#18314F] text-white px-8 py-6 rounded-t-2xl">
+        <div className="bg-[#18314F] text-white px-8 py-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">
               {isEdit ? 'Editar Dispositivo' : 'Nuevo Dispositivo'}
@@ -139,7 +139,7 @@ export function DeviceFormModal({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onFormSubmit)} className="px-8 py-6">
+        <form onSubmit={handleSubmit(onFormSubmit)} className="px-8 py-6 overflow-y-auto flex-1">
           <div className="space-y-6">
             {/* Información del Dispositivo */}
             <div>
@@ -163,15 +163,13 @@ export function DeviceFormModal({
                       errors.device_identifier ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
                     }`}
                     placeholder="ESP32-001"
-                    disabled={isLoading || isEdit}
+                    disabled={isLoading}
                   />
                   {errors.device_identifier && (
                     <p className="mt-1 text-sm text-red-600">{errors.device_identifier.message}</p>
                   )}
                   <p className="mt-1 text-sm text-gray-500">
-                    {isEdit 
-                      ? 'El identificador del dispositivo no se puede cambiar'
-                      : 'Identificador único del dispositivo (ej: ESP32-001, SENSOR-042)'}
+                    Identificador único del dispositivo (ej: ESP32-001, SENSOR-042)
                   </p>
                 </div>
 
@@ -221,17 +219,16 @@ export function DeviceFormModal({
             </div>
 
             {/* Info Card */}
-            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+            <div className="bg-[#18314F]/5 border border-[#18314F]/20 rounded-xl p-4">
               <div className="flex">
-                <svg className="w-5 h-5 text-blue-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-[#18314F] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                 </svg>
-                <div className="text-sm text-blue-900">
-                  <p className="font-semibold mb-2">💡 Información importante:</p>
-                  <ul className="list-disc list-inside space-y-1">
+                <div className="text-sm text-[#18314F]">
+                  <p className="font-semibold mb-2">Información importante:</p>
+                  <ul className="list-disc list-inside space-y-1 text-[#18314F]/80">
                     <li>Cada empleado solo puede tener un dispositivo asignado</li>
                     <li>El supervisor se asignará automáticamente según el empleado</li>
-                    {!isEdit && <li>El identificador del dispositivo no se puede cambiar después de crearlo</li>}
                   </ul>
                 </div>
               </div>

@@ -87,7 +87,10 @@ export function SupervisorDevicesPage() {
     if (!editingDevice) return;
     try {
       setIsSubmitting(true);
-      await deviceService.updateDevice(editingDevice.id, data);
+      console.log('Datos a enviar para actualizar dispositivo:', data);
+      console.log('ID del dispositivo:', editingDevice.id);
+      const result = await deviceService.updateDevice(editingDevice.id, data);
+      console.log('Respuesta del servidor:', result);
       toast.success('Dispositivo actualizado exitosamente');
       setIsFormModalOpen(false);
       setEditingDevice(null);
@@ -294,13 +297,13 @@ export function SupervisorDevicesPage() {
                     <td className="py-3 px-4 text-center">
                       <div className="flex gap-2 justify-center">
                         <button
-                          className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                          className="px-3 py-1 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg text-sm font-medium transition-colors"
                           onClick={() => handleEdit(device)}
                         >
                           Editar
                         </button>
                         <button
-                          className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+                          className="px-3 py-1 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg text-sm font-medium transition-colors"
                           onClick={() => handleViewDetails(device)}
                         >
                           Ver Detalles
@@ -323,7 +326,7 @@ export function SupervisorDevicesPage() {
         footer={
           <button
             onClick={handleCloseModal}
-            className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-xl font-semibold transition-colors"
+            className="px-6 py-3 bg-[#18314F] hover:bg-[#18314F]/90 text-white rounded-lg font-semibold transition-colors"
           >
             Cerrar
           </button>
@@ -332,15 +335,15 @@ export function SupervisorDevicesPage() {
         {selectedDevice && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-[#18314F]/60 uppercase tracking-wider">
                 Identificador
               </label>
-              <p className="mt-1 font-mono text-[#18314F] font-medium">
+              <p className="mt-1 font-mono text-[#18314F] font-semibold">
                 {selectedDevice.device_identifier}
               </p>
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-[#18314F]/60 uppercase tracking-wider">
                 Estado
               </label>
               <p className="mt-1">
@@ -354,7 +357,7 @@ export function SupervisorDevicesPage() {
               </p>
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-[#18314F]/60 uppercase tracking-wider">
                 Empleado
               </label>
               <p className="mt-1 text-[#18314F] font-medium">
@@ -362,7 +365,7 @@ export function SupervisorDevicesPage() {
               </p>
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-[#18314F]/60 uppercase tracking-wider">
                 Email
               </label>
               <p className="mt-1 text-gray-700">
@@ -370,7 +373,7 @@ export function SupervisorDevicesPage() {
               </p>
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-[#18314F]/60 uppercase tracking-wider">
                 Supervisor
               </label>
               <p className="mt-1 text-gray-700">
@@ -378,7 +381,7 @@ export function SupervisorDevicesPage() {
               </p>
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-[#18314F]/60 uppercase tracking-wider">
                 Última Conexión
               </label>
               <p className="mt-1 text-gray-700">
@@ -388,7 +391,7 @@ export function SupervisorDevicesPage() {
               </p>
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-[#18314F]/60 uppercase tracking-wider">
                 Creado
               </label>
               <p className="mt-1 text-gray-700">
@@ -396,11 +399,13 @@ export function SupervisorDevicesPage() {
               </p>
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-[#18314F]/60 uppercase tracking-wider">
                 Última Actualización
               </label>
               <p className="mt-1 text-gray-700">
-                {new Date(selectedDevice.updated_at).toLocaleString()}
+                {selectedDevice.updated_at 
+                  ? new Date(selectedDevice.updated_at).toLocaleString()
+                  : '-'}
               </p>
             </div>
           </div>
