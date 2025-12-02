@@ -256,72 +256,47 @@ export function EmployeeAlertsPage() {
           </div>
         ) : (
           filteredAlerts.map((alert) => {
+            const isSymptomAlert = alert.alert_type?.startsWith('symptom_');
             const isNotification = alert.alert_type === 'notification';
-            
+
+            // Universal card style for all alerts, with special blue for symptom alerts
             return (
-              <div 
-                key={alert.id} 
-                className={`rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 transition-all hover:shadow-md ${
-                  isNotification 
-                    ? 'border-l-indigo-600 bg-gradient-to-r from-indigo-50 via-purple-50 to-white' 
-                    : alert.severity === 'critical' || alert.severity === 'high' 
-                    ? 'border-l-red-500 bg-white' 
-                    : alert.severity === 'medium' 
-                    ? 'border-l-yellow-500 bg-white' 
-                    : 'border-l-blue-500 bg-white'
-                }`}
+              <div
+                key={alert.id}
+                className={`rounded-xl shadow-md border border-gray-200 p-6 border-l-4 transition-all hover:shadow-lg
+                  ${isSymptomAlert
+                    ? 'border-l-[#18314F] bg-white'
+                    : isNotification
+                    ? 'border-l-indigo-600 bg-gradient-to-r from-indigo-50 via-purple-50 to-white'
+                    : alert.severity === 'critical' || alert.severity === 'high'
+                    ? 'border-l-red-500 bg-white'
+                    : alert.severity === 'medium'
+                    ? 'border-l-yellow-500 bg-white'
+                    : 'border-l-blue-500 bg-white'}
+                `}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    {isNotification && (
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-full shadow-md">
-                          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                          <span className="font-bold text-sm">Mensaje de tu Supervisor</span>
-                        </div>
-                        {alert.title && (
-                          <span className="px-3 py-1 bg-indigo-100 text-indigo-900 rounded-full text-xs font-semibold">
-                            {alert.title}
-                          </span>
-                        )}
-                      </div>
-                    )}
+                    {/* Header: Icon + Title + Status */}
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
-                      {!isNotification && getSeverityIcon(alert.severity)}
-                      <h3 className={`text-xl font-semibold ${isNotification ? 'text-indigo-900' : 'text-[#18314F]'}`}>
+                      {isSymptomAlert ? (
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#18314F">
+                          <circle cx="12" cy="12" r="10" stroke="#18314F" strokeWidth="2" fill="#E8F0FA" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01" stroke="#18314F" />
+                        </svg>
+                      ) : !isNotification && getSeverityIcon(alert.severity)}
+                      <h3 className={`text-xl font-semibold ${isSymptomAlert ? 'text-[#18314F]' : isNotification ? 'text-indigo-900' : 'text-[#18314F]'}`}>
                         {getAlertTypeLabel(alert.alert_type || 'unknown')}
                       </h3>
                       {getStatusBadge(alert.status || 'pending')}
                     </div>
-                    
-                    {isNotification ? (
-                      <div className="bg-white rounded-xl p-4 border-2 border-indigo-200 shadow-sm mb-4">
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#4F46E5">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                            </svg>
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-indigo-900 font-medium text-base leading-relaxed whitespace-pre-line">
-                              {alert.message}
-                            </p>
-                            {alert.supervisor_name && (
-                              <p className="text-indigo-600 text-sm mt-2 font-medium">
-                                — {alert.supervisor_name}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-gray-700 mb-4 text-base leading-relaxed whitespace-pre-line">
-                        {alert.message}
-                      </p>
-                    )}
-                    
+
+                    {/* Message */}
+                    <p className={`mb-4 text-base leading-relaxed whitespace-pre-line ${isSymptomAlert ? 'text-[#18314F] font-medium' : 'text-gray-700'}`}>
+                      {alert.message}
+                    </p>
+
+                    {/* Date and Fatigue Score */}
                     <div className="flex items-center gap-6 text-sm text-gray-500">
                       <div className="flex items-center gap-2">
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -348,7 +323,7 @@ export function EmployeeAlertsPage() {
 
                   <div className="flex flex-col gap-2 min-w-[200px]">
                     {/* Alerta no resuelta - Vista de empleado */}
-                    {!alert.is_resolved && alert.status !== 'resolved' && (
+                    {!alert.is_resolved && alert.status !== 'resolved' && !isSymptomAlert && (
                       <div className="space-y-3">
                         <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
                           <p className="text-sm font-bold text-orange-800 mb-1">En Espera</p>
@@ -364,7 +339,7 @@ export function EmployeeAlertsPage() {
                         )}
                       </div>
                     )}
-                    
+
                     {/* Estado: Resuelta */}
                     {(alert.is_resolved || alert.status === 'resolved') && (
                       <div className="flex items-center gap-2 text-green-600">
