@@ -5,6 +5,8 @@
  */
 
 import { useEffect, useState } from 'react';
+import { SYMPTOM_TYPE_LABELS } from '../../types/symptom.types';
+import type { SymptomType } from '../../types/symptom.types';
 
 interface MedicalAlertModalProps {
   isOpen: boolean;
@@ -14,6 +16,9 @@ interface MedicalAlertModalProps {
 
 export function MedicalAlertModal({ isOpen, onClose, symptomName }: MedicalAlertModalProps) {
   const [countdown, setCountdown] = useState(15);
+
+  // Traducir el nombre del síntoma si viene en inglés
+  const translatedSymptomName = SYMPTOM_TYPE_LABELS[symptomName as SymptomType] || symptomName;
 
   useEffect(() => {
     if (isOpen) {
@@ -67,7 +72,7 @@ export function MedicalAlertModal({ isOpen, onClose, symptomName }: MedicalAlert
             <div className="space-y-5">
               {/* Texto principal */}
               <p className="text-[#18314F]">
-                Has reportado <span className="font-semibold">{symptomName}</span>, te recomendamos que hagas lo siguiente:
+                Has reportado <span className="font-semibold">{translatedSymptomName}</span>, te recomendamos que hagas lo siguiente:
               </p>
 
               {/* Lista de recomendaciones */}

@@ -361,7 +361,7 @@ export function SupervisorTeamAlertsPage() {
                     )}
                   </div>
                   
-                  <p className="text-gray-600 mb-3 whitespace-pre-line">{cleanMessage}</p>
+                  <p className="text-gray-600 mb-3 whitespace-pre-line">{cleanMessage.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|✅|📝|🔔|⚠️|❌|✔️|📋/gu, '').trim()}</p>
                   
                   <div className="flex items-center gap-6 text-sm text-gray-500">
                     <div className="flex items-center gap-2">

@@ -64,6 +64,8 @@ export function EmployeeAlertsPage() {
         return 'Oxigenación Baja';
       case 'high_hr':
         return 'Ritmo Cardíaco Elevado';
+      case 'symptom_report':
+        return 'Reporte de Síntoma';
       case 'symptom_reviewed':
         return 'Síntoma Revisado por Supervisor';
       case 'symptom_severe':
@@ -259,19 +261,16 @@ export function EmployeeAlertsPage() {
             const isSymptomAlert = alert.alert_type?.startsWith('symptom_');
             const isNotification = alert.alert_type === 'notification';
 
-            // Limpiar emojis del mensaje y extraer comentarios del supervisor
-            let cleanMessage = alert.message || '';
+            // Limpiar mensaje y extraer comentarios del supervisor
+            let cleanMessage = (alert.message || '').replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|\u2705|\ud83d\udcdd|\ud83d\udd14|\u26a0\ufe0f|\u274c|\u2714\ufe0f|\ud83d\udccb/gu, '').trim();
             let supervisorComments = '';
             
-            // Remover emojis comunes
-            cleanMessage = cleanMessage.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|✅|📝|🔔|⚠️|❌|✔️/gu, '').trim();
-            
-            // Extraer comentarios del supervisor si existen
-            const commentsMatch = cleanMessage.match(/Comentarios del supervisor:\s*(.+)/i);
+            // Extraer comentarios del supervisor si existen (con o sin emoji)
+            const commentsMatch = cleanMessage.match(/Comentarios del supervisor:\s*(.+?)(?:\n|$)/is);
             if (commentsMatch) {
               supervisorComments = commentsMatch[1].trim();
-              // Remover los comentarios del mensaje principal
-              cleanMessage = cleanMessage.replace(/Comentarios del supervisor:.*/i, '').trim();
+              // Remover "Comentarios del supervisor:" y todo lo que le sigue del mensaje principal
+              cleanMessage = cleanMessage.replace(/Comentarios del supervisor:[\s\S]*/i, '').trim();
             }
 
             // Universal card style for all alerts, with special blue for symptom alerts
@@ -342,9 +341,9 @@ export function EmployeeAlertsPage() {
                   <div className="flex flex-col gap-2 min-w-[200px]">
                     {/* Comentarios del supervisor - Para alertas de síntomas revisados */}
                     {isSymptomAlert && supervisorComments && (
-                      <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
-                        <p className="text-xs font-semibold text-gray-700 mb-2">Comentarios del supervisor:</p>
-                        <p className="text-sm text-gray-800 leading-relaxed">
+                      <div className="bg-gray-100 border border-gray-300 rounded-lg p-4 text-center">
+                        <p className="text-sm font-bold text-gray-700 mb-1">Comentarios del supervisor</p>
+                        <p className="text-xs text-gray-600 leading-relaxed">
                           {supervisorComments}
                         </p>
                       </div>
@@ -369,7 +368,7 @@ export function EmployeeAlertsPage() {
                     )}
 
                     {/* Estado: Resuelta */}
-                    {(alert.is_resolved || alert.status === 'resolved') && !isSymptomAlert && (
+                    {(alert.is_resolved || alert.status === 'resolved') && (
                       <div className="flex items-center gap-2 text-green-600">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -382,13 +381,6 @@ export function EmployeeAlertsPage() {
                             </p>
                           )}
                         </div>
-                      </div>
-                    )}
-                    
-                    {/* Badge de estado para alertas de síntomas revisados */}
-                    {isSymptomAlert && (alert.is_resolved || alert.status === 'resolved') && (
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
-                        <p className="text-sm font-bold text-yellow-800">Pendiente</p>
                       </div>
                     )}
                   </div>
