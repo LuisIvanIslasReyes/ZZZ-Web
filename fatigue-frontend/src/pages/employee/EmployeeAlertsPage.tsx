@@ -259,6 +259,21 @@ export function EmployeeAlertsPage() {
             const isSymptomAlert = alert.alert_type?.startsWith('symptom_');
             const isNotification = alert.alert_type === 'notification';
 
+            // Limpiar emojis del mensaje y extraer comentarios del supervisor
+            let cleanMessage = alert.message || '';
+            let supervisorComments = '';
+            
+            // Remover emojis comunes
+            cleanMessage = cleanMessage.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|✅|📝|🔔|⚠️|❌|✔️/gu, '').trim();
+            
+            // Extraer comentarios del supervisor si existen
+            const commentsMatch = cleanMessage.match(/Comentarios del supervisor:\s*(.+)/i);
+            if (commentsMatch) {
+              supervisorComments = commentsMatch[1].trim();
+              // Remover los comentarios del mensaje principal
+              cleanMessage = cleanMessage.replace(/Comentarios del supervisor:.*/i, '').trim();
+            }
+
             // Universal card style for all alerts, with special blue for symptom alerts
             return (
               <div
@@ -279,21 +294,24 @@ export function EmployeeAlertsPage() {
                   <div className="flex-1">
                     {/* Header: Icon + Title + Status */}
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
-                      {isSymptomAlert ? (
-                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#18314F">
-                          <circle cx="12" cy="12" r="10" stroke="#18314F" strokeWidth="2" fill="#E8F0FA" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01" stroke="#18314F" />
-                        </svg>
-                      ) : !isNotification && getSeverityIcon(alert.severity)}
+                      {!isSymptomAlert && !isNotification && getSeverityIcon(alert.severity)}
                       <h3 className={`text-xl font-semibold ${isSymptomAlert ? 'text-[#18314F]' : isNotification ? 'text-indigo-900' : 'text-[#18314F]'}`}>
                         {getAlertTypeLabel(alert.alert_type || 'unknown')}
                       </h3>
+                      <span className={`text-sm font-semibold ${
+                        alert.severity === 'critical' || alert.severity === 'high' ? 'text-red-600' :
+                        alert.severity === 'medium' ? 'text-yellow-600' : 'text-blue-600'
+                      }`}>
+                        {alert.severity === 'critical' ? 'Crítico' :
+                         alert.severity === 'high' ? 'Alto' :
+                         alert.severity === 'medium' ? 'Moderado' : 'Bajo'}
+                      </span>
                       {getStatusBadge(alert.status || 'pending')}
                     </div>
 
                     {/* Message */}
                     <p className={`mb-4 text-base leading-relaxed whitespace-pre-line ${isSymptomAlert ? 'text-[#18314F] font-medium' : 'text-gray-700'}`}>
-                      {alert.message}
+                      {cleanMessage}
                     </p>
 
                     {/* Date and Fatigue Score */}
@@ -322,6 +340,16 @@ export function EmployeeAlertsPage() {
                   </div>
 
                   <div className="flex flex-col gap-2 min-w-[200px]">
+                    {/* Comentarios del supervisor - Para alertas de síntomas revisados */}
+                    {isSymptomAlert && supervisorComments && (
+                      <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+                        <p className="text-xs font-semibold text-gray-700 mb-2">Comentarios del supervisor:</p>
+                        <p className="text-sm text-gray-800 leading-relaxed">
+                          {supervisorComments}
+                        </p>
+                      </div>
+                    )}
+
                     {/* Alerta no resuelta - Vista de empleado */}
                     {!alert.is_resolved && alert.status !== 'resolved' && !isSymptomAlert && (
                       <div className="space-y-3">
@@ -341,7 +369,7 @@ export function EmployeeAlertsPage() {
                     )}
 
                     {/* Estado: Resuelta */}
-                    {(alert.is_resolved || alert.status === 'resolved') && (
+                    {(alert.is_resolved || alert.status === 'resolved') && !isSymptomAlert && (
                       <div className="flex items-center gap-2 text-green-600">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -354,6 +382,13 @@ export function EmployeeAlertsPage() {
                             </p>
                           )}
                         </div>
+                      </div>
+                    )}
+                    
+                    {/* Badge de estado para alertas de síntomas revisados */}
+                    {isSymptomAlert && (alert.is_resolved || alert.status === 'resolved') && (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+                        <p className="text-sm font-bold text-yellow-800">Pendiente</p>
                       </div>
                     )}
                   </div>

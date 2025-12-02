@@ -83,6 +83,8 @@ export function SupervisorTeamAlertsPage() {
       case 'heart_rate_very_high':
       case 'high_hr':
         return 'Ritmo Cardíaco Alto';
+      case 'symptom_reviewed':
+        return 'Síntoma Revisado por Supervisor';
       case 'symptom_severe':
         return 'Síntoma Severo';
       case 'symptom_moderate':
@@ -99,6 +101,10 @@ export function SupervisorTeamAlertsPage() {
         return 'Alerta de Horas Extras';
       case 'low_spo2':
         return 'Oxigenación Baja';
+      case 'high_fatigue':
+        return 'Nivel Alto de Fatiga';
+      case 'heart_rate_high':
+        return 'Frecuencia Cardíaca Alta';
       default:
         return alertType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
@@ -322,7 +328,12 @@ export function SupervisorTeamAlertsPage() {
             <p className="text-gray-500">No se encontraron alertas con los filtros seleccionados</p>
           </div>
         ) : (
-          filteredAlerts.map((alert) => (
+          filteredAlerts.map((alert) => {
+            // Limpiar emojis del mensaje
+            const cleanMessage = (alert.message || '').replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|✅|📝|🔔|⚠️|❌|✔️/gu, '').trim();
+            const isSymptomAlert = alert.alert_type?.startsWith('symptom_');
+            
+            return (
             <div key={alert.id} className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 border-l-4 ${
               alert.severity === 'critical' ? 'border-l-red-500' :
               alert.severity === 'high' ? 'border-l-orange-500' :
@@ -331,11 +342,15 @@ export function SupervisorTeamAlertsPage() {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    {getSeverityIcon(alert.severity)}
+                    {!isSymptomAlert && getSeverityIcon(alert.severity)}
                     <h3 className="text-lg font-semibold text-[#18314F]">
                       {getAlertTypeLabel(alert.alert_type || 'unknown')}
                     </h3>
-                    <span className={`px-3 py-1 ${getSeverityColor(alert.severity)} rounded-full text-xs font-semibold border`}>
+                    <span className={`text-sm font-semibold ${
+                      alert.severity === 'critical' ? 'text-red-600' :
+                      alert.severity === 'high' ? 'text-orange-600' :
+                      alert.severity === 'medium' || alert.severity === 'moderate' ? 'text-yellow-600' : 'text-blue-600'
+                    }`}>
                       {getSeverityLabel(alert.severity)}
                     </span>
                     {getStatusBadge(alert)}
@@ -346,7 +361,7 @@ export function SupervisorTeamAlertsPage() {
                     )}
                   </div>
                   
-                  <p className="text-gray-600 mb-3 whitespace-pre-line">{alert.message}</p>
+                  <p className="text-gray-600 mb-3 whitespace-pre-line">{cleanMessage}</p>
                   
                   <div className="flex items-center gap-6 text-sm text-gray-500">
                     <div className="flex items-center gap-2">
@@ -432,7 +447,8 @@ export function SupervisorTeamAlertsPage() {
                 </div>
               </div>
             </div>
-          ))
+          );
+          })
         )}
       </div>
 
