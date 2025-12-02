@@ -289,17 +289,17 @@ export function MySymptomsPage() {
                             </svg>
                             <div>
                               <div className="font-medium text-[#18314F]">
-                                {new Date(symptom.reported_at).toLocaleDateString('es-ES', {
+                                {symptom.created_at ? new Date(symptom.created_at).toLocaleDateString('es-ES', {
                                   day: '2-digit',
                                   month: 'short',
                                   year: 'numeric'
-                                })}
+                                }) : 'Fecha no disponible'}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {new Date(symptom.reported_at).toLocaleTimeString('es-ES', {
+                                {symptom.created_at ? new Date(symptom.created_at).toLocaleTimeString('es-ES', {
                                   hour: '2-digit',
                                   minute: '2-digit'
-                                })}
+                                }) : '--:--'}
                               </div>
                             </div>
                           </div>
