@@ -45,7 +45,10 @@ export function EmployeeAlertsPage() {
   };
 
   const getAlertTypeLabel = (alertType: string) => {
-    switch (alertType) {
+    // Normalizar el tipo a minúsculas y con guiones bajos
+    const normalizedType = alertType.toLowerCase().replace(/\s+/g, '_');
+    
+    switch (normalizedType) {
       case 'notification':
         return 'Notificación de tu Supervisor';
       case 'high_fatigue':
@@ -83,7 +86,7 @@ export function EmployeeAlertsPage() {
       case 'overtime_alert':
         return 'Exceso de Horas de Trabajo';
       default:
-        return alertType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return normalizedType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
   };
 
@@ -305,13 +308,22 @@ export function EmployeeAlertsPage() {
                          alert.severity === 'high' ? 'Alto' :
                          alert.severity === 'medium' ? 'Moderado' : 'Bajo'}
                       </span>
-                      {getStatusBadge(alert.status || 'pending')}
+                      {!isSymptomAlert && getStatusBadge(alert.status || 'pending')}
                     </div>
 
                     {/* Message */}
-                    <p className={`mb-4 text-base leading-relaxed whitespace-pre-line ${isSymptomAlert ? 'text-[#18314F] font-medium' : 'text-gray-700'}`}>
+                    <p className={`mb-2 text-base leading-relaxed whitespace-pre-line ${isSymptomAlert ? 'text-[#18314F] font-medium' : 'text-gray-700'}`}>
                       {cleanMessage}
                     </p>
+
+                    {/* Comentarios del supervisor - Debajo del mensaje para alertas de síntomas */}
+                    {isSymptomAlert && supervisorComments && (
+                      <div className="mb-4 mt-2">
+                        <p className="text-sm font-bold text-gray-900">
+                          Comentarios del supervisor: <span className="font-normal text-gray-700">{supervisorComments}</span>
+                        </p>
+                      </div>
+                    )}
 
                     {/* Date and Fatigue Score */}
                     <div className="flex items-center gap-6 text-sm text-gray-500">
@@ -339,13 +351,20 @@ export function EmployeeAlertsPage() {
                   </div>
 
                   <div className="flex flex-col gap-2 min-w-[200px]">
-                    {/* Comentarios del supervisor - Para alertas de síntomas revisados */}
-                    {isSymptomAlert && supervisorComments && (
-                      <div className="bg-gray-100 border border-gray-300 rounded-lg p-4 text-center">
-                        <p className="text-sm font-bold text-gray-700 mb-1">Comentarios del supervisor</p>
-                        <p className="text-xs text-gray-600 leading-relaxed">
-                          {supervisorComments}
-                        </p>
+                    {/* Estado: Resuelta - Esquina superior derecha para síntomas */}
+                    {isSymptomAlert && (alert.is_resolved || alert.status === 'resolved') && (
+                      <div className="flex items-center justify-end gap-2 text-green-600">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <div className="text-right">
+                          <p className="text-base font-bold">Resuelta</p>
+                          {alert.resolved_at && (
+                            <p className="text-sm text-green-500">
+                              {new Date(alert.resolved_at).toLocaleDateString('es-ES')}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     )}
 
@@ -367,8 +386,8 @@ export function EmployeeAlertsPage() {
                       </div>
                     )}
 
-                    {/* Estado: Resuelta */}
-                    {(alert.is_resolved || alert.status === 'resolved') && (
+                    {/* Estado: Resuelta - Para alertas no relacionadas con síntomas */}
+                    {!isSymptomAlert && (alert.is_resolved || alert.status === 'resolved') && (
                       <div className="flex items-center gap-2 text-green-600">
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />

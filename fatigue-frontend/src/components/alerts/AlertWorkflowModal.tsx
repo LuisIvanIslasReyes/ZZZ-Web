@@ -145,34 +145,22 @@ export function AlertWorkflowModal({
 
         {/* Content */}
         <div className="p-6 overflow-y-auto flex-1 space-y-5">
-          {/* Alert Info Card */}
-          <div className={`${severityInfo.bgColor} ${severityInfo.borderColor} border rounded-xl p-5`}>
-            <div className="flex items-start gap-4">
-              <div 
-                className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: `${severityInfo.color}20` }}
-              >
-                <svg className="w-5 h-5" style={{ color: severityInfo.color }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 flex-wrap mb-2">
-                  <h3 className="text-lg font-bold" style={{ color: severityInfo.color }}>
-                    Alerta de Severidad {severityInfo.label}
-                  </h3>
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${statusInfo.bgColor} ${statusInfo.color}`}>
-                    {statusInfo.label}
-                  </span>
-                </div>
-                <p className="text-gray-700 text-sm leading-relaxed">{alert.message}</p>
-                <div className="flex items-center gap-2 mt-3 text-xs text-gray-500">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span>{new Date(alert.created_at).toLocaleString('es-ES')}</span>
-                </div>
-              </div>
+          {/* Alert Info */}
+          <div>
+            <div className="flex items-center gap-3 flex-wrap mb-2">
+              <h3 className="text-lg font-bold text-gray-900">
+                Alerta de Severidad {severityInfo.label}
+              </h3>
+              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${statusInfo.bgColor} ${statusInfo.color}`}>
+                {statusInfo.label}
+              </span>
+            </div>
+            <p className="text-gray-700 text-sm leading-relaxed mb-3">{alert.message.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|\u2705|\ud83d\udcdd|\ud83d\udd14|\u26a0\ufe0f|\u274c|\u2714\ufe0f|\ud83d\udccb/gu, '').trim()}</p>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>{new Date(alert.created_at).toLocaleString('es-ES')}</span>
             </div>
           </div>
 
@@ -261,35 +249,15 @@ export function AlertWorkflowModal({
                     key={action.key}
                     onClick={() => setSelectedAction(action.nextStatus as AlertStatus)}
                     className={`
-                      p-4 rounded-xl border-2 transition-all text-left
+                      px-5 py-3 rounded-xl font-semibold transition-colors
                       ${selectedAction === action.nextStatus 
-                        ? 'border-[#18314F] bg-[#18314F]/5 shadow-md' 
-                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        ? 'bg-[#18314F] text-white' 
+                        : 'bg-[#18314F]/80 hover:bg-[#18314F] text-white'
                       }
                     `}
                     disabled={isProcessing}
                   >
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-10 h-10 rounded-lg flex items-center justify-center text-white flex-shrink-0"
-                        style={{ backgroundColor: action.color }}
-                      >
-                        {action.key === 'acknowledge' ? (
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-[#18314F] text-sm">{action.label}</h4>
-                        <p className="text-xs text-gray-500">{action.description}</p>
-                      </div>
-                    </div>
+                    {action.label}
                   </button>
                 ))}
               </div>
