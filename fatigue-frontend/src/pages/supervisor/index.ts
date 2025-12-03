@@ -10,3 +10,4 @@ export { SupervisorTeamAlertsPage } from './SupervisorTeamAlertsPage';
 export { SupervisorTeamReportsPage } from './SupervisorTeamReportsPage';
 export { BreaksManagementPage } from './BreaksManagementPage';
 export { TeamSymptomsPage } from './TeamSymptomsPage';
+export { SupervisorProfilePage } from './SupervisorProfilePage';
