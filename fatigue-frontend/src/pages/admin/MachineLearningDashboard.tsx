@@ -128,6 +128,56 @@ export function MachineLearningDashboard() {
     return num.toLocaleString('es-ES');
   };
 
+  const getFeatureInfo = (featureName: string): { name: string; description: string } => {
+    const featureMap: Record<string, { name: string; description: string }> = {
+      'movement_variance': {
+        name: 'Varianza del Movimiento',
+        description: 'Mide la variabilidad en los patrones de movimiento del trabajador'
+      },
+      'activity_normalized': {
+        name: 'Actividad Normalizada',
+        description: 'Nivel de actividad física ajustado según parámetros estándar'
+      },
+      'spo2_variance': {
+        name: 'Varianza de SpO2',
+        description: 'Fluctuación en los niveles de saturación de oxígeno en sangre'
+      },
+      'hrv_sdnn': {
+        name: 'HRV SDNN',
+        description: 'Desviación estándar de intervalos entre latidos (variabilidad cardíaca)'
+      },
+      'desaturation_count': {
+        name: 'Conteo de Desaturaciones',
+        description: 'Número de eventos donde el SpO2 cae por debajo del nivel normal'
+      },
+      'activity_level': {
+        name: 'Nivel de Actividad',
+        description: 'Intensidad general de la actividad física registrada'
+      },
+      'hrv_rmssd': {
+        name: 'HRV RMSSD',
+        description: 'Raíz cuadrada media de diferencias sucesivas entre latidos'
+      },
+      'movement_entropy': {
+        name: 'Entropía del Movimiento',
+        description: 'Complejidad y predictibilidad de los patrones de movimiento'
+      },
+      'hrv_ratio': {
+        name: 'Ratio de HRV',
+        description: 'Proporción entre diferentes componentes de variabilidad cardíaca'
+      },
+      'hr_activity_ratio': {
+        name: 'Ratio FC/Actividad',
+        description: 'Relación entre frecuencia cardíaca y nivel de actividad física'
+      }
+    };
+
+    return featureMap[featureName] || { 
+      name: featureName, 
+      description: 'Característica biométrica para análisis de fatiga' 
+    };
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -235,7 +285,7 @@ export function MachineLearningDashboard() {
               <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
                 <p className="text-xs text-gray-600 mb-1 font-semibold">ALGORITMO</p>
                 <p className="text-lg font-bold text-blue-900">
-                  {modelInfo.ml_service.type}
+                  {modelInfo.training.algorithm || modelInfo.ml_service.type || 'K-Means Clustering'}
                 </p>
               </div>
 
@@ -252,37 +302,6 @@ export function MachineLearningDashboard() {
                   <p className="text-xl font-bold text-gray-900">
                     {formatNumber(modelInfo.training.samples)}
                   </p>
-                </div>
-              </div>
-
-              {/* Métricas de Calidad */}
-              <div className="border border-gray-200 p-4 rounded-lg">
-                <p className="text-sm font-semibold text-gray-900 mb-3">Métricas de Rendimiento</p>
-                <div className="space-y-2">
-                  {modelInfo.quality_metrics.accuracy !== undefined && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-700">Accuracy:</span>
-                      <span className={`px-2 py-1 text-xs font-bold rounded ${getScoreQuality(modelInfo.quality_metrics.accuracy).color}`}>
-                        {(modelInfo.quality_metrics.accuracy * 100).toFixed(2)}%
-                      </span>
-                    </div>
-                  )}
-                  {modelInfo.quality_metrics.precision !== undefined && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-700">Precision:</span>
-                      <span className="px-2 py-1 text-xs font-bold text-blue-700 bg-blue-100 rounded">
-                        {(modelInfo.quality_metrics.precision * 100).toFixed(2)}%
-                      </span>
-                    </div>
-                  )}
-                  {modelInfo.quality_metrics.recall !== undefined && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-700">Recall:</span>
-                      <span className="px-2 py-1 text-xs font-bold text-purple-700 bg-purple-100 rounded">
-                        {(modelInfo.quality_metrics.recall * 100).toFixed(2)}%
-                      </span>
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -497,20 +516,45 @@ export function MachineLearningDashboard() {
 
       {/* Features del Modelo */}
       {modelInfo?.ml_service.features && (
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6 border border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">
-            Características del Modelo ({modelInfo.ml_service.features_count} Features)
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-            {modelInfo.ml_service.features.map((feature, index) => (
-              <div key={index} className="bg-blue-50 border border-blue-200 px-3 py-2 rounded-lg">
-                <p className="text-xs font-semibold text-blue-900 text-center">{feature}</p>
-              </div>
-            ))}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Características del Modelo</h2>
+            <span className="text-base font-bold text-gray-600 bg-gray-100 px-4 py-2 rounded-lg">
+              {modelInfo.ml_service.features_count} Features
+            </span>
           </div>
-          <div className="mt-4 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-            <strong>Nota:</strong> Estas características son extraídas de las métricas biométricas capturadas por los 
-            dispositivos ESP32 (ritmo cardíaco, SpO2, acelerómetro) y utilizadas para entrenar el modelo de clustering.
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-h-[600px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            {modelInfo.ml_service.features.map((feature, index) => {
+              const featureInfo = getFeatureInfo(feature);
+              
+              return (
+                <div 
+                  key={index} 
+                  className="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 rounded-xl p-6 hover:border-[#18314F] hover:shadow-lg transition-all group"
+                >
+                  <div className="flex flex-col h-full">
+                    <div className="mb-4">
+                      <div className="w-14 h-14 bg-[#18314F] rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span className="text-2xl font-bold text-white">{index + 1}</span>
+                      </div>
+                      
+                      <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
+                        {featureInfo.name}
+                      </h3>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4 flex-1 leading-relaxed">
+                      {featureInfo.description}
+                    </p>
+                    
+                    <code className="text-xs font-mono text-gray-500 bg-white px-3 py-2 rounded-lg border border-gray-300 block truncate">
+                      {feature}
+                    </code>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

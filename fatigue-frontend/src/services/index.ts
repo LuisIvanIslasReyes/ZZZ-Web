@@ -26,3 +26,4 @@ export { symptomService } from './symptom.service';
 export { breakService } from './break.service';
 export { default as mlService } from './ml.service';
 export { supervisorDashboardService } from './supervisorDashboard.service';
+export { default as adminUsersService } from './adminUsers.service';

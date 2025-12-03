@@ -38,7 +38,6 @@ export default function CompaniesPage() {
     try {
       setIsSubmitting(true);
       
-      // Primero crear la empresa
       const companyData = {
         name: data.name,
         contact_email: data.contact_email,
@@ -49,29 +48,8 @@ export default function CompaniesPage() {
         subscription_end: data.subscription_end,
       };
       
-      const newCompany = await companyService.createCompany(companyData);
-      
-      // Si se proporcionaron datos del supervisor, crearlo
-      if (data.supervisor_email && data.supervisor_password) {
-        const supervisorData = {
-          email: data.supervisor_email,
-          password: data.supervisor_password,
-          first_name: data.supervisor_first_name,
-          last_name: data.supervisor_last_name,
-          company: newCompany.id,
-          role: 'supervisor' as const,
-        };
-        
-        try {
-          await supervisorService.createSupervisor(supervisorData);
-          toast.success('Empresa y supervisor creados exitosamente');
-        } catch (error) {
-          console.error('Error creating supervisor:', error);
-          toast.error('Empresa creada pero hubo un error al crear el supervisor. Créalo manualmente desde el botón "Supervisores".');
-        }
-      } else {
-        toast.success('Empresa creada exitosamente. Recuerda crear su cuenta de supervisor.');
-      }
+      await companyService.createCompany(companyData);
+      toast.success('Empresa creada exitosamente. Ahora crea su cuenta de supervisor desde el botón "Supervisores".');
       
       setIsModalOpen(false);
       setEditingCompany(null);

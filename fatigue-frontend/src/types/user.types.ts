@@ -65,3 +65,41 @@ export interface ChangePasswordData {
   old_password: string;
   new_password: string;
 }
+
+// Admin User Types
+export interface AdminUser {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  phone?: string;
+  is_active: boolean;
+  is_staff: boolean;
+  is_superuser: boolean;
+  last_login?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateAdminUserData {
+  email: string;
+  password: string;
+  password_confirm: string;
+  first_name: string;
+  last_name: string;
+  phone?: string;
+  is_active?: boolean;
+  is_staff?: boolean;
+  is_superuser?: boolean;
+}
+
+export interface UpdateAdminUserData {
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  is_active?: boolean;
+  is_staff?: boolean;
+  is_superuser?: boolean;
+}

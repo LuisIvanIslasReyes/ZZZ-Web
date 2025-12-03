@@ -8,7 +8,10 @@ export type {
   User, 
   CreateUserData, 
   UpdateUserData, 
-  ChangePasswordData 
+  ChangePasswordData,
+  AdminUser,
+  CreateAdminUserData,
+  UpdateAdminUserData
 } from './user.types';
 export { UserRole } from './user.types';
 
