@@ -33,17 +33,9 @@ class AuthService {
    * Cerrar sesión
    */
   async logout(): Promise<void> {
-    try {
-      const refreshToken = localStorage.getItem('refresh_token');
-      
-      if (refreshToken) {
-        await api.post('/auth/logout/', { refresh: refreshToken });
-      }
-    } catch (error) {
-      console.error('Error during logout:', error);
-    } finally {
-      this.clearTokens();
-    }
+    // Simplemente limpiamos los tokens localmente
+    // Los JWT son stateless, no necesitamos invalidar en el backend
+    this.clearTokens();
   }
 
   /**
