@@ -66,15 +66,22 @@ export function SupervisorTeamAlertsPage() {
   };
 
   const getAlertTypeLabel = (alertType: string) => {
-    switch (alertType) {
+    // Normalizar el tipo a minúsculas y con guiones bajos
+    const normalizedType = alertType.toLowerCase().replace(/\s+/g, '_');
+    
+    switch (normalizedType) {
       case 'notification':
-        return 'Notificación';
+      case 'team_notification':
+        return 'Notificación del Equipo';
+      case 'symptom_report':
+        return 'Reporte de Síntoma';
       case 'fatigue_low':
         return 'Fatiga Baja';
       case 'fatigue_medium':
       case 'fatigue_moderate':
         return 'Fatiga Moderada';
       case 'fatigue_high':
+      case 'high_fatigue':
         return 'Fatiga Alta';
       case 'fatigue_critical':
         return 'Fatiga Crítica';
@@ -82,6 +89,7 @@ export function SupervisorTeamAlertsPage() {
         return 'Fatiga y Ritmo Cardíaco';
       case 'heart_rate_very_high':
       case 'high_hr':
+      case 'heart_rate_high':
         return 'Ritmo Cardíaco Alto';
       case 'symptom_reviewed':
         return 'Síntoma Revisado por Supervisor';
@@ -101,12 +109,8 @@ export function SupervisorTeamAlertsPage() {
         return 'Alerta de Horas Extras';
       case 'low_spo2':
         return 'Oxigenación Baja';
-      case 'high_fatigue':
-        return 'Nivel Alto de Fatiga';
-      case 'heart_rate_high':
-        return 'Frecuencia Cardíaca Alta';
       default:
-        return alertType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return normalizedType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
   };
 
