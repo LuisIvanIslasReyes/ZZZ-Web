@@ -34,16 +34,23 @@ export type SymptomStatus = 'pending' | 'reviewed' | 'dismissed';
 export interface Symptom {
   id: number;
   employee: number;
+  employee_name?: string;
+  employee_email?: string;
   symptom_type: SymptomType;
   symptom_type_display?: string;
   severity: 'low' | 'medium' | 'high';
+  severity_display?: string;
   description?: string;
   status?: SymptomStatus; // Opcional porque el backend puede no devolverlo
   is_reviewed?: boolean; // Campo del backend
-  reported_at: string;
-  reviewed_at?: string;
+  created_at: string; // Fecha de creación del síntoma
+  updated_at?: string; // Fecha de actualización
+  reviewed_at?: string | null; // Fecha de revisión
+  reviewed_by?: number | null; // ID del revisor
+  reviewed_by_name?: string | null; // Nombre del revisor
   reviewer?: number;
-  reviewer_notes?: string;
+  reviewer_notes?: string | null;
+  notes?: string | null;
 }
 
 // Labels en español para mostrar en la UI

@@ -134,97 +134,57 @@ export function TeamSymptomsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-4xl font-bold text-[#18314F] mb-1">Síntomas del Equipo</h1>
-          <p className="text-lg text-[#18314F]/70">Revisa y gestiona los síntomas reportados por tu equipo</p>
-        </div>
-        {stats.pending > 0 && (
-          <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold animate-pulse">
-            {stats.pending} pendiente{stats.pending !== 1 ? 's' : ''}
-          </div>
-        )}
+      <div>
+        <h1 className="text-3xl font-bold text-[#18314F] mb-1">Síntomas del Equipo</h1>
+        <p className="text-gray-600">Gestión y seguimiento de síntomas del equipo</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 rounded-xl p-4">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 border-l-4 border-l-blue-500">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wide">Total</p>
-              <p className="text-2xl font-bold text-[#18314F]">{stats.total}</p>
-            </div>
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#3B82F6">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="text-4xl font-bold text-gray-900 mb-1">{stats.total}</div>
+          <div className="text-sm text-gray-600">Total</div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 border-l-4 border-l-yellow-500">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wide">En Espera</p>
-              <p className="text-2xl font-bold text-[#18314F]">{stats.pending}</p>
-            </div>
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#F59E0B">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="text-4xl font-bold text-yellow-600 mb-1">{stats.pending}</div>
+          <div className="text-sm text-gray-600">Por revisar</div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 border-l-4 border-l-green-500">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wide">Revisados</p>
-              <p className="text-2xl font-bold text-[#18314F]">{stats.reviewed}</p>
-            </div>
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22C55E">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 border-l-4 border-l-gray-500">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-gray-500 font-semibold mb-1 uppercase tracking-wide">Descartados</p>
-              <p className="text-2xl font-bold text-[#18314F]">{stats.dismissed}</p>
-            </div>
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#6B7280">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </div>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="text-4xl font-bold text-gray-900 mb-1">{stats.reviewed}</div>
+          <div className="text-sm text-gray-600">Revisados</div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <button
           onClick={() => setActiveFilter('all')}
-          className={`px-6 py-2 rounded-lg font-medium transition-all ${
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeFilter === 'all'
-              ? 'bg-[#18314F] text-white shadow-md'
-              : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
+              ? 'bg-[#18314F] text-white'
+              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
           }`}
         >
           Todos
         </button>
         <button
           onClick={() => setActiveFilter('pending')}
-          className={`px-6 py-2 rounded-lg font-medium transition-all ${
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeFilter === 'pending'
-              ? 'bg-[#18314F] text-white shadow-md'
-              : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
+              ? 'bg-[#18314F] text-white'
+              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
           }`}
         >
-          En Espera {stats.pending > 0 && <span className="ml-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-xs">{stats.pending}</span>}
+          Pendientes
         </button>
         <button
           onClick={() => setActiveFilter('reviewed')}
-          className={`px-6 py-2 rounded-lg font-medium transition-all ${
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeFilter === 'reviewed'
-              ? 'bg-[#18314F] text-white shadow-md'
-              : 'bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200'
+              ? 'bg-[#18314F] text-white'
+              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
           }`}
         >
           Revisados
@@ -234,19 +194,29 @@ export function TeamSymptomsPage() {
       {/* Symptoms List */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {filteredSymptoms.length === 0 ? (
-          <div className="text-center py-16">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="text-center py-12">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <h3 className="text-2xl font-semibold text-[#18314F] mb-2">No hay síntomas</h3>
-            <p className="text-gray-600">
+            <p className="text-sm text-gray-600">
               {activeFilter === 'pending' && 'No hay síntomas pendientes de revisión'}
               {activeFilter === 'reviewed' && 'No hay síntomas revisados'}
-              {activeFilter === 'all' && 'Tu equipo no ha reportado síntomas'}
+              {activeFilter === 'all' && 'No hay síntomas reportados'}
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-100">
+          <table className="min-w-full">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Síntoma</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase w-32">Severidad</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase w-32">Estado</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase w-28">Empleado</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase w-44">Fecha y Hora</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase w-56">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
             {filteredSymptoms.map((symptom) => {
               const statusBadge = getStatusBadge(symptom);
               const severityBadge = getSeverityBadge(symptom.severity);
@@ -254,57 +224,58 @@ export function TeamSymptomsPage() {
               const isReviewed = symptom.is_reviewed === true;
               
               return (
-                <div key={symptom.id} className={`p-4 transition-colors ${isReviewed ? 'bg-gray-50/50' : 'hover:bg-gray-50'}`}>
-                  <div className="flex items-center justify-between gap-4">
-                    {/* Contenido principal */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        {isReviewed && (
-                          <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                        <h3 className={`font-semibold ${isReviewed ? 'text-gray-500 line-through' : 'text-[#18314F]'}`}>
-                          {symptom.symptom_type_display || symptom.symptom_type}
-                        </h3>
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 ${severityBadge.className} rounded text-xs font-medium`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${severityBadge.dotColor}`}></span>
-                          {severityBadge.label}
-                        </span>
-                        <span className={`px-2 py-0.5 ${statusBadge.className} rounded text-xs font-medium`}>
-                          {statusBadge.label}
-                        </span>
-                      </div>
-                      {symptom.description && (
-                        <p className={`text-sm mb-1.5 ${isReviewed ? 'text-gray-400' : 'text-gray-600'}`}>{symptom.description}</p>
+                <tr key={symptom.id} className={isReviewed ? 'bg-gray-50' : 'hover:bg-gray-50'}>
+                  <td className="px-6 py-4">
+                    <div className="flex items-start gap-2">
+                      {isReviewed && (
+                        <svg className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
                       )}
-                      <div className="flex items-center gap-3 text-xs text-gray-400">
-                        <span className="flex items-center gap-1">
-                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                          ID: {symptom.employee}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          {new Date(symptom.reported_at).toLocaleDateString('es-ES', {
-                            day: '2-digit',
-                            month: 'short',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </span>
+                      <div className="min-w-0">
+                        <p className={`text-sm font-medium ${isReviewed ? 'text-gray-500 line-through' : 'text-gray-900'}`}>
+                          {symptom.symptom_type_display || symptom.symptom_type}
+                        </p>
+                        {symptom.description && (
+                          <p className="text-xs text-gray-500 mt-1 break-words">{symptom.description}</p>
+                        )}
+                        {symptom.reviewer_notes && (
+                          <p className="text-xs text-blue-600 mt-1 italic break-words">Nota: {symptom.reviewer_notes}</p>
+                        )}
                       </div>
                     </div>
-
-                    {/* Botones de acción */}
-                    {!symptom.is_reviewed && (
-                      <div className="flex items-center gap-2 flex-shrink-0">
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex items-center gap-1 px-2 py-1 ${severityBadge.className} rounded text-xs font-medium`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${severityBadge.dotColor}`}></span>
+                      {severityBadge.label}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 ${statusBadge.className} rounded text-xs font-medium`}>
+                      {statusBadge.label}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ID: {symptom.employee}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {symptom.created_at ? (() => {
+                      const date = new Date(symptom.created_at);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day} ${hours}:${minutes}:00`;
+                    })() : '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    {!symptom.is_reviewed ? (
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleReviewSymptom(symptom)}
-                          className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-1.5 px-3 rounded-lg transition-colors text-sm"
+                          className="text-[#18314F] hover:text-[#18314F]/80"
                         >
                           Revisar
                         </button>
@@ -323,7 +294,7 @@ export function TeamSymptomsPage() {
                               toast.error('Error al marcar síntoma');
                             }
                           }}
-                          className="bg-[#18314F] hover:bg-[#18314F]/90 text-white font-medium py-1.5 px-3 rounded-lg transition-colors text-sm"
+                          className="text-green-600 hover:text-green-800"
                         >
                           Atendido
                         </button>
@@ -342,35 +313,22 @@ export function TeamSymptomsPage() {
                               toast.error('Error al descartar síntoma');
                             }
                           }}
-                          className="bg-red-500 hover:bg-red-600 text-white font-medium py-1.5 px-3 rounded-lg transition-colors text-sm"
+                          className="text-red-600 hover:text-red-800"
                         >
                           Descartar
                         </button>
                       </div>
+                    ) : (
+                      <span className="text-gray-400 text-xs">
+                        {symptom.reviewed_at ? `Revisado ${new Date(symptom.reviewed_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}` : 'Completado'}
+                      </span>
                     )}
-                  </div>
-
-                  {/* Notas del revisor */}
-                  {symptom.reviewer_notes && (
-                    <div className="mt-3 bg-[#18314F]/5 border-l-2 border-[#18314F] p-3 rounded-r">
-                      <p className="text-xs font-medium text-[#18314F] mb-0.5">Notas de revisión:</p>
-                      <p className="text-sm text-gray-600">{symptom.reviewer_notes}</p>
-                      {symptom.reviewed_at && (
-                        <p className="text-xs text-gray-400 mt-1">
-                          Revisado el {new Date(symptom.reviewed_at).toLocaleDateString('es-ES', {
-                            day: '2-digit',
-                            month: 'short',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
+                  </td>
+                </tr>
               );
             })}
-          </div>
+            </tbody>
+          </table>
         )}
       </div>
 
