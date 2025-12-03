@@ -366,11 +366,21 @@ export function MainLayout() {
         {user && (
           <div className={`p-5 border-b border-white/10 ${!isSidebarOpen ? 'px-3' : ''}`}>
             <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'}`}>
-              <div className="avatar placeholder flex-shrink-0">
-                <div className="bg-gradient-to-br from-primary to-secondary text-white rounded-xl w-11 h-11">
-                  <span className="text-lg font-bold">
-                    {user.first_name?.[0]}{user.last_name?.[0]}
-                  </span>
+              <div className="avatar flex-shrink-0">
+                <div className="w-11 h-11 rounded-xl overflow-hidden">
+                  {user.avatar_url ? (
+                    <img 
+                      src={user.avatar_url} 
+                      alt={`${user.first_name} ${user.last_name}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img 
+                      src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
+                      alt="Default avatar"
+                      className="w-full h-full object-cover bg-white/10"
+                    />
+                  )}
                 </div>
               </div>
               {isSidebarOpen && (
