@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { alertService } from '../../services';
+import { CustomEvents, dispatchCustomEvent } from '../../utils/events';
 import type { FatigueAlert, AlertStatus } from '../../types';
 
 interface AlertWorkflowModalProps {
@@ -37,6 +38,8 @@ export function AlertWorkflowModal({
       } else if (action === 'resolve') {
         await alertService.resolveAlert(alert.id);
         toast.success('Alerta resuelta exitosamente');
+        // Disparar evento para actualizar el contador en el sidebar
+        dispatchCustomEvent(CustomEvents.ALERT_RESOLVED);
       }
       
       onUpdate();

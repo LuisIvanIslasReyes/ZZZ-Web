@@ -149,12 +149,12 @@ class AlertService {
   }
 
   /**
-   * Obtener conteo de alertas pendientes
+   * Obtener conteo de alertas activas (no resueltas ni descartadas)
    */
   async getPendingAlertsCount(): Promise<number> {
     const response = await api.get<PaginatedResponse<FatigueAlert>>(`${this.BASE_PATH}/`, {
       params: {
-        status: 'pending',
+        is_resolved: false,
         page_size: 1
       }
     });

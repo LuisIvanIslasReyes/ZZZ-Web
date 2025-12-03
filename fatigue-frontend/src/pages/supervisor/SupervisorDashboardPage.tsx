@@ -7,7 +7,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { dashboardService, reportService, notificationService } from '../../services';
+import { dashboardService, reportService, notificationService, alertService } from '../../services';
 import { LoadingSpinner, SendNotificationModal } from '../../components/common';
 import { DoughnutChart, TeamFatigueTrendChart, ProductivityFatigueChart, WorkHoursChart } from '../../components/charts';
 import { useAuth } from '../../contexts';
@@ -17,6 +17,7 @@ export function SupervisorDashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [pendingAlertsCount, setPendingAlertsCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isSendingNotification, setIsSendingNotification] = useState(false);
@@ -29,8 +30,12 @@ export function SupervisorDashboardPage() {
   const loadDashboard = async () => {
     try {
       setIsLoading(true);
-      const data = await dashboardService.getDashboardStats();
-      setStats(data);
+      const [dashboardData, alertsCount] = await Promise.all([
+        dashboardService.getDashboardStats(),
+        alertService.getPendingAlertsCount()
+      ]);
+      setStats(dashboardData);
+      setPendingAlertsCount(alertsCount);
     } catch (error) {
       console.error('Error loading dashboard:', error);
     } finally {
@@ -180,14 +185,14 @@ export function SupervisorDashboardPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-600 text-base font-medium">Alertas Activas</span>
-              <svg className={`w-8 h-8 ${stats.pending_alerts > 0 ? 'text-red-500' : 'text-green-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className={`w-8 h-8 ${pendingAlertsCount > 0 ? 'text-red-500' : 'text-green-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className={`text-4xl font-bold ${stats.pending_alerts > 0 ? 'text-red-500' : 'text-gray-900'}`}>{stats.pending_alerts}</span>
-              <span className={`text-sm font-medium ${stats.pending_alerts > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                {stats.pending_alerts > 0 ? 'Requieren atención' : 'Todo normal'}
+              <span className={`text-4xl font-bold ${pendingAlertsCount > 0 ? 'text-red-500' : 'text-gray-900'}`}>{pendingAlertsCount}</span>
+              <span className={`text-sm font-medium ${pendingAlertsCount > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                {pendingAlertsCount > 0 ? 'Requieren atención' : 'Todo normal'}
               </span>
             </div>
           </div>

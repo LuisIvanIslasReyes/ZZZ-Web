@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts';
 import { symptomService, alertService } from '../services';
+import { CustomEvents, listenToCustomEvent } from '../utils/events';
 import LogoBlanco from '../assets/logo/LogoBlanco.png';
 
 interface NavItem {
@@ -211,9 +212,20 @@ export function MainLayout() {
       // Poll every 30 seconds
       const interval = setInterval(loadAndPoll, 30000);
       
+      // Listen for alert events
+      const unsubscribeAlertResolved = listenToCustomEvent(CustomEvents.ALERT_RESOLVED, () => {
+        fetchPendingAlerts();
+      });
+      
+      const unsubscribeAlertCreated = listenToCustomEvent(CustomEvents.ALERT_CREATED, () => {
+        fetchPendingAlerts();
+      });
+      
       return () => {
         isMounted = false;
         clearInterval(interval);
+        unsubscribeAlertResolved();
+        unsubscribeAlertCreated();
       };
     }
   }, [user]);
