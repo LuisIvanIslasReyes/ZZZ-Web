@@ -69,7 +69,7 @@ export function LoginPage() {
         {/* Header con logo */}
         <header className="p-8">
           <div className="flex items-center gap-3">
-            <img src={LogoBlanco} alt="ZZZ" className="h-10 w-auto" />
+            <img src={LogoBlanco} alt="ZZZ" className="h-20 w-auto" />
             <span className="text-white font-bold text-xl tracking-tight">Zero to Zero-Fatigue Zone</span>
           </div>
         </header>
