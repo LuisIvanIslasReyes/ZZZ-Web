@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { dashboardService, recommendationService } from '../../services';
+import { dashboardService, recommendationService, simulatorService } from '../../services';
 import { LoadingSpinner, ReportSymptomModal, ScheduleBreakModal } from '../../components/common';
 import { TeamFatigueTrendChart, HealthStatusChart, HourlyActivityChart } from '../../components/charts';
 import { useAuth } from '../../contexts';
@@ -17,13 +17,32 @@ export function EmployeeDashboardPage() {
   const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recommendations, setRecommendations] = useState<RoutineRecommendation[]>([]);
+  const [currentFatigue, setCurrentFatigue] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isReportSymptomModalOpen, setIsReportSymptomModalOpen] = useState(false);
   const [isScheduleBreakModalOpen, setIsScheduleBreakModalOpen] = useState(false);
 
   useEffect(() => {
     loadDashboard();
+    // Auto-actualizar fatiga cada 5 segundos
+    const interval = setInterval(() => {
+      loadCurrentFatigue();
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
+
+  const loadCurrentFatigue = async () => {
+    try {
+      // Obtener simulador activo del empleado
+      const activeSims = await simulatorService.getActive();
+      const mySimulator = activeSims.find(sim => sim.employee === user?.id);
+      if (mySimulator) {
+        setCurrentFatigue(mySimulator.current_fatigue);
+      }
+    } catch (error) {
+      console.error('Error loading current fatigue:', error);
+    }
+  };
 
   const loadDashboard = async () => {
     try {
@@ -34,6 +53,9 @@ export function EmployeeDashboardPage() {
       ]);
       setStats(statsData);
       setRecommendations(recommendationsData.slice(0, 3)); // Solo las primeras 3
+      
+      // Cargar fatiga actual
+      await loadCurrentFatigue();
     } catch (error) {
       console.error('Error loading dashboard:', error);
     } finally {
@@ -53,8 +75,8 @@ export function EmployeeDashboardPage() {
     );
   }
 
-  // Simular datos personales del empleado
-  const myFatigueLevel = stats.avg_fatigue_score;
+  // Usar fatiga actual del simulador o promedio como fallback
+  const myFatigueLevel = currentFatigue !== null ? currentFatigue : stats.avg_fatigue_score;
   const myRiskLevel = myFatigueLevel > 70 ? 'Alto' : myFatigueLevel > 50 ? 'Medio' : 'Bajo';
 
   return (
@@ -77,16 +99,21 @@ export function EmployeeDashboardPage() {
               Te recomendamos tomar un descanso y consultar las recomendaciones personalizadas.
             </p>
           </div>
-          <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
-            Ver Recomendaciones
-          </button>
         </div>
       )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Mi Nivel de Fatiga Actual */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col justify-between relative">
+          {currentFatigue !== null && (
+            <div className="absolute top-2 right-2">
+              <span className="flex items-center gap-1 text-xs text-green-600 font-medium">
+                <span className="w-2 h-2 bg-green-600 rounded-full animate-pulse"></span>
+                En vivo
+              </span>
+            </div>
+          )}
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-600 text-sm font-semibold">Mi Nivel de Fatiga Actual</span>
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke={myFatigueLevel > 70 ? '#DC2626' : myFatigueLevel > 50 ? '#F59E0B' : '#22C55E'}>
@@ -94,7 +121,7 @@ export function EmployeeDashboardPage() {
             </svg>
           </div>
           <div className="flex items-end gap-2">
-            <span className="text-3xl font-bold text-[#18314F]">{myFatigueLevel}%</span>
+            <span className="text-3xl font-bold text-[#18314F]">{myFatigueLevel.toFixed(1)}%</span>
             <span className={`font-semibold text-sm ${
               myFatigueLevel > 70 ? 'text-red-600' : myFatigueLevel > 50 ? 'text-yellow-600' : 'text-green-600'
             }`}>

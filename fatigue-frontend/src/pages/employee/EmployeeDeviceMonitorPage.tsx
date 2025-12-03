@@ -8,22 +8,14 @@ import { useAuth } from '../../contexts';
 import { simulatorService } from '../../services';
 import { LoadingSpinner } from '../../components/common';
 import type { SimulatorSession } from '../../types';
+import type { SensorData as BaseSensorData } from '../../types/metrics.types';
 import api from '../../services/api';
 
-interface SensorReading {
-  id: number;
-  timestamp: string;
-  heart_rate: number;
-  spo2: number;
-  accel_x: number;
-  accel_y: number;
-  accel_z: number;
-  device_id: string;
-  device_name: string;
-  created_at: string;
+interface SensorData extends BaseSensorData {
+  spo2?: number; // Saturación de oxígeno
 }
 
-interface ApiResponse<T> {
+interface PaginatedResponse<T> {
   count: number;
   next: string | null;
   previous: string | null;
@@ -33,16 +25,26 @@ interface ApiResponse<T> {
 export function EmployeeDeviceMonitorPage() {
   const { user } = useAuth();
   const [simulator, setSimulator] = useState<SimulatorSession | null>(null);
-  const [recentReadings, setRecentReadings] = useState<SensorReading[]>([]);
+  const [recentReadings, setRecentReadings] = useState<SensorData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const pageSize = 3;
+  const [filterDate, setFilterDate] = useState('');
+  const [filterActivity, setFilterActivity] = useState('all');
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterDate, filterActivity]);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [currentPage, filterDate, filterActivity]);
 
   useEffect(() => {
-    if (!autoRefresh) return;
+    if (!autoRefresh || currentPage !== 1) return;
 
     const interval = setInterval(() => {
       loadData();
@@ -63,17 +65,23 @@ export function EmployeeDeviceMonitorPage() {
       // Obtener lecturas recientes de sensores del empleado
       if (user?.id) {
         try {
-          const response = await api.get<ApiResponse<SensorReading> | SensorReading[]>(
-            `/sensor-data/?ordering=-timestamp`
+          const response = await api.get<PaginatedResponse<SensorData>>(
+            '/sensor-data/',
+            {
+              params: {
+                employee: user.id,
+                ordering: '-timestamp',
+                page: currentPage,
+                page_size: pageSize
+              }
+            }
           );
-          // Manejar respuesta paginada o array directo
-          const data = Array.isArray(response.data) 
-            ? response.data.slice(0, 10) 
-            : response.data.results.slice(0, 10);
-          setRecentReadings(data);
+          setRecentReadings(response.data.results || []);
+          setTotalCount(response.data.count || 0);
+          setTotalPages(Math.ceil((response.data.count || 0) / pageSize));
         } catch (error) {
           console.error('Error loading sensor readings:', error);
-          setRecentReadings([]); // Establecer array vacío en caso de error
+          setRecentReadings([]);
         }
       }
     } catch (error) {
@@ -180,27 +188,25 @@ export function EmployeeDeviceMonitorPage() {
 
         {simulator ? (
           <div className="space-y-6">
-            {/* Estado Principal */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="text-sm text-gray-600 mb-2">Estado</div>
-                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold ${getStatusColor(simulator.status)}`}>
-                  <span className="w-3 h-3 rounded-full bg-current animate-pulse" />
-                  {simulator.status_display}
+            {/* Estado Principal - Diseño Simple */}
+            <div className="bg-gray-50 rounded-lg p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                <div>
+                  <span className="text-gray-600">Estado:</span>
+                  <span className="ml-3 inline-flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${
+                      simulator.status === 'running' ? 'bg-green-600' : 'bg-gray-400'
+                    }`} />
+                    <span className="font-semibold text-[#18314F]">{simulator.status_display}</span>
+                  </span>
                 </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="text-sm text-gray-600 mb-2">ID del Dispositivo</div>
-                <div className="text-2xl font-bold text-[#18314F] font-mono">
-                  {simulator.device_id}
+                <div>
+                  <span className="text-gray-600">ID del Dispositivo:</span>
+                  <span className="ml-3 font-mono font-semibold text-[#18314F]">{simulator.device_id}</span>
                 </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="text-sm text-gray-600 mb-2">Tiempo Activo</div>
-                <div className="text-2xl font-bold text-[#18314F]">
-                  {formatDuration(simulator.duration_seconds)}
+                <div>
+                  <span className="text-gray-600">Tiempo Activo:</span>
+                  <span className="ml-3 font-semibold text-[#18314F]">{formatDuration(simulator.duration_seconds)}</span>
                 </div>
               </div>
             </div>
@@ -241,14 +247,10 @@ export function EmployeeDeviceMonitorPage() {
                 <div className="text-lg font-bold text-[#18314F]">
                   {recentReadings.length > 0 ? (() => {
                     const latest = recentReadings[0];
-                    const accelMagnitude = Math.sqrt(
-                      Math.pow(latest.accel_x, 2) + 
-                      Math.pow(latest.accel_y, 2) + 
-                      Math.pow(latest.accel_z, 2)
-                    );
-                    if (accelMagnitude > 15) return 'Actividad Intensa';
-                    if (accelMagnitude > 10) return 'Actividad Moderada';
-                    if (accelMagnitude > 5) return 'Actividad Ligera';
+                    const movementLevel = latest.movement_level;
+                    if (movementLevel > 75) return 'Actividad Intensa';
+                    if (movementLevel > 50) return 'Actividad Moderada';
+                    if (movementLevel > 25) return 'Actividad Ligera';
                     return 'Reposo';
                   })() : simulator.activity_mode_display}
                 </div>
@@ -311,86 +313,203 @@ export function EmployeeDeviceMonitorPage() {
           Lecturas Recientes de Sensores
         </h2>
 
-        {recentReadings.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead>
-                <tr className="border-b-2 border-gray-200">
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Hora</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Dispositivo</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Frecuencia Cardíaca</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">SpO2</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Aceleración</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentReadings.map((reading, index) => {
-                  // Calcular magnitud de aceleración
-                  const accelMagnitude = Math.sqrt(
-                    Math.pow(reading.accel_x, 2) + 
-                    Math.pow(reading.accel_y, 2) + 
-                    Math.pow(reading.accel_z, 2)
-                  );
-                  
-                  // Determinar nivel de actividad basado en aceleración
-                  let activityLevel = 'Reposo';
-                  let activityColor = 'bg-gray-100 text-gray-800';
-                  if (accelMagnitude > 15) {
-                    activityLevel = 'Alta';
-                    activityColor = 'bg-red-100 text-red-800';
-                  } else if (accelMagnitude > 10) {
-                    activityLevel = 'Moderada';
-                    activityColor = 'bg-orange-100 text-orange-800';
-                  } else if (accelMagnitude > 5) {
-                    activityLevel = 'Ligera';
-                    activityColor = 'bg-green-100 text-green-800';
-                  }
-                  
-                  return (
-                    <tr
-                      key={reading.id}
-                      className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                        index === 0 ? 'bg-blue-50' : ''
-                      }`}
-                    >
-                      <td className="px-4 py-3 text-sm text-gray-900 font-medium">
-                        {formatTimestamp(reading.timestamp)}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-mono font-medium">
-                          {reading.device_id}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-800 text-sm font-medium">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                          </svg>
-                          {reading.heart_rate} bpm
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
-                          {reading.spo2}%
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-sm font-medium ${activityColor.replace('bg-', 'text-').replace('-100', '-700')}`}>
-                            {activityLevel}
-                          </span>
-                          <span className="text-xs text-gray-400">|</span>
-                          <span className="text-xs text-gray-500 font-mono">
-                            {accelMagnitude.toFixed(1)} m/s²
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        {/* Filtros */}
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Fecha
+            </label>
+            <input
+              type="date"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-[#18314F]"
+            />
           </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Nivel de Actividad
+            </label>
+            <select
+              value={filterActivity}
+              onChange={(e) => setFilterActivity(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#18314F] focus:border-[#18314F]"
+            >
+              <option value="all">Todos</option>
+              <option value="rest">Reposo</option>
+              <option value="light">Ligera</option>
+              <option value="moderate">Moderada</option>
+              <option value="high">Alta</option>
+            </select>
+          </div>
+          
+          <div className="flex items-end">
+            <button
+              onClick={() => {
+                setFilterDate('');
+                setFilterActivity('all');
+              }}
+              className="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+            >
+              Limpiar Filtros
+            </button>
+          </div>
+        </div>
+
+        {recentReadings.length > 0 ? (
+          <>
+            <div className="flex items-center justify-between mb-4 text-sm text-gray-600">
+              <span>
+                Mostrando {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, totalCount)} de {totalCount} lecturas
+              </span>
+              <span>Página {currentPage} de {totalPages}</span>
+            </div>
+            
+            <div className="space-y-3">
+              {recentReadings.filter(reading => {
+                // Filtro por fecha
+                if (filterDate) {
+                  const readingDate = new Date(reading.timestamp).toISOString().split('T')[0];
+                  if (readingDate !== filterDate) return false;
+                }
+                
+                // Filtro por actividad
+                if (filterActivity !== 'all') {
+                  const movementLevel = reading.movement_level || 0;
+                  let activityType = 'rest';
+                  if (movementLevel > 75) activityType = 'high';
+                  else if (movementLevel > 50) activityType = 'moderate';
+                  else if (movementLevel > 25) activityType = 'light';
+                  
+                  if (activityType !== filterActivity) return false;
+                }
+                
+                return true;
+              }).map((reading, index) => {
+              // Determinar nivel de actividad basado en movement_level
+              let activityLevel = 'Reposo';
+              let activityColor = 'bg-green-50 text-green-700 border-green-200';
+              const movementLevel = reading.movement_level || 0;
+              if (movementLevel > 75) {
+                activityLevel = 'Alta';
+                activityColor = 'bg-red-50 text-red-700 border-red-200';
+              } else if (movementLevel > 50) {
+                activityLevel = 'Moderada';
+                activityColor = 'bg-orange-50 text-orange-700 border-orange-200';
+              } else if (movementLevel > 25) {
+                activityLevel = 'Ligera';
+                activityColor = 'bg-blue-50 text-blue-700 border-blue-200';
+              }
+              
+              const heartRateColor = (reading.heart_rate || 0) > 100 ? 'text-red-600' : 'text-gray-900';
+              const spo2Color = (reading.spo2 || 0) < 95 ? 'text-red-600' : 'text-gray-900';
+              
+              return (
+                <div 
+                  key={reading.id} 
+                  className="bg-gray-50 border border-gray-300 p-3"
+                >
+                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-300">
+                    <span className="text-sm text-gray-700">
+                      {formatTimestamp(reading.timestamp)}
+                    </span>
+                    <span className="text-xs text-gray-600">
+                      {reading.device_name || `Dispositivo #${reading.device}`}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-3 text-sm">
+                    <div>
+                      <div className="text-gray-600 mb-1">Frecuencia Cardíaca:</div>
+                      <div className={`font-bold ${heartRateColor}`}>
+                        {reading.heart_rate || 0} bpm
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="text-gray-600 mb-1">SpO2:</div>
+                      <div className={`font-bold ${spo2Color}`}>
+                        {reading.spo2 || 0}%
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="text-gray-600 mb-1">Actividad:</div>
+                      <div className="font-bold text-gray-900">
+                        {activityLevel} ({movementLevel.toFixed(0)}%)
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            </div>
+            
+            {/* Paginación */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-6 pt-6 border-t border-gray-200">
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Primera
+                </button>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Anterior
+                </button>
+                
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`px-3 py-2 text-sm font-medium rounded-lg ${
+                          currentPage === pageNum
+                            ? 'bg-[#18314F] text-white'
+                            : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Siguiente
+                </button>
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Última
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-12">
             <svg className="w-20 h-20 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
