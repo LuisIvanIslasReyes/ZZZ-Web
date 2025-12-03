@@ -50,6 +50,7 @@ export function EmployeeAlertsPage() {
     
     switch (normalizedType) {
       case 'notification':
+      case 'team_notification':
         return 'Notificación de tu Supervisor';
       case 'high_fatigue':
       case 'fatigue_high':
